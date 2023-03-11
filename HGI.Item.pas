@@ -76,7 +76,7 @@ type
     FLibUrl: string;
     FLibUrlProvider: string;
     FLicenseState: string;
-    FModified: TDateTime;
+    FModified: string;
     FName: string;
     FProductVersions: TArray<TProductVersion>;
     FPurchaseUrl: string;
@@ -114,7 +114,7 @@ type
     property LibUrl: string read FLibUrl write FLibUrl;
     property LibUrlProvider: string read FLibUrlProvider write FLibUrlProvider;
     property LicenseState: string read FLicenseState write FLicenseState;
-    property Modified: TDateTime read FModified write FModified;
+    property Modified: string read FModified write FModified;
     property Name: string read FName write FName;
     property ProductVersions: TArray<TProductVersion> read FProductVersions write FProductVersions;
     property PurchaseUrl: string read FPurchaseUrl write FPurchaseUrl;
@@ -127,6 +127,14 @@ type
     property Vendor: string read FVendor write FVendor;
     property VendorUrl: string read FVendorUrl write FVendorUrl;
     property Version: string read FVersion write FVersion;
+    destructor Destroy; override;
+  end;
+
+  TPackages = class
+  private
+    FItems: TArray<TGetItPackage>;
+  public
+    property Items: TArray<TGetItPackage> read FItems write FItems;
     destructor Destroy; override;
   end;
 
@@ -167,6 +175,15 @@ begin
   for LActionsItem in FActions do
     LActionsItem.free;
 
+  inherited;
+end;
+
+{ TPackages }
+
+destructor TPackages.Destroy;
+begin
+  for var Item in FItems do
+    Item.Free;
   inherited;
 end;
 
