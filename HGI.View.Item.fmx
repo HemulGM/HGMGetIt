@@ -35,7 +35,7 @@ object FramePackageItem: TFramePackageItem
         XRadius = 4.000000000000000000
         YRadius = 4.000000000000000000
       end
-      object ButtonDownload: TButton
+      object ButtonInstall: TButton
         Align = Right
         StyledSettings = [Family, Style, FontColor]
         Margins.Top = 6.000000000000000000
@@ -47,8 +47,22 @@ object FramePackageItem: TFramePackageItem
         Size.PlatformDefault = False
         StyleLookup = 'buttonstyledownload'
         TabOrder = 1
-        Text = 'DOWNLOAD'
+        Text = 'INSTALL'
         TextSettings.Font.Size = 13.000000000000000000
+        OnClick = ButtonInstallClick
+        object ButtonInstallOpt: TButton
+          Align = Right
+          StyledSettings = [Family, Style, FontColor]
+          Position.X = 112.000000000000000000
+          Size.Width = 28.000000000000000000
+          Size.Height = 28.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'buttonstyledrop'
+          TabOrder = 1
+          Text = 'DOWNLOAD'
+          TextSettings.Font.Size = 13.000000000000000000
+          OnClick = ButtonInstallOptClick
+        end
       end
       object LabelInfo: TLabel
         Align = Client
@@ -138,7 +152,7 @@ object FramePackageItem: TFramePackageItem
         Fill.Color = xE6FFFFFF
         Hint = 'Windows'
         Margins.Right = 2.000000000000000000
-        Position.X = 2.000000000000000000
+        Position.X = 25.000000000000000000
         Position.Y = 2.000000000000000000
         Size.Width = 20.000000000000000000
         Size.Height = 16.000000000000000000
@@ -203,7 +217,7 @@ object FramePackageItem: TFramePackageItem
         Fill.Color = xE6FFFFFF
         Hint = 'iOS'
         Margins.Right = 2.000000000000000000
-        Position.X = 90.000000000000000000
+        Position.X = 113.000000000000000000
         Position.Y = 2.000000000000000000
         Size.Width = 20.000000000000000000
         Size.Height = 16.000000000000000000
@@ -276,7 +290,7 @@ object FramePackageItem: TFramePackageItem
         Fill.Color = xE6FFFFFF
         Hint = 'Android'
         Margins.Right = 2.000000000000000000
-        Position.X = 68.000000000000000000
+        Position.X = 91.000000000000000000
         Position.Y = 2.000000000000000000
         Size.Width = 20.000000000000000000
         Size.Height = 16.000000000000000000
@@ -526,7 +540,7 @@ object FramePackageItem: TFramePackageItem
         Fill.Color = xE6FFFFFF
         Hint = 'Linux'
         Margins.Right = 2.000000000000000000
-        Position.X = 46.000000000000000000
+        Position.X = 69.000000000000000000
         Position.Y = 2.000000000000000000
         Size.Width = 20.000000000000000000
         Size.Height = 16.000000000000000000
@@ -574,7 +588,7 @@ object FramePackageItem: TFramePackageItem
         Fill.Color = xE6FFFFFF
         Hint = 'MacOS'
         Margins.Right = 2.000000000000000000
-        Position.X = 24.000000000000000000
+        Position.X = 47.000000000000000000
         Position.Y = 2.000000000000000000
         Size.Width = 20.000000000000000000
         Size.Height = 16.000000000000000000
@@ -585,7 +599,7 @@ object FramePackageItem: TFramePackageItem
       object LabelLicense: TLabel
         Align = Client
         StyledSettings = [Style]
-        Size.Width = 176.000000000000000000
+        Size.Width = 153.000000000000000000
         Size.Height = 16.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -595,6 +609,43 @@ object FramePackageItem: TFramePackageItem
         Text = 'MIT 1.0'
         TabOrder = 5
       end
+      object ImagePers: TImage
+        MultiResBitmap = <
+          item
+          end>
+        Align = Left
+        Margins.Right = 2.000000000000000000
+        Position.X = 2.000000000000000000
+        Position.Y = 2.000000000000000000
+        Size.Width = 16.000000000000000000
+        Size.Height = 16.000000000000000000
+        Size.PlatformDefault = False
+      end
+      object Line1: TLine
+        Align = Left
+        HitTest = False
+        LineType = Left
+        Margins.Left = 1.000000000000000000
+        Margins.Right = 3.000000000000000000
+        Position.X = 21.000000000000000000
+        Position.Y = 2.000000000000000000
+        Size.Width = 1.000000000000000000
+        Size.Height = 16.000000000000000000
+        Size.PlatformDefault = False
+        Stroke.Color = x28FFFFFF
+      end
+    end
+  end
+  object PopupMenuOpt: TPopupMenu
+    Left = 144
+    Top = 96
+    object MenuItemDownload: TMenuItem
+      Text = 'Download'
+      OnClick = MenuItemDownloadClick
+    end
+    object MenuItemWebSite: TMenuItem
+      Text = 'WebSite'
+      OnClick = MenuItemWebSiteClick
     end
   end
 end

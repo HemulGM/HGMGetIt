@@ -5,16 +5,23 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
-  FMX.Objects, FMX.Layouts, FMX.Controls.Presentation, HGI.Item;
+  FMX.Objects, FMX.Layouts, FMX.Controls.Presentation, HGI.Item,
+  FMX.Filter.Effects, FMX.Effects, FMX.Menus;
+
+{$SCOPEDENUMS ON}
 
 type
+  TItemAction = (Install, Download, Uninstall);
+
+  TOnItemAction = procedure(Sender: TObject; ItemId: string; Action: TItemAction) of object;
+
   TFramePackageItem = class(TFrame)
     RectangleBG: TRectangle;
     Layout1: TLayout;
     Layout2: TLayout;
     Layout3: TLayout;
     RectangleImage: TRectangle;
-    ButtonDownload: TButton;
+    ButtonInstall: TButton;
     LabelTitle: TLabel;
     LabelDesc: TLabel;
     LabelInfo: TLabel;
@@ -25,12 +32,26 @@ type
     PathLinux: TPath;
     PathMacOS: TPath;
     LabelLicense: TLabel;
+    ButtonInstallOpt: TButton;
+    ImagePers: TImage;
+    Line1: TLine;
+    PopupMenuOpt: TPopupMenu;
+    MenuItemDownload: TMenuItem;
+    MenuItemWebSite: TMenuItem;
     procedure RectangleBGClick(Sender: TObject);
+    procedure ButtonInstallClick(Sender: TObject);
+    procedure ButtonInstallOptClick(Sender: TObject);
+    procedure MenuItemDownloadClick(Sender: TObject);
+    procedure MenuItemWebSiteClick(Sender: TObject);
   private
     FItem: TGetItPackage;
+    FOnAction: TOnItemAction;
+    FIsInstalled: Boolean;
     function FormatSize(const Value: string): string;
+    procedure SetOnAction(const Value: TOnItemAction);
   public
-    procedure Fill(Item: TGetItPackage);
+    procedure Fill(Item: TGetItPackage; IsInstalled: Boolean);
+    property OnAction: TOnItemAction read FOnAction write SetOnAction;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
@@ -38,11 +59,26 @@ type
 implementation
 
 uses
-  HGM.FMX.Image, System.Math, HGI.View.ItemFull;
+  HGM.FMX.Image, System.Math, HGI.View.ItemFull, HGI.Main, HGI.GetItAPI;
 
 {$R *.fmx}
 
 { TFramePackageItem }
+
+procedure TFramePackageItem.ButtonInstallClick(Sender: TObject);
+begin
+  if Assigned(FOnAction) then
+    if FIsInstalled then
+      FOnAction(Self, FItem.Id, TItemAction.Uninstall)
+    else
+      FOnAction(Self, FItem.Id, TItemAction.Install);
+end;
+
+procedure TFramePackageItem.ButtonInstallOptClick(Sender: TObject);
+begin
+  var Pt := Application.MainForm.ClientToScreen(ButtonInstall.AbsoluteRect.TopLeft);
+  PopupMenuOpt.Popup(Pt.X, Pt.Y + ButtonInstall.Height);
+end;
 
 constructor TFramePackageItem.Create(AOwner: TComponent);
 begin
@@ -67,14 +103,55 @@ begin
     Result := '';
 end;
 
-procedure TFramePackageItem.Fill(Item: TGetItPackage);
+procedure TFramePackageItem.MenuItemDownloadClick(Sender: TObject);
 begin
+  if Assigned(FItem) then
+    OpenUrl(FItem.LibUrl);
+end;
+
+procedure TFramePackageItem.MenuItemWebSiteClick(Sender: TObject);
+begin
+  if Assigned(FItem) then
+    OpenUrl(FItem.LibProjectUrl);
+end;
+
+procedure TFramePackageItem.Fill(Item: TGetItPackage; IsInstalled: Boolean);
+begin
+  if Assigned(FItem) then
+    FItem.Free;
   FItem := Item;
   LabelTitle.Text := Item.Name;
   LabelDesc.Text := Item.Description;
-  LabelInfo.Text := Item.Version + #13#10 + 'by ' + Item.Vendor;
+  LabelInfo.Text := Item.Version + ' (' + TGetIt.ParseDate(Item.Modified) + ')' + #13#10 + 'by ' + Item.Vendor;
   LabelLicense.Text := Item.LibLicenseName;
-  ButtonDownload.Text := 'DOWNLOAD' + FormatSize(Item.LibSize);
+  ButtonInstall.TagString := Item.LibUrl;
+  FIsInstalled := IsInstalled;
+  if not FIsInstalled then
+    ButtonInstall.Text := 'INSTALL' + FormatSize(Item.LibSize)
+  else
+    ButtonInstall.Text := 'UNINSTALL';
+  ButtonInstall.StylesData['bg.Padding.Right'] := ButtonInstallOpt.Width + 5;
+  MenuItemDownload.Enabled := not Item.LibUrl.IsEmpty;
+  MenuItemWebSite.Enabled := not Item.LibProjectUrl.IsEmpty;
+  //1 delphi
+  //5 all
+  //2 cpp
+  //6 ?
+  if (Item.LibCode = '1') then
+  begin
+    ImagePers.Bitmap.LoadFromResource('delphi');
+    ImagePers.Hint := 'Delphi only';
+  end
+  else if Item.LibCode = '2' then
+  begin
+    ImagePers.Bitmap.LoadFromResource('cpp');
+    ImagePers.Hint := 'C++ only';
+  end
+  else
+  begin
+    ImagePers.Bitmap.LoadFromResource('rad');
+    ImagePers.Hint := 'For RAD Studio';
+  end;
   PathWindows.Visible := False;
   PathLinux.Visible := False;
   PathMacOS.Visible := False;
@@ -94,7 +171,7 @@ begin
       PathLinux.Visible := True;
   end;
 
-  RectangleImage.Fill.Bitmap.Bitmap.LoadFromUrlAsync(Item.Image, False,
+  RectangleImage.Fill.Bitmap.Bitmap.LoadFromUrlAsync(RectangleImage, Item.Image, False,
     procedure(Bitmap: TBitmap)
     begin
       RectangleImage.Fill.Kind := TBrushKind.Bitmap;
@@ -106,7 +183,13 @@ procedure TFramePackageItem.RectangleBGClick(Sender: TObject);
 begin
   var Frame := TFramePackageItemFull.Create(Self);
   Frame.Parent := Application.MainForm;
-  Frame.Fill(FItem);
+  Frame.Fill(FItem, FIsInstalled);
+  Frame.RecalcSize;
+end;
+
+procedure TFramePackageItem.SetOnAction(const Value: TOnItemAction);
+begin
+  FOnAction := Value;
 end;
 
 end.
