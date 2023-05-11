@@ -49,10 +49,12 @@ type
     FIsInstalled: Boolean;
     function FormatSize(const Value: string): string;
     procedure SetOnAction(const Value: TOnItemAction);
+    function GetId: string;
   public
     procedure Fill(Item: TGetItPackage; IsInstalled: Boolean);
     property OnAction: TOnItemAction read FOnAction write SetOnAction;
     constructor Create(AOwner: TComponent); override;
+    property Id: string read GetId;
     destructor Destroy; override;
   end;
 
@@ -99,6 +101,14 @@ begin
   var F: Single;
   if TryStrToFloat(Value.Replace(',', FormatSettings.DecimalSeparator).Replace('.', FormatSettings.DecimalSeparator), F) then
     Result := ' ' + Max(1, Round(F)).ToString + 'MB'
+  else
+    Result := '';
+end;
+
+function TFramePackageItem.GetId: string;
+begin
+  if Assigned(FItem) then
+    Result := Fitem.Id
   else
     Result := '';
 end;

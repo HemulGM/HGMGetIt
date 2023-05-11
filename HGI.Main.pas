@@ -7,7 +7,7 @@ uses
   System.Variants, FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs,
   FMX.Layouts, FMX.Objects, FMX.Controls.Presentation, FMX.Edit, FMX.StdCtrls,
   HGI.View.Item, HGI.GetItAPI, FMX.Ani, FMX.Filter.Effects, FMX.Menus, HGI.Item,
-  System.Threading, HGI.GetItCmd;
+  System.Threading, HGI.GetItCmd, System.ImageList, FMX.ImgList;
 
 type
   TFormMain = class(TForm)
@@ -69,6 +69,7 @@ type
     MenuItemD104: TMenuItem;
     MenuItemD103: TMenuItem;
     RadioButtonInstalled: TRadioButton;
+    ImageList16: TImageList;
     procedure EditSearchChangeTracking(Sender: TObject);
     procedure LayoutHeadResized(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -103,6 +104,7 @@ type
     procedure AddToUninstall(ItemId: string);
     procedure RemoveInstalled(ItemId: string);
     procedure AddInstalled(ItemId: string);
+    function ExistsItem(const ItemId: string): Boolean;
   public
     procedure AnimateScreen<T: TImageFXEffect>(Setting: TFunc<T, TBitmap>; Proc: TProc; Duration: Single = -1);
   end;
@@ -233,6 +235,15 @@ begin
   Result := False;
 end;
 
+function TFormMain.ExistsItem(const ItemId: string): Boolean;
+begin
+  for var Control in FlowLayoutItems.Controls do
+    if Control is TFramePackageItem then
+      if TFramePackageItem(Control).Id = ItemId then
+        Exit(True);
+  Result := False;
+end;
+
 procedure TFormMain.LoadPackages(More: Boolean);
 begin
   if not FInited then
@@ -256,7 +267,7 @@ begin
           else
             FCurrentIDE.LoadInstalled(Items, EditSearch.Text);
         finally
-          TThread.Synchronize(nil,
+          TThread.Queue(nil,
             procedure
             begin
               if not More then
@@ -265,6 +276,11 @@ begin
               try
                 for var Item in Items.Items do
                 begin
+                  if ExistsItem(Item.Id) then
+                  begin
+                    Item.Free;
+                    Continue;
+                  end;
                   var Frame := TFramePackageItem.Create(FlowLayoutItems);
                   Frame.Fill(Item, IsInstalled(Item.Id));
                   Frame.Parent := FlowLayoutItems;
@@ -295,7 +311,7 @@ begin
             end);
         end;
       except
-        TThread.Synchronize(nil,
+        TThread.Queue(nil,
           procedure
           begin
             LabelInfo.Text := 'Error';
@@ -422,6 +438,7 @@ begin
     Item.Text := IDE.Personalities + ' (' + IDE.Version + ')';
     Item.TagString := IDE.Version;
     Item.OnClick := MenuItemD103Click;
+    Item.ImageIndex := 0;
     PopupMenuServerList.AddObject(Item);
   end;
   SetCurrentIDE('');
@@ -503,6 +520,11 @@ begin
     LoadPackages(False);
   end;
 end;
+
+initialization
+{$IFDEF DEBUG}
+  ReportMemoryLeaksOnShutdown := True;
+{$ENDIF}
 
 end.
 
