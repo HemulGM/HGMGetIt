@@ -1,0 +1,10 @@
+[submodule "WindowDarkMode"]
+	path = WindowDarkMode
+	url = https://github.com/HemulGM/WindowDarkMode.git
+[submodule "LineStorage"]
+	path = LineStorage
+	url = https://github.com/HemulGM/LineStorage.git
+[submodule "Components"]
+	path = Components
+	url = https://github.com/HemulGM/Components
+	branch = master

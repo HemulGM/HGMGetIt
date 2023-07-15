@@ -271,17 +271,14 @@ var
         Tmp := Reg.ReadString('OSes');
       List.Delimiter := ';';
       List.DelimitedText := Tmp;
-      var
-        LibOSes: TArray<TLibOS>;
+      var LibOSes: TArray<TLibOS>;
       try
         for var SItem in List do
         begin
-          var
-            Arr := SItem.Split(['=']);
+          var Arr := SItem.Split(['=']);
           if Length(Arr) > 1 then
           begin
-            var
-              OS := TLibOS.Create;
+            var OS := TLibOS.Create;
             OS.Id := Arr[0];
             OS.Name := Arr[1];
             SetLength(LibOSes, Length(LibOSes) + 1);

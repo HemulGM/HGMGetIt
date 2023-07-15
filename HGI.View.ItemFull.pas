@@ -67,23 +67,26 @@ type
     FLibUrl: string;
     FLibProjectUrl: string;
     FLibId: string;
+    FLibSize: string;
     FPurchaseUrl: string;
     FOnAction: TOnItemAction;
     FIsInstalled: Boolean;
     function FormatSize(const Value: string): string;
     procedure SetOnAction(const Value: TOnItemAction);
+    procedure SetIsInstalled(const Value: Boolean);
   public
-    procedure Fill(Item: TGetItPackage; IsInstalled: Boolean);
+    procedure Fill(Item: TGetItPackage; Installed: Boolean);
     property OnAction: TOnItemAction read FOnAction write SetOnAction;
     procedure Close;
     constructor Create(AOwner: TComponent); override;
+    property IsInstalled: Boolean read FIsInstalled write SetIsInstalled;
     destructor Destroy; override;
   end;
 
 implementation
 
 uses
-  HGM.FMX.Image, System.Math, FMX.Ani, HGI.Main, HGI.GetItAPI;
+  HGM.FMX.Image, System.Math, FMX.Ani, HGI.GetItAPI;
 
 {$R *.fmx}
 
@@ -91,7 +94,8 @@ uses
 
 procedure TFramePackageItemFull.ButtonWebSiteClick(Sender: TObject);
 begin
-  OpenUrl(FLibProjectUrl);
+  if Assigned(FOnAction) then
+    FOnAction(Self, FLibProjectUrl, TItemAction.OpenUrl);
 end;
 
 procedure TFramePackageItemFull.Close;
@@ -101,7 +105,8 @@ end;
 
 procedure TFramePackageItemFull.ButtonBuyClick(Sender: TObject);
 begin
-  OpenUrl(FPurchaseUrl);
+  if Assigned(FOnAction) then
+    FOnAction(Self, FPurchaseUrl, TItemAction.OpenUrl);
 end;
 
 procedure TFramePackageItemFull.ButtonCloseClick(Sender: TObject);
@@ -111,7 +116,8 @@ end;
 
 procedure TFramePackageItemFull.ButtonDownloadClick(Sender: TObject);
 begin
-  OpenUrl(FLibUrl);
+  if Assigned(FOnAction) then
+    FOnAction(Self, FLibUrl, TItemAction.OpenUrl);
 end;
 
 procedure TFramePackageItemFull.ButtonInstallClick(Sender: TObject);
@@ -144,12 +150,13 @@ begin
     Result := '';
 end;
 
-procedure TFramePackageItemFull.Fill(Item: TGetItPackage; IsInstalled: Boolean);
+procedure TFramePackageItemFull.Fill(Item: TGetItPackage; Installed: Boolean);
 begin
-  FIsInstalled := IsInstalled;
+  IsInstalled := Installed;
   FLibUrl := Item.LibUrl;
   FLibProjectUrl := Item.LibProjectUrl;
   FLibId := Item.Id;
+  FLibSize := Item.LibSize;
   FPurchaseUrl := Item.PurchaseUrl;
 
   EditId.Text := Item.Id;
@@ -158,10 +165,6 @@ begin
   LabelDesc.Text := Item.Description;
   LabelInfo.Text := Item.Version + #13#10 + 'by ' + Item.Vendor + #13#10 + Item.VendorUrl;
   LabelLicense.Text := Item.LibLicenseName;
-  if not FIsInstalled then
-    ButtonInstall.Text := 'INSTALL' + FormatSize(Item.LibSize)
-  else
-    ButtonInstall.Text := 'UNINSTALL';
 
   LayoutPfWin.Visible := False;
   LayoutPfLin.Visible := False;
@@ -190,10 +193,13 @@ begin
   end;
 
   RectangleImage.Fill.Bitmap.Bitmap.LoadFromUrlAsync(RectangleImage, Item.Image, False,
-    procedure(Bitmap: TBitmap)
+    procedure(Success: Boolean)
     begin
-      RectangleImage.Fill.Kind := TBrushKind.Bitmap;
-      RectangleImage.Fill.Bitmap.WrapMode := TWrapMode.TileStretch;
+      if Success then
+      begin
+        RectangleImage.Fill.Kind := TBrushKind.Bitmap;
+        RectangleImage.Fill.Bitmap.WrapMode := TWrapMode.TileStretch;
+      end;
     end);
   Opacity := 0;
   TAnimator.AnimateFloat(Self, 'Opacity', 1);
@@ -228,6 +234,15 @@ begin
       RectangleBG.Align := TAlignLayout.Fit;
     end;
   end;
+end;
+
+procedure TFramePackageItemFull.SetIsInstalled(const Value: Boolean);
+begin
+  FIsInstalled := Value;
+  if not FIsInstalled then
+    ButtonInstall.Text := 'INSTALL' + FormatSize(FLibSize)
+  else
+    ButtonInstall.Text := 'UNINSTALL';
 end;
 
 procedure TFramePackageItemFull.SetOnAction(const Value: TOnItemAction);

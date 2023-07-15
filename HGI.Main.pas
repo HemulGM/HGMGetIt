@@ -7,7 +7,7 @@ uses
   System.Variants, FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs,
   FMX.Layouts, FMX.Objects, FMX.Controls.Presentation, FMX.Edit, FMX.StdCtrls,
   HGI.View.Item, HGI.GetItAPI, FMX.Ani, FMX.Filter.Effects, FMX.Menus, HGI.Item,
-  System.Threading, HGI.GetItCmd, System.ImageList, FMX.ImgList;
+  System.Threading, HGI.GetItCmd, System.ImageList, FMX.ImgList, HGM.LineStorage;
 
 type
   TFormMain = class(TForm)
@@ -31,7 +31,7 @@ type
     RadioButtonStyles: TRadioButton;
     RadioButtonTools: TRadioButton;
     RadioButtonSamples: TRadioButton;
-    RadioButtonIoT: TRadioButton;
+    RadioButtonPatchesFixes: TRadioButton;
     VertScrollBoxCats: TVertScrollBox;
     VertScrollBoxContent: TVertScrollBox;
     LayoutDesc: TLayout;
@@ -70,6 +70,7 @@ type
     MenuItemD103: TMenuItem;
     RadioButtonInstalled: TRadioButton;
     ImageList16: TImageList;
+    LineStoragePath: TLineStorage;
     procedure EditSearchChangeTracking(Sender: TObject);
     procedure LayoutHeadResized(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -99,14 +100,15 @@ type
     procedure NeedMore(Value: Boolean);
     procedure SetCurrentIDE(const Version: string);
     function IsInstalled(const Id: string): Boolean;
-    procedure FOnItemAction(Sender: TObject; ItemId: string; Action: TItemAction);
-    procedure AddToInstall(ItemId: string);
-    procedure AddToUninstall(ItemId: string);
-    procedure RemoveInstalled(ItemId: string);
-    procedure AddInstalled(ItemId: string);
+    procedure FOnItemAction(Sender: TObject; const ItemId: string; Action: TItemAction);
+    procedure AddToInstall(const ItemId: string);
+    procedure AddToUninstall(const ItemId: string);
+    procedure RemoveInstalled(const ItemId: string);
+    procedure AddInstalled(const ItemId: string);
     function ExistsItem(const ItemId: string): Boolean;
-  public
-    procedure AnimateScreen<T: TImageFXEffect>(Setting: TFunc<T, TBitmap>; Proc: TProc; Duration: Single = -1);
+    procedure SetItemInstallState(const ItemId: string; State: Boolean);
+    procedure DownloadItem(const ItemId: string);
+    function GetItemById(const ItemId: string; out Item: TGetItPackage): Boolean;
   end;
 
 const
@@ -129,45 +131,6 @@ uses
 procedure OpenUrl(const URL: string);
 begin
   ShellExecute(ApplicationHWND, 'open', PChar(URL), nil, nil, SW_SHOWNORMAL);
-end;
-
-procedure TFormMain.AnimateScreen<T>(Setting: TFunc<T, TBitmap>; Proc: TProc; Duration: Single);
-var
-  Image: TImage;
-  Target: TBitmap;
-  TransEffect: T;
-begin
-  Image := TImage.Create(nil);
-  try
-    Image.Visible := False;
-    Image.HitTest := False;
-    Image.Parent := Self;
-    Image.Align := TAlignLayout.Contents;
-
-    TransEffect := T.Create(Image);
-    TransEffect.Enabled := False;
-    TransEffect.Parent := Image;
-
-    Image.Bitmap.SetSize(Self.ClientWidth, Self.ClientHeight);
-    Self.PaintTo(Image.Bitmap.Canvas);
-
-    Proc;
-
-    Target := Setting(TransEffect);
-
-    Target.SetSize(Self.ClientWidth, Self.ClientHeight);
-    Self.PaintTo(Target.Canvas);
-    Image.Visible := True;
-    Image.BringToFront;
-
-    TransEffect.Enabled := True;
-    if Duration >= 0 then
-      TAnimator.AnimateFloatWait(TransEffect, 'Progress', 100, Duration)
-    else
-      TAnimator.AnimateFloatWait(TransEffect, 'Progress', 100);
-  finally
-    Image.Free;
-  end;
 end;
 
 procedure TFormMain.EditSearchChangeTracking(Sender: TObject);
@@ -242,6 +205,26 @@ begin
       if TFramePackageItem(Control).Id = ItemId then
         Exit(True);
   Result := False;
+end;
+
+function TFormMain.GetItemById(const ItemId: string; out Item: TGetItPackage): Boolean;
+begin
+  for var Control in FlowLayoutItems.Controls do
+    if Control is TFramePackageItem then
+      if TFramePackageItem(Control).Id = ItemId then
+      begin
+        Item := TFramePackageItem(Control).Item;
+        Exit(Assigned(Item));
+      end;
+  Result := False;
+end;
+
+procedure TFormMain.SetItemInstallState(const ItemId: string; State: Boolean);
+begin
+  for var Control in FlowLayoutItems.Controls do
+    if Control is TFramePackageItem then
+      if TFramePackageItem(Control).Id = ItemId then
+        TFramePackageItem(Control).IsInstalled := State;
 end;
 
 procedure TFormMain.LoadPackages(More: Boolean);
@@ -351,45 +334,56 @@ begin
   FlowLayoutItems.Height := H;
 end;
 
-procedure TFormMain.AddToInstall(ItemId: string);
+procedure TFormMain.AddToInstall(const ItemId: string);
 begin
   if FGetItCmd.Execute(FCurrentIDE, TGetItCommand.Create.Install([ItemId]).AcceptEULAs) then
     AddInstalled(ItemId);
 end;
 
-procedure TFormMain.RemoveInstalled(ItemId: string);
+procedure TFormMain.RemoveInstalled(const ItemId: string);
 begin
   for var i := Low(FCurrentIDE.Elements) to High(FCurrentIDE.Elements) do
     if FCurrentIDE.Elements[i] = ItemId then
     begin
       Delete(FCurrentIDE.Elements, i, 1);
+      SetItemInstallState(ItemId, False);
       Exit;
     end;
 end;
 
-procedure TFormMain.AddInstalled(ItemId: string);
+procedure TFormMain.AddInstalled(const ItemId: string);
 begin
   if IsInstalled(ItemId) then
     Exit;
   SetLength(FCurrentIDE.Elements, Length(FCurrentIDE.Elements) + 1);
   FCurrentIDE.Elements[High(FCurrentIDE.Elements)] := ItemId;
+  SetItemInstallState(ItemId, True);
 end;
 
-procedure TFormMain.AddToUninstall(ItemId: string);
+procedure TFormMain.AddToUninstall(const ItemId: string);
 begin
   if FGetItCmd.Execute(FCurrentIDE, TGetItCommand.Create.Uninstall([ItemId])) then
     RemoveInstalled(ItemId);
 end;
 
-procedure TFormMain.FOnItemAction(Sender: TObject; ItemId: string; Action: TItemAction);
+procedure TFormMain.DownloadItem(const ItemId: string);
+begin
+  var Item: TGetItPackage;
+  if GetItemById(ItemId, Item) then
+    OpenUrl(Item.LibUrl);
+end;
+
+procedure TFormMain.FOnItemAction(Sender: TObject; const ItemId: string; Action: TItemAction);
 begin
   case Action of
     TItemAction.Install:
       AddToInstall(ItemId);
     TItemAction.Download:
-      ;
+      DownloadItem(ItemId);
     TItemAction.Uninstall:
       AddToUninstall(ItemId);
+    TItemAction.OpenUrl:
+      OpenUrl(ItemId);
   end;
 end;
 
@@ -426,12 +420,16 @@ end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
+  try
+    SetWindowColorModeAsSystem;
+  except
+    // never mind
+  end;
   FPool := TThreadPool.Create;
   FGetItCmd := TGetItCmd.Create;
-  SetWindowColorModeAsSystem;
   ClearItems;
-  FIDEList := TIDEList.List;
   PopupMenuServerList.Clear;
+  FIDEList := TIDEList.List;
   for var IDE in FIDEList do
   begin
     var Item := TMenuItem.Create(PopupMenuServerList);
@@ -446,20 +444,20 @@ begin
   LabelInfo.Text := 'Loading ...';
   VertScrollBoxCats.AniCalculations.Animation := True;
   VertScrollBoxContent.AniCalculations.Animation := True;
-  RadioButtonAll.StylesData['icon.Data.Data'] := {$INCLUDE icons/path_all.inc};
-  RadioButtonLibs.StylesData['icon.Data.Data'] := {$INCLUDE icons/path_lib.inc};
-  RadioButtonComponents.StylesData['icon.Data.Data'] := {$INCLUDE icons/path_comps.inc};
-  RadioButtonTrial.StylesData['icon.Data.Data'] := {$INCLUDE icons/path_trial.inc};
-  RadioButtonTools.StylesData['icon.Data.Data'] := {$INCLUDE icons/path_tools.inc};
-  RadioButtonStyles.StylesData['icon.Data.Data'] := {$INCLUDE icons/path_styles.inc};
-  RadioButtonIoT.StylesData['icon.Data.Data'] := {$INCLUDE icons/path_iot.inc};
-  RadioButtonIDPlugins.StylesData['icon.Data.Data'] := {$INCLUDE icons/path_plugins.inc};
-  RadioButtonSamples.StylesData['icon.Data.Data'] := {$INCLUDE icons/path_samples.inc};
-  RadioButtonIT.StylesData['icon.Data.Data'] := {$INCLUDE icons/path_industry.inc};
-  RadioButtonPython.StylesData['icon.Data.Data'] := {$INCLUDE icons/path_python.inc};
-  RadioButtonNew.StylesData['icon.Data.Data'] := {$INCLUDE icons/path_new.inc};
-  RadioButtonPromoted.StylesData['icon.Data.Data'] := {$INCLUDE icons/path_promoted.inc};
-  RadioButtonInstalled.StylesData['icon.Data.Data'] := {$INCLUDE icons/path_installed.inc};
+  RadioButtonAll.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('all');
+  RadioButtonLibs.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('lib');
+  RadioButtonComponents.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('comps');
+  RadioButtonTrial.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('trial');
+  RadioButtonTools.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('tools');
+  RadioButtonStyles.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('styles');
+  RadioButtonPatchesFixes.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('patches');
+  RadioButtonIDPlugins.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('plugins');
+  RadioButtonSamples.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('samples');
+  RadioButtonIT.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('industry');
+  RadioButtonPython.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('python');
+  RadioButtonNew.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('new');
+  RadioButtonPromoted.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('promoted');
+  RadioButtonInstalled.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('installed');
   RadioButtonNew.IsChecked := True;
   LayoutMore.Visible := False;
   FInited := True;

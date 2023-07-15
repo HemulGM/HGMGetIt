@@ -143,38 +143,26 @@ implementation
 { TPackageAction }
 
 destructor TPackageAction.Destroy;
-var
-  LParameterItem: TActionParameter;
 begin
-
-  for LParameterItem in FParameter do
-    LParameterItem.free;
-
+  for var Item in FParameter do
+    Item.Free;
   inherited;
 end;
 
 { TGetItPackage }
 
 destructor TGetItPackage.Destroy;
-var
-  LCategoriesItem: TCategory;
-  LLibPlatformsItem: TLibPlatform;
-  LLibOSesItem: TLibOS;
-  LProductVersionsItem: TProductVersion;
-  LActionsItem: TPackageAction;
 begin
-
-  for LCategoriesItem in FCategories do
-    LCategoriesItem.free;
-  for LLibPlatformsItem in FLibPlatforms do
-    LLibPlatformsItem.free;
-  for LLibOSesItem in FLibOSes do
-    LLibOSesItem.free;
-  for LProductVersionsItem in FProductVersions do
-    LProductVersionsItem.free;
-  for LActionsItem in FActions do
-    LActionsItem.free;
-
+  for var Item in FCategories do
+    Item.Free;
+  for var Item in FLibPlatforms do
+    Item.Free;
+  for var Item in FLibOSes do
+    Item.Free;
+  for var Item in FProductVersions do
+    Item.Free;
+  for var Item in FActions do
+    Item.Free;
   inherited;
 end;
 

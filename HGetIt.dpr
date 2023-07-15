@@ -10,12 +10,13 @@ uses
   HGI.View.Item in 'HGI.View.Item.pas' {FramePackageItem: TFrame},
   HGI.GetItAPI in 'HGI.GetItAPI.pas',
   HGI.View.ItemFull in 'HGI.View.ItemFull.pas' {FramePackageItemFull},
-  FMX.StyleChanger in '..\FMXChangeStyle\Source\FMX.StyleChanger.pas',
-  DarkModeApi.Consts in '..\WindowDarkMode\DarkModeApi.Consts.pas',
-  DarkModeApi.FMX in '..\WindowDarkMode\DarkModeApi.FMX.pas',
-  DarkModeApi in '..\WindowDarkMode\DarkModeApi.pas',
-  DarkModeApi.Types in '..\WindowDarkMode\DarkModeApi.Types.pas',
-  HGI.GetItCmd in 'HGI.GetItCmd.pas';
+  HGI.GetItCmd in 'HGI.GetItCmd.pas',
+  DarkModeApi.Consts in 'WindowDarkMode\DarkModeApi.Consts.pas',
+  DarkModeApi.FMX in 'WindowDarkMode\DarkModeApi.FMX.pas',
+  DarkModeApi in 'WindowDarkMode\DarkModeApi.pas',
+  DarkModeApi.Types in 'WindowDarkMode\DarkModeApi.Types.pas',
+  HGM.LineStorage in 'LineStorage\HGM.LineStorage.pas',
+  HGM.FMX.Image in 'Components\HGM.FMX.Image.pas';
 
 {$R *.res}
 

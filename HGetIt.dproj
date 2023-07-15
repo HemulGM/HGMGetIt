@@ -201,25 +201,13 @@
         <DCCReference Include="HGI.View.ItemFull.pas">
             <Form>FramePackageItemFull</Form>
         </DCCReference>
-        <DCCReference Include="..\FMXChangeStyle\Source\FMX.StyleChanger.pas"/>
-        <DCCReference Include="..\WindowDarkMode\DarkModeApi.Consts.pas"/>
-        <DCCReference Include="..\WindowDarkMode\DarkModeApi.FMX.pas"/>
-        <DCCReference Include="..\WindowDarkMode\DarkModeApi.pas"/>
-        <DCCReference Include="..\WindowDarkMode\DarkModeApi.Types.pas"/>
         <DCCReference Include="HGI.GetItCmd.pas"/>
-        <None Include="icons\path_all.inc"/>
-        <None Include="icons\path_lib.inc"/>
-        <None Include="icons\path_comps.inc"/>
-        <None Include="icons\path_trial.inc"/>
-        <None Include="icons\path_tools.inc"/>
-        <None Include="icons\path_styles.inc"/>
-        <None Include="icons\path_iot.inc"/>
-        <None Include="icons\path_plugins.inc"/>
-        <None Include="icons\path_samples.inc"/>
-        <None Include="icons\path_industry.inc"/>
-        <None Include="icons\path_python.inc"/>
-        <None Include="icons\path_new.inc"/>
-        <None Include="icons\path_promoted.inc"/>
+        <DCCReference Include="WindowDarkMode\DarkModeApi.Consts.pas"/>
+        <DCCReference Include="WindowDarkMode\DarkModeApi.FMX.pas"/>
+        <DCCReference Include="WindowDarkMode\DarkModeApi.pas"/>
+        <DCCReference Include="WindowDarkMode\DarkModeApi.Types.pas"/>
+        <DCCReference Include="LineStorage\HGM.LineStorage.pas"/>
+        <DCCReference Include="Components\HGM.FMX.Image.pas"/>
         <RcItem Include="icons\cpp.png">
             <ResourceType>RCDATA</ResourceType>
             <ResourceId>cpp</ResourceId>
@@ -282,84 +270,6 @@
                     </Platform>
                 </DeployFile>
                 <DeployFile LocalName="icons\delphi.png" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="icons\path_all.inc" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="icons\path_comps.inc" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="icons\path_industry.inc" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="icons\path_iot.inc" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="icons\path_lib.inc" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="icons\path_new.inc" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="icons\path_plugins.inc" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="icons\path_promoted.inc" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="icons\path_python.inc" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="icons\path_samples.inc" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="icons\path_styles.inc" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="icons\path_tools.inc" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="icons\path_trial.inc" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Win32">
                         <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>

@@ -11,9 +11,9 @@ uses
 {$SCOPEDENUMS ON}
 
 type
-  TItemAction = (Install, Download, Uninstall);
+  TItemAction = (Install, Download, Uninstall, OpenUrl);
 
-  TOnItemAction = procedure(Sender: TObject; ItemId: string; Action: TItemAction) of object;
+  TOnItemAction = procedure(Sender: TObject; const ItemId: string; Action: TItemAction) of object;
 
   TFramePackageItem = class(TFrame)
     RectangleBG: TRectangle;
@@ -50,18 +50,21 @@ type
     function FormatSize(const Value: string): string;
     procedure SetOnAction(const Value: TOnItemAction);
     function GetId: string;
+    procedure SetIsInstalled(const Value: Boolean);
   public
-    procedure Fill(Item: TGetItPackage; IsInstalled: Boolean);
+    procedure Fill(Item: TGetItPackage; Installed: Boolean);
     property OnAction: TOnItemAction read FOnAction write SetOnAction;
     constructor Create(AOwner: TComponent); override;
     property Id: string read GetId;
+    property IsInstalled: Boolean read FIsInstalled write SetIsInstalled;
+    property Item: TGetItPackage read FItem;
     destructor Destroy; override;
   end;
 
 implementation
 
 uses
-  HGM.FMX.Image, System.Math, HGI.View.ItemFull, HGI.Main, HGI.GetItAPI;
+  HGM.FMX.Image, System.Math, HGI.View.ItemFull, HGI.GetItAPI;
 
 {$R *.fmx}
 
@@ -115,17 +118,17 @@ end;
 
 procedure TFramePackageItem.MenuItemDownloadClick(Sender: TObject);
 begin
-  if Assigned(FItem) then
-    OpenUrl(FItem.LibUrl);
+  if Assigned(FItem) and Assigned(FOnAction) then
+    FOnAction(Self, FItem.Id, TItemAction.Download);
 end;
 
 procedure TFramePackageItem.MenuItemWebSiteClick(Sender: TObject);
 begin
-  if Assigned(FItem) then
-    OpenUrl(FItem.LibProjectUrl);
+  if Assigned(FItem) and Assigned(FOnAction) then
+    FOnAction(Self, FItem.LibProjectUrl, TItemAction.OpenUrl);
 end;
 
-procedure TFramePackageItem.Fill(Item: TGetItPackage; IsInstalled: Boolean);
+procedure TFramePackageItem.Fill(Item: TGetItPackage; Installed: Boolean);
 begin
   if Assigned(FItem) then
     FItem.Free;
@@ -135,11 +138,7 @@ begin
   LabelInfo.Text := Item.Version + ' (' + TGetIt.ParseDate(Item.Modified) + ')' + #13#10 + 'by ' + Item.Vendor;
   LabelLicense.Text := Item.LibLicenseName;
   ButtonInstall.TagString := Item.LibUrl;
-  FIsInstalled := IsInstalled;
-  if not FIsInstalled then
-    ButtonInstall.Text := 'INSTALL' + FormatSize(Item.LibSize)
-  else
-    ButtonInstall.Text := 'UNINSTALL';
+  IsInstalled := Installed;
   ButtonInstall.StylesData['bg.Padding.Right'] := ButtonInstallOpt.Width + 5;
   MenuItemDownload.Enabled := not Item.LibUrl.IsEmpty;
   MenuItemWebSite.Enabled := not Item.LibProjectUrl.IsEmpty;
@@ -182,10 +181,13 @@ begin
   end;
 
   RectangleImage.Fill.Bitmap.Bitmap.LoadFromUrlAsync(RectangleImage, Item.Image, False,
-    procedure(Bitmap: TBitmap)
+    procedure(Success: Boolean)
     begin
-      RectangleImage.Fill.Kind := TBrushKind.Bitmap;
-      RectangleImage.Fill.Bitmap.WrapMode := TWrapMode.TileStretch;
+      if Success then
+      begin
+        RectangleImage.Fill.Kind := TBrushKind.Bitmap;
+        RectangleImage.Fill.Bitmap.WrapMode := TWrapMode.TileStretch;
+      end;
     end);
 end;
 
@@ -195,6 +197,16 @@ begin
   Frame.Parent := Application.MainForm;
   Frame.Fill(FItem, FIsInstalled);
   Frame.RecalcSize;
+  Frame.OnAction := OnAction;
+end;
+
+procedure TFramePackageItem.SetIsInstalled(const Value: Boolean);
+begin
+  FIsInstalled := Value;
+  if not FIsInstalled then
+    ButtonInstall.Text := 'INSTALL' + FormatSize(FItem.LibSize)
+  else
+    ButtonInstall.Text := 'UNINSTALL';
 end;
 
 procedure TFramePackageItem.SetOnAction(const Value: TOnItemAction);
