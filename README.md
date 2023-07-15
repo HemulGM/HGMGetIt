@@ -10,5 +10,6 @@
 3. Getting the identifier and link to the package
 4. The regular package manager is used (getitcmd.exe)
 5. Official installation servers are used (for a specific IDE)
+6. GPT functions (external load from "funcs" directory)
 
 ![preview](https://github.com/HemulGM/HGMGetIt/blob/main/preview.png?raw=true)
