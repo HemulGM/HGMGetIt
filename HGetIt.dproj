@@ -167,6 +167,8 @@
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
+        <Debugger_HostApplication>C:\Program Files (x86)\Embarcadero\Studio\22.0\Bin\GetItCmd.exe</Debugger_HostApplication>
+        <Debugger_RunParams>-i=&quot;Fast_Report_FMX-2.8.2&quot; --accepteulas</Debugger_RunParams>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>

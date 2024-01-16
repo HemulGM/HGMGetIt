@@ -11,7 +11,7 @@ uses
 {$SCOPEDENUMS ON}
 
 type
-  TItemAction = (Install, Download, Uninstall, OpenUrl);
+  TItemAction = (Install, Download, Uninstall, OpenUrl, CommandLine);
 
   TOnItemAction = procedure(Sender: TObject; const ItemId: string; Action: TItemAction) of object;
 
@@ -38,11 +38,13 @@ type
     PopupMenuOpt: TPopupMenu;
     MenuItemDownload: TMenuItem;
     MenuItemWebSite: TMenuItem;
+    MenuItemShowCommand: TMenuItem;
     procedure RectangleBGClick(Sender: TObject);
     procedure ButtonInstallClick(Sender: TObject);
     procedure ButtonInstallOptClick(Sender: TObject);
     procedure MenuItemDownloadClick(Sender: TObject);
     procedure MenuItemWebSiteClick(Sender: TObject);
+    procedure MenuItemShowCommandClick(Sender: TObject);
   private
     FItem: TGetItPackage;
     FOnAction: TOnItemAction;
@@ -120,6 +122,12 @@ procedure TFramePackageItem.MenuItemDownloadClick(Sender: TObject);
 begin
   if Assigned(FItem) and Assigned(FOnAction) then
     FOnAction(Self, FItem.Id, TItemAction.Download);
+end;
+
+procedure TFramePackageItem.MenuItemShowCommandClick(Sender: TObject);
+begin
+  if Assigned(FItem) and Assigned(FOnAction) then
+    FOnAction(Self, FItem.Id, TItemAction.CommandLine);
 end;
 
 procedure TFramePackageItem.MenuItemWebSiteClick(Sender: TObject);

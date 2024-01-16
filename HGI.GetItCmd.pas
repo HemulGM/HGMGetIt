@@ -38,6 +38,8 @@ type
     function Execute(const IDE: TIDEEntity; Command: TGetItCommand): Boolean;
   end;
 
+  TGetItConfig = (UseOnline, UseOffline);
+
   TGetItCommand = class
   protected
     FParams: TStringList;
@@ -81,7 +83,7 @@ type
     /// <summary>
     /// Set up a GetIt system. (useonline/useoffline)
     /// </summary>
-    function Config(const Value: string): TGetItCommand;
+    function Config(const Value: TGetItConfig): TGetItCommand;
     /// <summary>
     /// User name for proxies with required authentication.
     /// </summary>
@@ -115,7 +117,7 @@ type
 implementation
 
 uses
-  System.IOUtils;
+  System.IOUtils, FMX.Dialogs;
 
 { TGetItCommand }
 
@@ -128,15 +130,21 @@ end;
 function TGetItCommand.Build(AutoFree: Boolean): string;
 begin
   FParams.Delimiter := ' ';
+  FParams.QuoteChar := #0;
   Result := FParams.DelimitedText;
   if AutoFree then
     Free;
 end;
 
-function TGetItCommand.Config(const Value: string): TGetItCommand;
+function TGetItCommand.Config(const Value: TGetItConfig): TGetItCommand;
 begin
   Result := Self;
-  FParams.Add('--config=' + Value);
+  case Value of
+    UseOnline:
+      FParams.Add('--c=useonline');
+    UseOffline:
+      FParams.Add('--c=useoffline');
+  end;
 end;
 
 constructor TGetItCommand.Create;

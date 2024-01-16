@@ -647,5 +647,9 @@ object FramePackageItem: TFramePackageItem
       Text = 'WebSite'
       OnClick = MenuItemWebSiteClick
     end
+    object MenuItemShowCommand: TMenuItem
+      Text = 'Show command'
+      OnClick = MenuItemShowCommandClick
+    end
   end
 end

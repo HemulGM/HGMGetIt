@@ -37,8 +37,6 @@ type
     LayoutDesc: TLayout;
     Layout1: TLayout;
     FlowLayoutItems: TFlowLayout;
-    FramePackageItem1: TFramePackageItem;
-    FramePackageItem2: TFramePackageItem;
     FramePackageItem3: TFramePackageItem;
     FramePackageItem4: TFramePackageItem;
     FramePackageItem5: TFramePackageItem;
@@ -71,6 +69,7 @@ type
     RadioButtonInstalled: TRadioButton;
     ImageList16: TImageList;
     LineStoragePath: TLineStorage;
+    RadioButtonPlatforms: TRadioButton;
     procedure EditSearchChangeTracking(Sender: TObject);
     procedure LayoutHeadResized(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -83,6 +82,7 @@ type
     procedure MenuItemD103Click(Sender: TObject);
     procedure ButtonServerListClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure MenuItemShowCommandClick(Sender: TObject);
   private
     FInited: Boolean;
     FCategory: Integer;
@@ -109,6 +109,7 @@ type
     procedure SetItemInstallState(const ItemId: string; State: Boolean);
     procedure DownloadItem(const ItemId: string);
     function GetItemById(const ItemId: string; out Item: TGetItPackage): Boolean;
+    procedure ShowCommandLine(const ItemId: string);
   end;
 
 const
@@ -313,6 +314,11 @@ begin
   LoadPackages(False);
 end;
 
+procedure TFormMain.MenuItemShowCommandClick(Sender: TObject);
+begin
+  //
+end;
+
 procedure TFormMain.FloatAnimationShdFinish(Sender: TObject);
 begin
   if FloatAnimationShd.Inverse then
@@ -336,7 +342,7 @@ end;
 
 procedure TFormMain.AddToInstall(const ItemId: string);
 begin
-  if FGetItCmd.Execute(FCurrentIDE, TGetItCommand.Create.Install([ItemId]).AcceptEULAs) then
+  if FGetItCmd.Execute(FCurrentIDE, TGetItCommand.Create.Install([ItemId]).Config(UseOnline).AcceptEULAs) then
     AddInstalled(ItemId);
 end;
 
@@ -366,6 +372,11 @@ begin
     RemoveInstalled(ItemId);
 end;
 
+procedure TFormMain.ShowCommandLine(const ItemId: string);
+begin
+  ShowMessage(FCurrentIDE.GetPathGetItCmd + ' ' + TGetItCommand.Create.Install([ItemId]).Config(UseOnline).AcceptEULAs.Build);
+end;
+
 procedure TFormMain.DownloadItem(const ItemId: string);
 begin
   var Item: TGetItPackage;
@@ -384,6 +395,8 @@ begin
       AddToUninstall(ItemId);
     TItemAction.OpenUrl:
       OpenUrl(ItemId);
+    TItemAction.CommandLine:
+      ShowCommandLine(ItemId);
   end;
 end;
 
@@ -458,6 +471,7 @@ begin
   RadioButtonNew.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('new');
   RadioButtonPromoted.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('promoted');
   RadioButtonInstalled.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('installed');
+  RadioButtonPlatforms.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('platforms');
   RadioButtonNew.IsChecked := True;
   LayoutMore.Visible := False;
   FInited := True;
