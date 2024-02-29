@@ -14,11 +14,8 @@ type
     LayoutHead: TLayout;
     LayoutMenu: TLayout;
     LayoutClient: TLayout;
-    Rectangle1: TRectangle;
     Rectangle2: TRectangle;
-    EditSearch: TEdit;
     StyleBook: TStyleBook;
-    ClearEditButtonSearch: TClearEditButton;
     RadioButtonComponents: TRadioButton;
     RadioButtonAll: TRadioButton;
     RadioButtonLibs: TRadioButton;
@@ -70,6 +67,24 @@ type
     ImageList16: TImageList;
     LineStoragePath: TLineStorage;
     RadioButtonPlatforms: TRadioButton;
+    Rectangle1: TRectangle;
+    EditSearch: TEdit;
+    ClearEditButtonSearch: TClearEditButton;
+    ButtonPers: TButton;
+    ButtonPersList: TButton;
+    PopupMenuPersList: TPopupMenu;
+    MenuItemPersDelphi: TMenuItem;
+    MenuItemPersCPP: TMenuItem;
+    LayoutActions: TLayout;
+    ButtonOptions: TButton;
+    Path2: TPath;
+    PopupOptions: TPopup;
+    Label1: TLabel;
+    PopupMenuOrderList: TPopupMenu;
+    MenuItemOrderName: TMenuItem;
+    MenuItemOrderDate: TMenuItem;
+    RadioButtonOrderName: TRadioButton;
+    RadioButtonOrderDate: TRadioButton;
     procedure EditSearchChangeTracking(Sender: TObject);
     procedure LayoutHeadResized(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -83,6 +98,11 @@ type
     procedure ButtonServerListClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure MenuItemShowCommandClick(Sender: TObject);
+    procedure ButtonPersListClick(Sender: TObject);
+    procedure MenuItemPersClick(Sender: TObject);
+    procedure ButtonOptionsClick(Sender: TObject);
+    procedure MenuItemOrderClick(Sender: TObject);
+    procedure RadioButtonOrderNameChange(Sender: TObject);
   private
     FInited: Boolean;
     FCategory: Integer;
@@ -91,8 +111,12 @@ type
     FIDEList: TArray<TIDEEntity>;
     FCurrentIDE: TIDEEntity;
     FPool: TTHreadPool;
+    FIsNew: Boolean;
     FLastSearch: string;
     FGetItCmd: TGetItCmd;
+    FPers: string;
+    FGlobalOrder: Integer;
+    function GetPers: string;
     procedure LoadPackages(More: Boolean);
     procedure ClearItems;
     procedure LoadingBegin;
@@ -110,6 +134,9 @@ type
     procedure DownloadItem(const ItemId: string);
     function GetItemById(const ItemId: string; out Item: TGetItPackage): Boolean;
     procedure ShowCommandLine(const ItemId: string);
+    procedure SetPers(const Value: string);
+    procedure SetOrder(const Value: Integer);
+    procedure LoadCustomServers;
   end;
 
 const
@@ -124,7 +151,7 @@ procedure OpenUrl(const URL: string);
 implementation
 
 uses
-  System.Math, System.IOUtils, DarkModeApi.FMX, Winapi.ShellAPI,
+  System.Math, System.IniFiles, System.IOUtils, DarkModeApi.FMX, Winapi.ShellAPI,
   FMX.Platform.Win;
 
 {$R *.fmx}
@@ -164,6 +191,24 @@ end;
 procedure TFormMain.ButtonMoreClick(Sender: TObject);
 begin
   LoadPackages(True);
+end;
+
+procedure TFormMain.ButtonOptionsClick(Sender: TObject);
+begin
+  PopupOptions.PlacementTarget := ButtonOptions;
+  var Pt: TPointF := ClientToScreen(ButtonOptions.AbsoluteRect.TopLeft);
+  Pt.Offset(0, ButtonOptions.Height);
+  PopupOptions.Placement := TPlacement.Left;
+  //PopupOptions.PlacementRectangle.Rect := TRectF.Create(Pt, PopupOptions.Width, PopupOptions.Height);
+  PopupOptions.Popup;
+end;
+
+procedure TFormMain.ButtonPersListClick(Sender: TObject);
+begin
+  PopupMenuPersList.PopupComponent := ButtonPers;
+  var Pt: TPointF := ClientToScreen(ButtonPers.AbsoluteRect.TopLeft);
+  Pt.Offset(0, ButtonPers.Height);
+  PopupMenuPersList.Popup(Pt.X, Pt.Y);
 end;
 
 procedure TFormMain.ButtonServerListClick(Sender: TObject);
@@ -220,6 +265,11 @@ begin
   Result := False;
 end;
 
+function TFormMain.GetPers: string;
+begin
+  Result := FPers;
+end;
+
 procedure TFormMain.SetItemInstallState(const ItemId: string; State: Boolean);
 begin
   for var Control in FlowLayoutItems.Controls do
@@ -237,7 +287,12 @@ begin
   else
     Inc(FOffset, PageSize);
   NeedMore(False);
+  if FIsNew then
+    FOrder := 2
+  else
+    FOrder := FGlobalOrder;
   LoadingBegin;
+  var Pers := GetPers;
   TTask.Run(
     procedure
     var
@@ -247,7 +302,7 @@ begin
         Items := nil;
         try
           if FCategory <> -1000 then
-            TGetIt.Get(Items, FCategory, FOrder, EditSearch.Text, PageSize, FOffset)
+            TGetIt.Get(Items, FCategory, FOrder, Pers, EditSearch.Text, PageSize, FOffset)
           else
             FCurrentIDE.LoadInstalled(Items, EditSearch.Text);
         finally
@@ -314,6 +369,22 @@ begin
   LoadPackages(False);
 end;
 
+procedure TFormMain.MenuItemOrderClick(Sender: TObject);
+var
+  Item: TMenuItem absolute Sender;
+begin
+  SetOrder(Item.Tag);
+  LoadPackages(False);
+end;
+
+procedure TFormMain.MenuItemPersClick(Sender: TObject);
+var
+  Item: TMenuItem absolute Sender;
+begin
+  SetPers(Item.Tag.ToString);
+  LoadPackages(False);
+end;
+
 procedure TFormMain.MenuItemShowCommandClick(Sender: TObject);
 begin
   //
@@ -342,6 +413,11 @@ end;
 
 procedure TFormMain.AddToInstall(const ItemId: string);
 begin
+  if FCurrentIDE.IsCustom then
+  begin
+    ShowMessage('Installation or deinstallation is not possible with a custom server');
+    Exit;
+  end;
   if FGetItCmd.Execute(FCurrentIDE, TGetItCommand.Create.Install([ItemId]).Config(UseOnline).AcceptEULAs) then
     AddInstalled(ItemId);
 end;
@@ -368,6 +444,11 @@ end;
 
 procedure TFormMain.AddToUninstall(const ItemId: string);
 begin
+  if FCurrentIDE.IsCustom then
+  begin
+    ShowMessage('Installation or deinstallation is not possible with a custom server');
+    Exit;
+  end;
   if FGetItCmd.Execute(FCurrentIDE, TGetItCommand.Create.Uninstall([ItemId])) then
     RemoveInstalled(ItemId);
 end;
@@ -415,7 +496,7 @@ begin
     var Found: Boolean := False;
     for var IDE in FIDEList do
     begin
-      if IDE.Version = Version then
+      if (not IDE.Version.IsEmpty) and (IDE.Version = Version) then
       begin
         FCurrentIDE := IDE;
         Found := True;
@@ -431,6 +512,65 @@ begin
   TGetIt.Version := FCurrentIDE.Version;
 end;
 
+procedure TFormMain.SetPers(const Value: string);
+begin
+  FPers := Value;
+  for var i := 0 to PopupMenuPersList.ItemsCount - 1 do
+    if PopupMenuPersList.Items[i].Tag.ToString = Value then
+    begin
+      ButtonPers.Text := PopupMenuPersList.Items[i].Text;
+      Break;
+    end;
+end;
+
+procedure TFormMain.SetOrder(const Value: Integer);
+begin
+  FGlobalOrder := Value;
+  if RadioButtonOrderName.IsChecked <> (RadioButtonOrderName.Tag = Value) then
+    RadioButtonOrderName.IsChecked := RadioButtonOrderName.Tag = Value;
+  if RadioButtonOrderDate.IsChecked <> (RadioButtonOrderDate.Tag = Value) then
+    RadioButtonOrderDate.IsChecked := RadioButtonOrderDate.Tag = Value;
+end;
+
+procedure TFormMain.LoadCustomServers;
+begin
+  try
+    if TFile.Exists(TPath.Combine(ExtractFilePath(ParamStr(0)), 'servers.ini')) then
+    begin
+      var Ini := TIniFile.Create(TPath.Combine(ExtractFilePath(ParamStr(0)), 'servers.ini'));
+      try
+        var Sections := TStringList.Create;
+        try
+          Ini.ReadSections(Sections);
+          for var Section in Sections do
+          begin
+            var Url := Ini.ReadString(Section, 'url', '');
+            if Url.IsEmpty then
+              Continue;
+            var Version := Ini.ReadString(Section, 'version', '');
+            if Version.IsEmpty then
+              Continue;
+
+            var IDE: TIDEEntity;
+            IDE.ServiceUrl := Url;
+            IDE.Version := Version;
+            IDE.Personalities := Section;
+            IDE.IsCustom := True;
+            FIDEList := [IDE] + FIDEList;
+          end;
+        finally
+          Sections.Free;
+        end;
+      finally
+        Ini.Free;
+      end;
+    end;
+  except
+    on E: Exception do
+      ShowMessage('Error of reading servers.ini:' + #13#10 + E.Message);
+  end;
+end;
+
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
   try
@@ -443,15 +583,38 @@ begin
   ClearItems;
   PopupMenuServerList.Clear;
   FIDEList := TIDEList.List;
+  LoadCustomServers;
+  var IsHaveCustom := False;
   for var IDE in FIDEList do
+    if IDE.IsCustom then
+    begin
+      var Item := TMenuItem.Create(PopupMenuServerList);
+      Item.Text := IDE.Personalities + ' (' + IDE.Version + ')';
+      Item.TagString := IDE.Version;
+      Item.OnClick := MenuItemD103Click;
+      Item.ImageIndex := 0;
+      PopupMenuServerList.AddObject(Item);
+      IsHaveCustom := True;
+    end;
+  if IsHaveCustom then
   begin
     var Item := TMenuItem.Create(PopupMenuServerList);
-    Item.Text := IDE.Personalities + ' (' + IDE.Version + ')';
-    Item.TagString := IDE.Version;
-    Item.OnClick := MenuItemD103Click;
-    Item.ImageIndex := 0;
+    Item.Text := '-';
     PopupMenuServerList.AddObject(Item);
   end;
+  for var IDE in FIDEList do
+    if not IDE.IsCustom then
+    begin
+      var Item := TMenuItem.Create(PopupMenuServerList);
+      Item.Text := IDE.Personalities + ' (' + IDE.Version + ')';
+      Item.TagString := IDE.Version;
+      Item.OnClick := MenuItemD103Click;
+      Item.ImageIndex := 0;
+      PopupMenuServerList.AddObject(Item);
+    end;
+  EditSearch.DisableDisappear := True;
+  SetOrder(0);
+  SetPers('1');
   SetCurrentIDE('');
   FOffset := 0;
   LabelInfo.Text := 'Loading ...';
@@ -487,6 +650,12 @@ end;
 procedure TFormMain.LayoutHeadResized(Sender: TObject);
 begin
   EditSearch.Width := Min(460, LayoutHead.Width) - 20;
+  EditSearch.Position.X := LayoutHead.Width / 2 - EditSearch.Width / 2;
+  if EditSearch.Width > (LayoutActions.Position.X - EditSearch.Position.X - 20) then
+  begin
+    EditSearch.Width := Min(460, LayoutActions.Position.X) - 20;
+    EditSearch.Position.X := LayoutActions.Position.X / 2 - EditSearch.Width / 2;
+  end;
 end;
 
 procedure TFormMain.RadioButtonAllChange(Sender: TObject);
@@ -500,8 +669,8 @@ begin
     LabelCurrentCatDesc.Text := Button.Hint;
     FLastSearch := '';
     EditSearch.Text := '';
+    FIsNew := False;
     FCategory := Button.Tag;
-    FOrder := 0;
     LoadPackages(False);
   end;
 end;
@@ -516,11 +685,34 @@ begin
     LabelCurrentCatTitle.Text := Button.Text;
     LabelCurrentCatDesc.Text := Button.Hint;
     FCategory := -1;
-    FOrder := 2;
+    FIsNew := True;
     FLastSearch := '';
     EditSearch.Text := '';
     LoadPackages(False);
   end;
+end;
+
+procedure TFormMain.RadioButtonOrderNameChange(Sender: TObject);
+begin
+  if RadioButtonOrderName.IsChecked then
+  begin
+    if FGlobalOrder = 0 then
+      Exit;
+    SetOrder(0);
+  end
+  else if RadioButtonOrderDate.IsChecked then
+  begin
+    if FGlobalOrder = 2 then
+      Exit;
+    SetOrder(2)
+  end
+  else
+  begin
+    if FGlobalOrder = 0 then
+      Exit;
+    SetOrder(0);
+  end;
+  LoadPackages(False);
 end;
 
 procedure TFormMain.TimerSearchTimer(Sender: TObject);

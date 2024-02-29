@@ -56,6 +56,8 @@ type
     Path3: TPath;
     Label9: TLabel;
     EditLibUrl: TEdit;
+    CircleGitHub: TCircle;
+    PathGutHub: TPath;
     procedure FlowLayoutPlatformsResize(Sender: TObject);
     procedure RectangleBGResize(Sender: TObject);
     procedure ButtonCloseClick(Sender: TObject);
@@ -173,6 +175,7 @@ begin
   LayoutPfIOS.Visible := False;
   ButtonDownload.Visible := not Item.LibUrl.IsEmpty;
   ButtonWebSite.Visible := not Item.LibProjectUrl.IsEmpty;
+  CircleGitHub.Visible := Item.LibProjectUrl.ToLower.Contains('github.com') or Item.LibProjectUrl.ToLower.Contains('gitlab.com');
   ButtonBuy.Visible := not Item.PurchaseUrl.IsEmpty;
   LabelTags.Text := Item.Tags;
   if LabelTags.Text.IsEmpty then

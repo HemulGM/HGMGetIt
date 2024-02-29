@@ -34,9 +34,6 @@ Coordinates=877,10,190,58
 [FramePackageItem3.Line1]
 Coordinates=1115,1172,169,36
 
-[EditSearch]
-Coordinates=421,418,77,58
-
 [FramePackageItem5.LabelInfo]
 Coordinates=900,350,190,58
 
@@ -250,9 +247,6 @@ Coordinates=458,10,186,58
 [FramePackageItem3.ButtonInstallOpt]
 Coordinates=661,350,229,58
 
-[ClearEditButtonSearch]
-Coordinates=122,942,146,36
-
 [MenuItemD104]
 Coordinates=10,942,102,36
 
@@ -276,9 +270,6 @@ Coordinates=872,896,194,36
 [RadioButtonTrial]
 Coordinates=751,896,111,36
 LayerNames=NewLayer0
-
-[Rectangle1]
-Coordinates=661,896,80,36
 
 [RadioButtonNew]
 Coordinates=540,896,111,36
@@ -457,7 +448,7 @@ LayerNames=NewLayer0
 ExplicitSubNodes=Lines['new'];Self.Lines['new']
 
 []
-Coordinates=1632,155,91,36
+Coordinates=661,896,80,36
 
 [Module Settings]
 ModelLayerNames=NewLayer0

@@ -9,7 +9,7 @@ type
   TGetIt = class
     class var
       Url, Version: string;
-    class function Get(out Items: TPackages; const Category, Order: Integer; const Search: string = ''; const Count: Integer = 0; const Offset: Integer = 0): Boolean;
+    class function Get(out Items: TPackages; const Category, Order: Integer; const Personalities: string; const Search: string = ''; const Count: Integer = 0; const Offset: Integer = 0): Boolean;
     class function ParseDate(const Value: string): string; static;
   end;
 
@@ -19,6 +19,7 @@ type
     Personalities: string;
     ServiceUrl: string;
     RegPath: string;
+    IsCustom: Boolean;
     Elements: TArray<string>;
     function GetPathBin: string;
     function GetPathGetItCmd: string;
@@ -42,10 +43,8 @@ uses
 
 class function TGetIt.ParseDate(const Value: string): string;
 begin
-  var
-    FormatDate: TFormatSettings;
-  var
-    Date: TDateTime;
+  var FormatDate: TFormatSettings;
+  var Date: TDateTime;
   FormatDate.DateSeparator := '-';
   FormatDate.ShortDateFormat := 'YYYY-MM-DD';
   if (not Value.IsEmpty) and TryStrToDateTime(Value, Date, FormatDate) then
@@ -54,7 +53,7 @@ begin
     Result := 'Unkonwn';
 end;
 
-class function TGetIt.Get(out Items: TPackages; const Category, Order: Integer; const Search: string; const Count, Offset: Integer): Boolean;
+class function TGetIt.Get(out Items: TPackages; const Category, Order: Integer; const Personalities: string; const Search: string; const Count, Offset: Integer): Boolean;
 var
   HTTP: THTTPClient;
 begin
@@ -62,10 +61,8 @@ begin
   Items := nil;
   HTTP := THTTPClient.Create;
   try
-    var
-      Body := TMultipartFormData.Create;
-    var
-      Response := TStringStream.Create('', TEncoding.UTF8);
+    var Body := TMultipartFormData.Create;
+    var Response := TStringStream.Create('', TEncoding.UTF8);
     try
       if Category > 0 then
         Body.AddField('Categories', Category.ToString);
@@ -74,12 +71,12 @@ begin
       if Offset > 0 then
         Body.AddField('Start', Offset.ToString);
       if Count > 0 then
-        Body.AddField('End', (Offset + Count).ToString);
+        Body.AddField('End', Count.ToString);
       Body.AddField('Order', Order.ToString);
       Body.AddField('Language', '0');
       Body.AddField('CatalogVersion', '5');
-      Body.AddField('Personalities', '1'); // delphi
-      Body.AddField('Identity', 'DELPHI');
+      Body.AddField('Personalities', Personalities); // delphi  1
+      //Body.AddField('Identity', 'C++'); //DELPHI
       Body.AddField('Version', Version);
       // Body.AddField('BuildNumber', '28.0.47991.2819');
 
@@ -88,8 +85,7 @@ begin
       // https://getit-olympus.embarcadero.com
       if HTTP.Post(Url + '/catalog/info', Body, Response).StatusCode = 200 then
       begin
-        Items := TJson.JsonToObject<TPackages>
-          ('{ "items": ' + Response.DataString + '}');
+        Items := TJson.JsonToObject<TPackages>('{ "items": ' + Response.DataString + '}');
         Result := True;
       end;
     finally
@@ -163,14 +159,12 @@ class function TIDEList.List: TArray<TIDEEntity>;
         Exit;
       Entity.Personalities := Reg.ReadString('');
       Reg.CloseKey;
-      if not Reg.OpenKeyReadOnly('Software\Embarcadero\BDS\' + Section +
-        '\CatalogRepository') then
+      if not Reg.OpenKeyReadOnly('Software\Embarcadero\BDS\' + Section + '\CatalogRepository') then
         Exit;
       Entity.ServiceUrl := Reg.ReadString('ServiceUrl');
       if Reg.OpenKeyReadOnly('Elements') then
       begin
-        var
-          Elements := TStringList.Create;
+        var Elements := TStringList.Create;
         try
           Reg.GetKeyNames(Elements);
           Entity.Elements := Elements.ToStringArray;
@@ -186,18 +180,15 @@ class function TIDEList.List: TArray<TIDEEntity>;
 
 begin
   Result := [];
-  var
-    Reg := TRegistry.Create(KEY_QUERY_VALUE);
+  var Reg := TRegistry.Create(KEY_QUERY_VALUE);
   try
     Reg.RootKey := HKEY_CURRENT_USER;
     if not Reg.OpenKeyReadOnly('Software\Embarcadero\BDS') then
       Exit;
-    var
-      Sections := TStringList.Create;
+    var Sections := TStringList.Create;
     try
       Reg.GetKeyNames(Sections);
-      var
-        Entity: TIDEEntity;
+      var Entity: TIDEEntity;
       for var Section in Sections do
         if ReadSection(Reg, Section, Entity) then
         begin
@@ -264,11 +255,9 @@ var
     Item.VendorUrl := Reg.ReadString('VendorUrl');
     Item.Version := Reg.ReadString('Version');
     Item.LibUrl := Reg.ReadString('Url');
-    var
-      List := TStringList.Create;
+    var List := TStringList.Create;
     try
-      var
-        Tmp := Reg.ReadString('OSes');
+      var Tmp := Reg.ReadString('OSes');
       List.Delimiter := ';';
       List.DelimitedText := Tmp;
       var LibOSes: TArray<TLibOS>;
@@ -292,8 +281,7 @@ var
       Tmp := Reg.ReadString('Platforms');
       List.Delimiter := ';';
       List.DelimitedText := Tmp;
-      var
-        Platforms: TArray<TLibPlatform>;
+      var Platforms: TArray<TLibPlatform>;
       try
         for var SItem in List do
         begin
@@ -301,8 +289,7 @@ var
             Arr := SItem.Split(['=']);
           if Length(Arr) > 1 then
           begin
-            var
-              LibPlatform := TLibPlatform.Create;
+            var LibPlatform := TLibPlatform.Create;
             LibPlatform.Id := Arr[0];
             LibPlatform.Name := Arr[1];
             SetLength(Platforms, Length(Platforms) + 1);
@@ -326,12 +313,10 @@ begin
     Reg := TRegistry.Create(KEY_QUERY_VALUE);
     try
       Reg.RootKey := HKEY_CURRENT_USER;
-      var
-        RegRoot := RegPath + '\CatalogRepository\Elements';
+      var RegRoot := RegPath + '\CatalogRepository\Elements';
       if not Reg.OpenKeyReadOnly(RegRoot) then
         Exit;
-      var
-        List := TStringList.Create;
+      var List := TStringList.Create;
       try
         Reg.GetKeyNames(List);
         for var Key in List do
@@ -339,9 +324,7 @@ begin
           Reg.CloseKey;
           if Reg.OpenKeyReadOnly(RegRoot + '\' + Key) then
           begin
-            var
-              Item: TGetItPackage;
-            Item := TGetItPackage.Create;
+            var Item := TGetItPackage.Create;
             if not ReadItem(Item) then
             begin
               Item.Free;

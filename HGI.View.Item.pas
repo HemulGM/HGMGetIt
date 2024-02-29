@@ -39,6 +39,7 @@ type
     MenuItemDownload: TMenuItem;
     MenuItemWebSite: TMenuItem;
     MenuItemShowCommand: TMenuItem;
+    PathGutHub: TPath;
     procedure RectangleBGClick(Sender: TObject);
     procedure ButtonInstallClick(Sender: TObject);
     procedure ButtonInstallOptClick(Sender: TObject);
@@ -150,6 +151,7 @@ begin
   ButtonInstall.StylesData['bg.Padding.Right'] := ButtonInstallOpt.Width + 5;
   MenuItemDownload.Enabled := not Item.LibUrl.IsEmpty;
   MenuItemWebSite.Enabled := not Item.LibProjectUrl.IsEmpty;
+  PathGutHub.Visible := Item.LibProjectUrl.ToLower.Contains('github.com') or Item.LibProjectUrl.ToLower.Contains('gitlab.com');
   //1 delphi
   //5 all
   //2 cpp
