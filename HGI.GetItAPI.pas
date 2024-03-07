@@ -9,7 +9,7 @@ type
   TGetIt = class
     class var
       Url, Version: string;
-    class function Get(out Items: TPackages; const Category, Order: Integer; const Personalities: string; const Search: string = ''; const Count: Integer = 0; const Offset: Integer = 0): Boolean;
+    class function Get(out Items: TPackages; const Categories: string; Order: Integer; const Personalities: string; const Search: string = ''; const Count: Integer = 0; const Offset: Integer = 0): Boolean;
     class function ParseDate(const Value: string): string; static;
   end;
 
@@ -53,7 +53,7 @@ begin
     Result := 'Unkonwn';
 end;
 
-class function TGetIt.Get(out Items: TPackages; const Category, Order: Integer; const Personalities: string; const Search: string; const Count, Offset: Integer): Boolean;
+class function TGetIt.Get(out Items: TPackages; const Categories: string; Order: Integer; const Personalities: string; const Search: string; const Count, Offset: Integer): Boolean;
 var
   HTTP: THTTPClient;
 begin
@@ -64,8 +64,8 @@ begin
     var Body := TMultipartFormData.Create;
     var Response := TStringStream.Create('', TEncoding.UTF8);
     try
-      if Category > 0 then
-        Body.AddField('Categories', Category.ToString);
+      if Categories <> '' then
+        Body.AddField('Categories', Categories);
       if not Search.IsEmpty then
         Body.AddField('Search', Search);
       if Offset > 0 then
@@ -75,6 +75,7 @@ begin
       Body.AddField('Order', Order.ToString);
       Body.AddField('Language', '0');
       Body.AddField('CatalogVersion', '5');
+      Body.AddField('ProductSKU', '52');
       Body.AddField('Personalities', Personalities); // delphi  1
       //Body.AddField('Identity', 'C++'); //DELPHI
       Body.AddField('Version', Version);
@@ -108,37 +109,37 @@ end;
 // 29 - AndroidSDK
 
 
-// 1 - Libraries
-// 2 - Components
+//+ 1 - Libraries
+//+ 2 - Components
 // 3-13 - empty
-// 14 - Fonts
-// 15 - Platforms
-// 16 - Samples
-// 17 - Help
+//+ 14 - Fonts
+//+ 15 - Platforms
+//+ 16 - Samples
+//+ 17 - Help
 // 18-19 - empty
 // 20 - empty (IntraWeb)
-// 21 - TeeChart Standard
-// 22 - DUnit Unit Testing Frameworks
-// 23 - InterBase Express (IBX) Components
+//+ 21 - TeeChart Standard
+//+ 22 - DUnit Unit Testing Frameworks
+//+ 23 - InterBase Express (IBX) Components
 // 24-32 - empty
-// 33 - Trial
+//+ 33 - Trial
 // 34-35 - empty
-// 36 - Industry Templates
-// 37 - IDE Plugins
-// 38 - Styles
+//+ 36 - Industry Templates
+//+ 37 - IDE Plugins
+//+ 38 - Styles
 // 39 - empty
-// 40 - Introductory Samples
+//+ 40 - Introductory Samples
 // 41 - empty
-// 42 - InterBase 2020 Developer Edition
+//+ 42 - InterBase 2020 Developer Edition
 // 43-45 - empty
-// 46 - Tools
-// 47 - Python
+//+ 46 - Tools
+//+ 47 - Python
 // 48-97 - empty
-// 98 - New
-// 99 - Sample Projects
-// 998 - Promoted
-// 999 - Patches and Hotfixes
-// 1001 - Tools
+//+ 98 - New
+//+ 99 - Sample Projects
+//+ 998 - Promoted
+//+ 999 - Patches and Hotfixes
+//+ 1001 - Tools
 
 { TIDEList }
 

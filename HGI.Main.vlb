@@ -382,10 +382,6 @@ Coordinates=1330,758,194,36
 [MenuItemD11]
 Coordinates=1225,758,95,36
 
-[RadioButtonSamples]
-Coordinates=1080,758,135,36
-LayerNames=NewLayer0
-
 [FramePackageItem4.LabelTitle]
 Coordinates=10,418,193,58
 
@@ -454,4 +450,8 @@ Coordinates=661,896,80,36
 ModelLayerNames=NewLayer0
 ActiveLayerNames=NewLayer0
 EditingLayerName=NewLayer0
+
+[RadioButtonSampleProjects]
+Coordinates=1080,758,135,36
+LayerNames=NewLayer0
 

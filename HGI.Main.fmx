@@ -301,7 +301,7 @@ object FormMain: TFormMain
           Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
           StyleLookup = 'menuitembuttonstyle'
-          TabOrder = 9
+          TabOrder = 10
           Text = 'Components'
           OnChange = RadioButtonAllChange
         end
@@ -316,7 +316,7 @@ object FormMain: TFormMain
           Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
           StyleLookup = 'menuitembuttonstyle'
-          TabOrder = 14
+          TabOrder = 21
           Text = 'IDE Plugins'
           OnChange = RadioButtonAllChange
         end
@@ -331,7 +331,7 @@ object FormMain: TFormMain
           Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
           StyleLookup = 'menuitembuttonstyle'
-          TabOrder = 13
+          TabOrder = 20
           Text = 'Patches and Hotfixes'
           OnChange = RadioButtonAllChange
         end
@@ -346,7 +346,7 @@ object FormMain: TFormMain
           Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
           StyleLookup = 'menuitembuttonstyle'
-          TabOrder = 11
+          TabOrder = 12
           Text = 'Industry Templates'
           OnChange = RadioButtonAllChange
         end
@@ -367,7 +367,7 @@ object FormMain: TFormMain
           Text = 'Libraries'
           OnChange = RadioButtonAllChange
         end
-        object RadioButtonSamples: TRadioButton
+        object RadioButtonSampleProjects: TRadioButton
           Tag = 99
           Align = Top
           GroupName = 'category'
@@ -378,7 +378,7 @@ object FormMain: TFormMain
           Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
           StyleLookup = 'menuitembuttonstyle'
-          TabOrder = 8
+          TabOrder = 9
           Text = 'Sample Projects'
           OnChange = RadioButtonAllChange
         end
@@ -433,12 +433,12 @@ object FormMain: TFormMain
           GroupName = 'category'
           Hint = 'Python'
           Margins.Bottom = 10.000000000000000000
-          Position.Y = 765.000000000000000000
+          Position.Y = 1008.000000000000000000
           Size.Width = 245.000000000000000000
           Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
           StyleLookup = 'menuitembuttonstyle'
-          TabOrder = 10
+          TabOrder = 11
           Text = 'Python'
           OnChange = RadioButtonAllChange
         end
@@ -503,13 +503,137 @@ object FormMain: TFormMain
           GroupName = 'category'
           Hint = 'Installation Manager Packages'
           Margins.Bottom = 10.000000000000000000
-          Position.Y = 823.000000000000000000
+          Position.Y = 1077.000000000000000000
           Size.Width = 245.000000000000000000
           Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
           StyleLookup = 'menuitembuttonstyle'
-          TabOrder = 12
+          TabOrder = 19
           Text = 'Platforms'
+          OnChange = RadioButtonAllChange
+        end
+        object Line2: TLine
+          Align = Top
+          LineType = Top
+          Margins.Bottom = 10.000000000000000000
+          Position.Y = 1066.000000000000000000
+          Size.Width = 245.000000000000000000
+          Size.Height = 1.000000000000000000
+          Size.PlatformDefault = False
+          Stroke.Color = xFF1C2536
+        end
+        object RadioButtonTeeChart: TRadioButton
+          Tag = 21
+          Align = Top
+          GroupName = 'category'
+          Hint = 'Libraries of TeeChart Standard'
+          Margins.Bottom = 10.000000000000000000
+          Position.Y = 834.000000000000000000
+          Size.Width = 245.000000000000000000
+          Size.Height = 48.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'menuitembuttonstyle'
+          TabOrder = 18
+          Text = 'TeeChart Standard'
+          OnChange = RadioButtonAllChange
+        end
+        object RadioButtonFonts: TRadioButton
+          Tag = 14
+          Align = Top
+          GroupName = 'category'
+          Hint = 'List of fonts'
+          Margins.Bottom = 10.000000000000000000
+          Position.Y = 1251.000000000000000000
+          Size.Width = 245.000000000000000000
+          Size.Height = 48.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'menuitembuttonstyle'
+          TabOrder = 14
+          Text = 'Fonts'
+          OnChange = RadioButtonAllChange
+        end
+        object RadioButtonHelp: TRadioButton
+          Tag = 14
+          Align = Top
+          GroupName = 'category'
+          Hint = 'List of help documents'
+          Margins.Bottom = 10.000000000000000000
+          Position.Y = 1193.000000000000000000
+          Size.Width = 245.000000000000000000
+          Size.Height = 48.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'menuitembuttonstyle'
+          TabOrder = 13
+          Text = 'Help'
+          OnChange = RadioButtonAllChange
+        end
+        object RadioButtonDUnit: TRadioButton
+          Tag = 21
+          Align = Top
+          GroupName = 'category'
+          Hint = 'DUnit Unit Testing Frameworks'
+          Margins.Bottom = 10.000000000000000000
+          Position.Y = 892.000000000000000000
+          Size.Width = 245.000000000000000000
+          Size.Height = 48.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'menuitembuttonstyle'
+          TabOrder = 17
+          Text = 'DUnit Test'
+          OnChange = RadioButtonAllChange
+        end
+        object RadioButtonSamples: TRadioButton
+          Tag = 99
+          Align = Top
+          GroupName = 'category'
+          Hint = 'Sets of examples included in the instalations'
+          Margins.Bottom = 10.000000000000000000
+          Position.Y = 1135.000000000000000000
+          Size.Width = 245.000000000000000000
+          Size.Height = 48.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'menuitembuttonstyle'
+          TabOrder = 8
+          Text = 'Samples'
+          OnChange = RadioButtonAllChange
+        end
+        object Line3: TLine
+          Align = Top
+          LineType = Top
+          Margins.Bottom = 10.000000000000000000
+          Position.Y = 823.000000000000000000
+          Size.Width = 245.000000000000000000
+          Size.Height = 1.000000000000000000
+          Size.PlatformDefault = False
+          Stroke.Color = xFF1C2536
+        end
+        object RadioButtonInterbase: TRadioButton
+          Tag = 21
+          Align = Top
+          GroupName = 'category'
+          Hint = 'InterBase Express (IBX) Components'
+          Margins.Bottom = 10.000000000000000000
+          Position.Y = 950.000000000000000000
+          Size.Width = 245.000000000000000000
+          Size.Height = 48.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'menuitembuttonstyle'
+          TabOrder = 16
+          Text = 'Interbase'
+          OnChange = RadioButtonAllChange
+        end
+        object RadioButtonIoT: TRadioButton
+          Tag = 21
+          Align = Top
+          GroupName = 'category'
+          Margins.Bottom = 10.000000000000000000
+          Position.Y = 765.000000000000000000
+          Size.Width = 245.000000000000000000
+          Size.Height = 48.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'menuitembuttonstyle'
+          TabOrder = 15
+          Text = 'IoT'
           OnChange = RadioButtonAllChange
         end
       end
@@ -2941,6 +3065,114 @@ object FormMain: TFormMain
             'H34.972H25.995z M34.972,0.063L22.005,13.028l12.966,12.967l12.966' +
             '-12.966L34.972,0.063z')
         Name = 'platforms'
+      end
+      item
+        Lines.Strings = (
+          
+            'M11.614,13.98l4.908,4.922c0.39,0.391,0.99,0.36,1.286-0.106c0.88-' +
+            '1.394,1.393-3.044,1.393-4.815    c0-2.131-0.741-4.086-1.972-5.63' +
+            '1L11.614,13.98z'
+          
+            'M9,14.396V7.041c-3.391,0.487-6,3.405-6,6.939C3,17.856,6.134,21,1' +
+            '0,21c1.572,0,3.018-0.526,4.186-1.403L9,14.396z'
+          
+            'M16.331,6.213c0.39-0.391,0.365-0.999-0.089-1.313c-1.253-0.868-2.' +
+            '695-1.479-4.251-1.765C11.447,3.035,11,3.447,11,4v7.56    L16.331' +
+            ',6.213z')
+        Name = 'teechart'
+      end
+      item
+        Lines.Strings = (
+          
+            'M9.96951 16.1675L14.5596 3.65608C14.8657 2.82169 16.006 2.78376 ' +
+            '16.388 3.5423L16.4372 3.65608L21.9388 18.6528C22.129 19.1713 21.' +
+            '8628 19.7458 21.3443 19.936C20.8629 20.1126 20.3331 19.8958 20.1' +
+            '076 19.4488L20.0611 19.3416L18.6505 15.4985H12.3455L10.9039 19.4' +
+            '183L10.8629 19.4972L10.7908 19.6054L10.7133 19.6952L10.6284 19.7' +
+            '729L10.5459 19.8332L10.4955 19.864L10.4114 19.9072L10.3074 19.94' +
+            '78L10.2027 19.9759L10.0695 19.9948L9.96214 19.9969L9.89154 19.99' +
+            '19L9.78899 19.9755L9.63901 19.931L9.56968 19.9014L9.46966 19.847' +
+            'L9.35809 19.7669L9.26643 19.6805L9.20247 19.6048L9.14122 19.5149' +
+            'L9.08713 19.4124L8.34151 17.4995H4.65451L3.93178 19.3597C3.74591' +
+            ' 19.8376 3.23292 20.0916 2.74846 19.9652L2.63733 19.9292C2.15937' +
+            ' 19.7433 1.90536 19.2303 2.03178 18.7459L2.06778 18.6348L5.56631' +
+            ' 9.63856C5.88116 8.82897 6.98716 8.79042 7.37735 9.52291L7.43032' +
+            ' 9.63856L9.96951 16.1675L14.5596 3.65608L9.96951 16.1675ZM6.4983' +
+            '2 12.76L5.43251 15.4995H7.56351L6.49832 12.76ZM15.4984 6.90404L1' +
+            '3.0785 13.4985H17.9165L15.4984 6.90404Z')
+        Name = 'fonts'
+      end
+      item
+        Lines.Strings = (
+          
+            'M1701,162.902C1701,72.934,1628.066,0,1538.098,0H162.902C72.934,0' +
+            ',0,72.934,0,162.902v1375.195    C0,1628.066,72.934,1701,162.902,' +
+            '1701h1375.195c89.969,0,162.902-72.934,162.902-162.902V162.902z M' +
+            '164.832,132h1375.517    c16.963,0,28.651,11.502,28.651,28.465V93' +
+            '5h-398.719c-36.494,0-66.07,28.313-66.07,64.801    c0,143.903-117' +
+            '.076,260.348-260.979,260.348c-140.287,0-255.075-111.57-260.76-25' +
+            '0.487c0.581-3.517,0.881-6.02,0.881-9.7    c0-36.49-29.581-64.961' +
+            '-66.071-64.961H132V160.465C132,143.502,147.87,132,164.832,132z M' +
+            '1540.349,1569H164.832    c-16.962,0-32.832-16.057-32.832-33.02V1' +
+            '067h323.663c31.503,185,193.305,327.05,387.568,327.05    c194.26,' +
+            '0,356.063-142.05,387.565-327.05H1569v468.98C1569,1552.943,1557.3' +
+            '12,1569,1540.349,1569z'
+          
+            'M477.639,439h746.599c36.49,0,66.07-29.509,66.07-66s-29.58-66-66.' +
+            '07-66H477.639c-36.491,0-66.071,29.509-66.071,66    S441.148,439,' +
+            '477.639,439z'
+          
+            'M477.639,743h746.599c36.49,0,66.07-29.51,66.07-66s-29.58-66-66.0' +
+            '7-66H477.639c-36.491,0-66.071,29.51-66.071,66    S441.148,743,47' +
+            '7.639,743z')
+        Name = 'help'
+      end
+      item
+        Lines.Strings = (
+          
+            'M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256s256-114.6 256-256' +
+            'S397.4 0 256 0zM256 448V64c105.9 0 192 86.13 192 192S361.9 448 2' +
+            '56 448z')
+        Name = 'dunit'
+      end
+      item
+        Lines.Strings = (
+          
+            'M448 73.12v45.75C448 159.1 347.6 192 224 192S0 159.1 0 118.9V73.' +
+            '12C0 32.88 100.4 0 224 0S448 32.88 448 73.12zM448 176v102.9C448 ' +
+            '319.1 347.6 352 224 352S0 319.1 0 278.9V176c48.12 33.12 136.2 48' +
+            '.62 224 48.62S399.9 209.1 448 176zM448 336v102.9C448 479.1 347.6' +
+            ' 512 224 512s-224-32.88-224-73.13V336c48.12 33.13 136.2 48.63 22' +
+            '4 48.63S399.9 369.1 448 336z')
+        Name = 'interbase'
+      end
+      item
+        Lines.Strings = (
+          
+            'M19 4.49146C19 5.87217 17.8807 6.99146 16.5 6.99146C16.3246 6.99' +
+            '146 16.1535 6.9734 15.9883 6.93904L14.7085 9.05651C15.5025 9.787' +
+            '5 16 10.8357 16 12L15.9997 12.0474L15.9996 12.0583L17.2959 12.31' +
+            '91C17.7175 11.5339 18.5464 11 19.5 11C20.8807 11 22 12.1193 22 1' +
+            '3.5C22 14.8807 20.8807 16 19.5 16C18.2184 16 17.1621 15.0357 17.' +
+            '017 13.793L15.6979 13.5276C15.3532 14.3613 14.7347 15.0529 13.95' +
+            '47 15.4907L14.4498 17.0027L14.4717 17.0024L14.5 17.0022C15.8807 ' +
+            '17.0022 17 18.1215 17 19.5022C17 20.8829 15.8807 22.0022 14.5 22' +
+            '.0022C13.1193 22.0022 12 20.8829 12 19.5022C12 18.6717 12.4049 1' +
+            '7.9358 13.0281 17.4812L12.5316 15.965C12.3577 15.9881 12.1802 16' +
+            ' 12 16C10.679 16 9.50759 15.3597 8.77919 14.3724L6.98453 15.2203' +
+            'C6.99475 15.3121 7 15.4055 7 15.5C7 16.8807 5.88071 18 4.5 18C3.' +
+            '11929 18 2 16.8807 2 15.5C2 14.1193 3.11929 13 4.5 13C5.24768 13' +
+            ' 5.9187 13.3282 6.37684 13.8484L8.13113 13.0196C8.04557 12.6941 ' +
+            '8 12.3524 8 12C8 11.0323 8.34362 10.1449 8.9155 9.45309L7.92382 ' +
+            '8.32377C7.63803 8.43748 7.32632 8.5 7 8.5C5.61929 8.5 4.5 7.3807'
+          
+            '1 4.5 6C4.5 4.61929 5.61929 3.5 7 3.5C8.38071 3.5 9.5 4.61929 9.' +
+            '5 6C9.5 6.50832 9.34829 6.98121 9.08768 7.37586L10.0706 8.49523C' +
+            '10.6427 8.17961 11.3004 8 12 8C12.5055 8 12.9891 8.09376 13.4343' +
+            ' 8.26484L14.6794 6.20477C14.2581 5.7573 14 5.15452 14 4.49146C14' +
+            ' 3.11074 15.1193 1.99146 16.5 1.99146C17.8807 1.99146 19 3.11074' +
+            ' 19 4.49146Z')
+        Name = 'iot'
       end>
     Left = 780
     Top = 98

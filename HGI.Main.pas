@@ -27,7 +27,7 @@ type
     RadioButtonIDPlugins: TRadioButton;
     RadioButtonStyles: TRadioButton;
     RadioButtonTools: TRadioButton;
-    RadioButtonSamples: TRadioButton;
+    RadioButtonSampleProjects: TRadioButton;
     RadioButtonPatchesFixes: TRadioButton;
     VertScrollBoxCats: TVertScrollBox;
     VertScrollBoxContent: TVertScrollBox;
@@ -85,6 +85,15 @@ type
     MenuItemOrderDate: TMenuItem;
     RadioButtonOrderName: TRadioButton;
     RadioButtonOrderDate: TRadioButton;
+    Line2: TLine;
+    RadioButtonTeeChart: TRadioButton;
+    RadioButtonFonts: TRadioButton;
+    RadioButtonHelp: TRadioButton;
+    RadioButtonDUnit: TRadioButton;
+    RadioButtonSamples: TRadioButton;
+    Line3: TLine;
+    RadioButtonInterbase: TRadioButton;
+    RadioButtonIoT: TRadioButton;
     procedure EditSearchChangeTracking(Sender: TObject);
     procedure LayoutHeadResized(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -105,7 +114,7 @@ type
     procedure RadioButtonOrderNameChange(Sender: TObject);
   private
     FInited: Boolean;
-    FCategory: Integer;
+    FCategory: string;
     FOffset: Integer;
     FOrder: Integer;
     FIDEList: TArray<TIDEEntity>;
@@ -301,7 +310,7 @@ begin
       try
         Items := nil;
         try
-          if FCategory <> -1000 then
+          if FCategory <> '-1000' then
             TGetIt.Get(Items, FCategory, FOrder, Pers, EditSearch.Text, PageSize, FOffset)
           else
             FCurrentIDE.LoadInstalled(Items, EditSearch.Text);
@@ -335,7 +344,7 @@ begin
                 end
                 else
                   LayoutInfo.Visible := False;
-                NeedMore((Length(Items.Items) >= PageSize) and (FCategory <> -1000));
+                NeedMore((Length(Items.Items) >= PageSize) and (FCategory <> '-1000'));
               finally
                 Items.Items := [];
                 Items.Free
@@ -620,21 +629,52 @@ begin
   LabelInfo.Text := 'Loading ...';
   VertScrollBoxCats.AniCalculations.Animation := True;
   VertScrollBoxContent.AniCalculations.Animation := True;
-  RadioButtonAll.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('all');
-  RadioButtonLibs.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('lib');
-  RadioButtonComponents.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('comps');
-  RadioButtonTrial.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('trial');
-  RadioButtonTools.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('tools');
-  RadioButtonStyles.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('styles');
-  RadioButtonPatchesFixes.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('patches');
-  RadioButtonIDPlugins.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('plugins');
-  RadioButtonSamples.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('samples');
-  RadioButtonIT.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('industry');
-  RadioButtonPython.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('python');
+
   RadioButtonNew.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('new');
+  RadioButtonNew.TagString := '98';
   RadioButtonPromoted.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('promoted');
+  RadioButtonPromoted.TagString := '998';
+  RadioButtonAll.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('all');
+  RadioButtonAll.TagString := '';
   RadioButtonInstalled.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('installed');
+  RadioButtonInstalled.TagString := '-1000';
+  RadioButtonLibs.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('lib');
+  RadioButtonLibs.TagString := '1';
+  RadioButtonComponents.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('comps');
+  RadioButtonComponents.TagString := '2';
+  RadioButtonTrial.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('trial');
+  RadioButtonTrial.TagString := '33';
+  RadioButtonTools.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('tools');
+  RadioButtonTools.TagString := '46';
+  RadioButtonStyles.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('styles');
+  RadioButtonStyles.TagString := '38';
+  RadioButtonPatchesFixes.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('patches');
+  RadioButtonPatchesFixes.TagString := '999';
+  RadioButtonIDPlugins.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('plugins');
+  RadioButtonIDPlugins.TagString := '37';
+  RadioButtonSamples.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('samples');
+  RadioButtonSamples.TagString := '16';
+  RadioButtonSampleProjects.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('samples');
+  RadioButtonSampleProjects.TagString := '99; 40';
+  RadioButtonIT.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('industry');
+  RadioButtonIT.TagString := '36';
+  RadioButtonIoT.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('iot');
+  RadioButtonIoT.TagString := '4';
   RadioButtonPlatforms.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('platforms');
+  RadioButtonPlatforms.TagString := '15';
+  RadioButtonTeeChart.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('teechart');
+  RadioButtonTeeChart.TagString := '21';
+  RadioButtonDUnit.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('dunit');
+  RadioButtonDUnit.TagString := '22';
+  RadioButtonInterbase.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('interbase');
+  RadioButtonInterbase.TagString := '23; 42';
+  RadioButtonHelp.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('help');
+  RadioButtonHelp.TagString := '17';
+  RadioButtonFonts.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('fonts');
+  RadioButtonFonts.TagString := '14';
+  RadioButtonPython.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('python');
+  RadioButtonPython.TagString := '47';
+
   RadioButtonNew.IsChecked := True;
   LayoutMore.Visible := False;
   FInited := True;
@@ -670,7 +710,7 @@ begin
     FLastSearch := '';
     EditSearch.Text := '';
     FIsNew := False;
-    FCategory := Button.Tag;
+    FCategory := Button.TagString;
     LoadPackages(False);
   end;
 end;
@@ -684,7 +724,7 @@ begin
     PathCurrentCat.Data.Data := Button.StylesData['icon.Data.Data'].AsString;
     LabelCurrentCatTitle.Text := Button.Text;
     LabelCurrentCatDesc.Text := Button.Hint;
-    FCategory := -1;
+    FCategory := '-1';
     FIsNew := True;
     FLastSearch := '';
     EditSearch.Text := '';
