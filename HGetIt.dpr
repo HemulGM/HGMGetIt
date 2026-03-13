@@ -16,7 +16,9 @@ uses
   DarkModeApi in 'WindowDarkMode\DarkModeApi.pas',
   DarkModeApi.Types in 'WindowDarkMode\DarkModeApi.Types.pas',
   HGM.LineStorage in 'LineStorage\HGM.LineStorage.pas',
-  HGM.FMX.Image in 'Components\HGM.FMX.Image.pas';
+  HGM.FMX.Image in 'Components\HGM.FMX.Image.pas',
+  HGI.View.ItemList in 'HGI.View.ItemList.pas' {FramePackageItemList},
+  HGM.ObjectHolder in 'AsyncObjectHolder\HGM.ObjectHolder.pas';
 
 {$R *.res}
 

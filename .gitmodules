@@ -8,3 +8,6 @@
 	path = Components
 	url = https://github.com/HemulGM/Components
 	branch = master
+[submodule "AsyncObjectHolder"]
+	path = AsyncObjectHolder
+	url = https://github.com/HemulGM/AsyncObjectHolder.git

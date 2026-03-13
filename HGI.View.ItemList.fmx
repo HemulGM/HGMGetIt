@@ -1,26 +1,26 @@
-object FramePackageItem: TFramePackageItem
-  Size.Width = 320.000000000000000000
-  Size.Height = 220.000000000000000000
+object FramePackageItemList: TFramePackageItemList
+  Size.Width = 970.000000000000000000
+  Size.Height = 88.000000000000000000
   Size.PlatformDefault = False
   object RectangleBG: TRectangle
     Align = Client
     Fill.Color = xFF0F111A
-    Padding.Left = 15.000000000000000000
-    Padding.Top = 15.000000000000000000
-    Padding.Right = 15.000000000000000000
-    Padding.Bottom = 15.000000000000000000
-    Size.Width = 320.000000000000000000
-    Size.Height = 220.000000000000000000
+    Padding.Left = 10.000000000000000000
+    Padding.Top = 10.000000000000000000
+    Padding.Right = 10.000000000000000000
+    Padding.Bottom = 10.000000000000000000
+    Size.Width = 970.000000000000000000
+    Size.Height = 88.000000000000000000
     Size.PlatformDefault = False
     Stroke.Kind = None
     XRadius = 10.000000000000000000
     YRadius = 10.000000000000000000
     OnClick = RectangleBGClick
-    object Layout1: TLayout
+    object LayoutContent: TLayout
       Align = Top
-      Position.X = 15.000000000000000000
-      Position.Y = 15.000000000000000000
-      Size.Width = 290.000000000000000000
+      Position.X = 40.000000000000000000
+      Position.Y = 10.000000000000000000
+      Size.Width = 920.000000000000000000
       Size.Height = 40.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 0
@@ -35,152 +35,151 @@ object FramePackageItem: TFramePackageItem
         XRadius = 4.000000000000000000
         YRadius = 4.000000000000000000
       end
-      object ButtonInstall: TButton
-        Align = Right
-        StyledSettings = [Family, Style, FontColor]
-        Margins.Top = 6.000000000000000000
-        Margins.Bottom = 6.000000000000000000
-        Position.X = 150.000000000000000000
-        Position.Y = 6.000000000000000000
-        Size.Width = 140.000000000000000000
-        Size.Height = 28.000000000000000000
-        Size.PlatformDefault = False
-        StyleLookup = 'buttonstyledownload'
-        TabOrder = 1
-        Text = 'INSTALL'
-        TextSettings.Font.Size = 13.000000000000000000
-        OnClick = ButtonInstallClick
-        object ButtonInstallOpt: TButton
-          Align = Right
-          StyledSettings = [Family, Style, FontColor]
-          Position.X = 112.000000000000000000
-          Size.Width = 28.000000000000000000
-          Size.Height = 28.000000000000000000
-          Size.PlatformDefault = False
-          StyleLookup = 'buttonstyledrop'
-          TabOrder = 1
-          Text = 'DOWNLOAD'
-          TextSettings.Font.Size = 13.000000000000000000
-          OnClick = ButtonInstallOptClick
-        end
-      end
-      object LabelInfo: TLabel
+      object LayoutHead: TLayout
         Align = Client
-        StyledSettings = [Size, Style]
-        Margins.Left = 10.000000000000000000
-        Margins.Right = 10.000000000000000000
-        Size.Width = 90.000000000000000000
+        ClipChildren = True
+        Size.Width = 880.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
-        TextSettings.Font.Family = 'Roboto'
-        TextSettings.FontColor = xC89095AF
-        TextSettings.WordWrap = False
-        Text = '1.0'#13#10'by HGM'
-        TabOrder = 2
-      end
-    end
-    object Layout2: TLayout
-      Align = Top
-      Position.X = 15.000000000000000000
-      Position.Y = 55.000000000000000000
-      Size.Width = 290.000000000000000000
-      Size.Height = 45.000000000000000000
-      Size.PlatformDefault = False
-      TabOrder = 2
-      object LabelTitle: TLabel
-        Align = Client
-        StyledSettings = [Style]
-        Size.Width = 257.000000000000000000
-        Size.Height = 45.000000000000000000
-        Size.PlatformDefault = False
-        TextSettings.Font.Family = 'Roboto'
-        TextSettings.Font.Size = 20.000000000000000000
-        TextSettings.FontColor = xE6FFFFFF
-        TextSettings.WordWrap = False
-        Text = 'OpenAI for Delphi'
         TabOrder = 0
-      end
-      object PathGutHub: TPath
-        Align = Right
-        Data.Path = {
-          4D00000000000000000080430000004202000000CD4C04430000004202000000
-          00000042CDCC064302000000000000429AD9824302000000000000429A99B543
-          020000006666C0429A99E0430200000033333943CDCCEF430200000066664443
-          9AD9F0430200000000804843CD4CED4302000000008048430040EA4302000000
-          008048430080E74302000000CD4C4843CD4CE043020000003333484333B3D643
-          0200000066E6094366A6DD43020000006666F942CD4CC743020000006666F942
-          CD4CC743020000000000E542CD0CBA43020000009999C7420080B64302000000
-          9999C7420080B6430200000000009F429A59AF43020000009999CA420080AF43
-          020000009999CA420080AF43020000009999F742CD4CB0430200000099990743
-          9A59BB4302000000999907439A59BB430200000099991B4367E6CC4302000000
-          00003C439AD9C74302000000CCCC484367E6C44302000000CCCC4A430180BD43
-          02000000999950436766B84302000000FFFF5643CD8CB54302000000CC4C2543
-          67A6B24302000000FEFFE142CDCCA84302000000FEFFE1429A99794302000000
-          FEFFE14200806043020000006466F34200004C4302000000FFFF074300003C43
-          0200000032B305433333364302000000FEFFFB42CDCC1E430200000032330A43
-          6666FE420200000032330A436666FE4202000000FFFF1C430000F24202000000
-          CCCC474333B316430200000032B359439999114302000000CCCC6C4399190F43
-          0200000066E67F4300000F4302000000337389439A190F4302000000CD0C9343
-          9A9911430200000000009C4333B31643020000006666B1430000F24202000000
-          00C0BA436666FE420200000000C0BA436666FE42020000009AD9C043CDCC1E43
-          020000000000BD4333333643020000009AD9BB4300003C43020000000000C343
-          9A194C43020000009A59C7439A996043020000009A59C7439A99794302000000
-          9A59C74366E6A843020000006726AD439A99B24302000000343394433473B543
-          02000000343398430100B94302000000CECC9B430100C04302000000CECC9B43
-          34B3CA4302000000CECC9B43CE0CDA430200000068A69B433473E64302000000
-          68A69B433433EA430200000068A69B430140ED430200000068A69D439AD9F043
-          020000009B59A34334B3EF430200000033F3CF43CD8CE043020000000000F043
-          CD8CB543020000000000F0439AD98243020000000000F043CDCC064302000000
-          9AD9BD4300000042020000000000804300000042030000000000804300000042}
-        Fill.Color = claWhite
-        HitTest = False
-        Margins.Left = 12.000000000000000000
-        Margins.Top = 12.000000000000000000
-        Margins.Bottom = 12.000000000000000000
-        Position.X = 269.000000000000000000
-        Position.Y = 12.000000000000000000
-        Size.Width = 21.000000000000000000
-        Size.Height = 21.000000000000000000
-        Size.PlatformDefault = False
-        Stroke.Kind = None
-        WrapMode = Fit
+        object LabelDesc: TLabel
+          Align = Bottom
+          StyledSettings = [Style]
+          Margins.Left = 10.000000000000000000
+          Margins.Right = 10.000000000000000000
+          Position.X = 10.000000000000000000
+          Position.Y = 20.000000000000000000
+          Size.Width = 720.000000000000000000
+          Size.Height = 20.000000000000000000
+          Size.PlatformDefault = False
+          TextSettings.Font.Family = 'Roboto'
+          TextSettings.Font.Size = 14.000000000000000000
+          TextSettings.FontColor = xFF9095AF
+          Text = 
+            'The library provides access to the API of the OpenAI service, on' +
+            ' the basis of which ChatGPT works and, for example, the generati' +
+            'on of images from text using DALL-E.'
+          TabOrder = 1
+        end
+        object ButtonInstall: TButton
+          Align = MostRight
+          StyledSettings = [Family, Style, FontColor]
+          Margins.Top = 6.000000000000000000
+          Margins.Bottom = 6.000000000000000000
+          Position.X = 740.000000000000000000
+          Position.Y = 6.000000000000000000
+          Size.Width = 140.000000000000000000
+          Size.Height = 28.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'buttonstyledownload'
+          TabOrder = 2
+          Text = 'INSTALL'
+          TextSettings.Font.Size = 13.000000000000000000
+          TextSettings.Trimming = None
+          OnClick = ButtonInstallClick
+          object ButtonInstallOpt: TButton
+            Align = Right
+            StyledSettings = [Family, Style, FontColor]
+            Position.X = 112.000000000000000000
+            Size.Width = 28.000000000000000000
+            Size.Height = 28.000000000000000000
+            Size.PlatformDefault = False
+            StyleLookup = 'buttonstyledrop'
+            TabOrder = 1
+            Text = 'DOWNLOAD'
+            TextSettings.Font.Size = 13.000000000000000000
+            TextSettings.Trimming = None
+            OnClick = ButtonInstallOptClick
+          end
+        end
+        object LabelInfo: TLabel
+          Align = Right
+          AutoSize = True
+          StyledSettings = [Size, Style]
+          Margins.Left = 24.000000000000000000
+          Margins.Right = 10.000000000000000000
+          Position.X = 687.000000000000000000
+          Size.Width = 43.000000000000000000
+          Size.Height = 20.000000000000000000
+          Size.PlatformDefault = False
+          TextSettings.Font.Family = 'Roboto'
+          TextSettings.FontColor = xC89095AF
+          TextSettings.WordWrap = False
+          Text = '1.0'#13#10'by HGM'
+          TabOrder = 3
+          object PathGutHub: TPath
+            Align = Left
+            Data.Path = {
+              4D00000000000000000080430000004202000000CD4C04430000004202000000
+              00000042CDCC064302000000000000429AD9824302000000000000429A99B543
+              020000006666C0429A99E0430200000033333943CDCCEF430200000066664443
+              9AD9F0430200000000804843CD4CED4302000000008048430040EA4302000000
+              008048430080E74302000000CD4C4843CD4CE043020000003333484333B3D643
+              0200000066E6094366A6DD43020000006666F942CD4CC743020000006666F942
+              CD4CC743020000000000E542CD0CBA43020000009999C7420080B64302000000
+              9999C7420080B6430200000000009F429A59AF43020000009999CA420080AF43
+              020000009999CA420080AF43020000009999F742CD4CB0430200000099990743
+              9A59BB4302000000999907439A59BB430200000099991B4367E6CC4302000000
+              00003C439AD9C74302000000CCCC484367E6C44302000000CCCC4A430180BD43
+              02000000999950436766B84302000000FFFF5643CD8CB54302000000CC4C2543
+              67A6B24302000000FEFFE142CDCCA84302000000FEFFE1429A99794302000000
+              FEFFE14200806043020000006466F34200004C4302000000FFFF074300003C43
+              0200000032B305433333364302000000FEFFFB42CDCC1E430200000032330A43
+              6666FE420200000032330A436666FE4202000000FFFF1C430000F24202000000
+              CCCC474333B316430200000032B359439999114302000000CCCC6C4399190F43
+              0200000066E67F4300000F4302000000337389439A190F4302000000CD0C9343
+              9A9911430200000000009C4333B31643020000006666B1430000F24202000000
+              00C0BA436666FE420200000000C0BA436666FE42020000009AD9C043CDCC1E43
+              020000000000BD4333333643020000009AD9BB4300003C43020000000000C343
+              9A194C43020000009A59C7439A996043020000009A59C7439A99794302000000
+              9A59C74366E6A843020000006726AD439A99B24302000000343394433473B543
+              02000000343398430100B94302000000CECC9B430100C04302000000CECC9B43
+              34B3CA4302000000CECC9B43CE0CDA430200000068A69B433473E64302000000
+              68A69B433433EA430200000068A69B430140ED430200000068A69D439AD9F043
+              020000009B59A34334B3EF430200000033F3CF43CD8CE043020000000000F043
+              CD8CB543020000000000F0439AD98243020000000000F043CDCC064302000000
+              9AD9BD4300000042020000000000804300000042030000000000804300000042}
+            Fill.Color = claWhite
+            HitTest = False
+            Margins.Left = -24.000000000000000000
+            Position.X = -24.000000000000000000
+            Size.Width = 16.000000000000000000
+            Size.Height = 20.000000000000000000
+            Size.PlatformDefault = False
+            Stroke.Kind = None
+            WrapMode = Fit
+          end
+        end
+        object LabelTitle: TLabel
+          Align = Client
+          StyledSettings = [Style]
+          Margins.Left = 10.000000000000000000
+          Margins.Right = 10.000000000000000000
+          Size.Width = 643.000000000000000000
+          Size.Height = 20.000000000000000000
+          Size.PlatformDefault = False
+          TextSettings.Font.Family = 'Roboto'
+          TextSettings.Font.Size = 17.000000000000000000
+          TextSettings.FontColor = xE6FFFFFF
+          TextSettings.WordWrap = False
+          Text = 'OpenAI for Delphi'
+          TabOrder = 0
+        end
       end
     end
-    object Layout3: TLayout
-      Align = Client
-      Size.Width = 290.000000000000000000
-      Size.Height = 75.000000000000000000
-      Size.PlatformDefault = False
-      TabOrder = 1
-      object LabelDesc: TLabel
-        Align = Client
-        StyledSettings = [Style]
-        Size.Width = 290.000000000000000000
-        Size.Height = 75.000000000000000000
-        Size.PlatformDefault = False
-        TextSettings.Font.Family = 'Roboto'
-        TextSettings.Font.Size = 14.000000000000000000
-        TextSettings.FontColor = xFF9095AF
-        Text = 
-          'The library provides access to the API of the OpenAI service, on' +
-          ' the basis of which ChatGPT works and, for example, the generati' +
-          'on of images from text using DALL-E.'
-        TabOrder = 0
-      end
-    end
-    object LayoutOS: TLayout
+    object LayoutIndicates: TLayout
       Align = Bottom
       Padding.Left = 2.000000000000000000
       Padding.Top = 2.000000000000000000
       Padding.Right = 2.000000000000000000
       Padding.Bottom = 2.000000000000000000
       Margins.Top = 10.000000000000000000
-      Position.X = 15.000000000000000000
-      Position.Y = 185.000000000000000000
-      Size.Width = 290.000000000000000000
+      Position.X = 40.000000000000000000
+      Position.Y = 58.000000000000000000
+      Size.Width = 920.000000000000000000
       Size.Height = 20.000000000000000000
       Size.PlatformDefault = False
-      TabOrder = 3
+      TabOrder = 1
       object PathWindows: TPath
         Align = Left
         Data.Path = {
@@ -649,7 +648,7 @@ object FramePackageItem: TFramePackageItem
       object LabelLicense: TLabel
         Align = Client
         StyledSettings = [Style]
-        Size.Width = 153.000000000000000000
+        Size.Width = 783.000000000000000000
         Size.Height = 16.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -686,7 +685,7 @@ object FramePackageItem: TFramePackageItem
         Stroke.Color = x28FFFFFF
       end
     end
-    object ColorAnimation1: TColorAnimation
+    object ColorAnimationOver: TColorAnimation
       Duration = 0.200000002980232200
       Inverse = True
       PropertyName = 'Fill.Color'
@@ -695,11 +694,28 @@ object FramePackageItem: TFramePackageItem
       Trigger = 'IsMouseOver=true'
       TriggerInverse = 'IsMouseOver=false'
     end
+    object LayoutSelect: TLayout
+      Align = MostLeft
+      Position.X = 10.000000000000000000
+      Position.Y = 10.000000000000000000
+      Size.Width = 30.000000000000000000
+      Size.Height = 68.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 2
+      object CheckBoxSelected: TCheckBox
+        Align = Top
+        Size.Width = 30.000000000000000000
+        Size.Height = 34.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 0
+        OnChange = CheckBoxSelectedChange
+      end
+    end
     object LabelVersions: TLabel
       Anchors = [akRight, akBottom]
       StyledSettings = [Family, Style]
-      Position.X = 150.000000000000000000
-      Position.Y = 204.000000000000000000
+      Position.X = 805.000000000000000000
+      Position.Y = 73.000000000000000000
       Size.Width = 155.000000000000000000
       Size.Height = 11.000000000000000000
       Size.PlatformDefault = False

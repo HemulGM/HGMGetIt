@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Objects, FMX.Layouts, FMX.Controls.Presentation, HGI.Item,
-  FMX.Filter.Effects, FMX.Edit, HGI.View.Item;
+  FMX.Filter.Effects, FMX.Edit, HGI.View.Item, System.Actions, FMX.ActnList;
 
 type
   TFramePackageItemFull = class(TFrame)
@@ -58,13 +58,17 @@ type
     EditLibUrl: TEdit;
     CircleGitHub: TCircle;
     PathGutHub: TPath;
+    Label11: TLabel;
+    LabelDependencies: TLabel;
+    ActionListInfo: TActionList;
+    ActionClose: TAction;
     procedure FlowLayoutPlatformsResize(Sender: TObject);
     procedure RectangleBGResize(Sender: TObject);
-    procedure ButtonCloseClick(Sender: TObject);
     procedure ButtonWebSiteClick(Sender: TObject);
     procedure ButtonBuyClick(Sender: TObject);
     procedure ButtonDownloadClick(Sender: TObject);
     procedure ButtonInstallClick(Sender: TObject);
+    procedure ActionCloseExecute(Sender: TObject);
   private
     FLibUrl: string;
     FLibProjectUrl: string;
@@ -77,7 +81,7 @@ type
     procedure SetOnAction(const Value: TOnItemAction);
     procedure SetIsInstalled(const Value: Boolean);
   public
-    procedure Fill(Item: TGetItPackage; Installed: Boolean);
+    procedure Fill(Item: TGetItPackage; Installed: Boolean; Versions: TArray<TGetItPackage>);
     property OnAction: TOnItemAction read FOnAction write SetOnAction;
     procedure Close;
     constructor Create(AOwner: TComponent); override;
@@ -105,15 +109,15 @@ begin
   Release;
 end;
 
+procedure TFramePackageItemFull.ActionCloseExecute(Sender: TObject);
+begin
+  Close;
+end;
+
 procedure TFramePackageItemFull.ButtonBuyClick(Sender: TObject);
 begin
   if Assigned(FOnAction) then
     FOnAction(Self, FPurchaseUrl, TItemAction.OpenUrl);
-end;
-
-procedure TFramePackageItemFull.ButtonCloseClick(Sender: TObject);
-begin
-  Close;
 end;
 
 procedure TFramePackageItemFull.ButtonDownloadClick(Sender: TObject);
@@ -152,7 +156,7 @@ begin
     Result := '';
 end;
 
-procedure TFramePackageItemFull.Fill(Item: TGetItPackage; Installed: Boolean);
+procedure TFramePackageItemFull.Fill(Item: TGetItPackage; Installed: Boolean; Versions: TArray<TGetItPackage>);
 begin
   IsInstalled := Installed;
   FLibUrl := Item.LibUrl;
@@ -165,8 +169,12 @@ begin
   EditLibUrl.Text := Item.LibUrl;
   LabelTitle.Text := Item.Name;
   LabelDesc.Text := Item.Description;
+  if LabelDesc.Text.IsEmpty then
+    LabelDesc.Text := 'None';
   LabelInfo.Text := Item.Version + #13#10 + 'by ' + Item.Vendor + #13#10 + Item.VendorUrl;
   LabelLicense.Text := Item.LibLicenseName;
+  if LabelLicense.Text.IsEmpty then
+    LabelLicense.Text := 'The license is not defined';
 
   LayoutPfWin.Visible := False;
   LayoutPfLin.Visible := False;
@@ -179,7 +187,7 @@ begin
   ButtonBuy.Visible := not Item.PurchaseUrl.IsEmpty;
   LabelTags.Text := Item.Tags;
   if LabelTags.Text.IsEmpty then
-    LabelTags.Text := 'Empty';
+    LabelTags.Text := 'None';
   LabelDate.Text := 'Updated ' + TGetIt.ParseDate(Item.Modified);
   for var OS in Item.LibOSes do
   begin
@@ -194,6 +202,15 @@ begin
     else if OS.Id = '5' then
       LayoutPfLin.Visible := True;
   end;
+
+  var Dependencies: TArray<string>;
+  for var Dependence in Item.Dependencies do
+    Dependencies := Dependencies + [Dependence.Id + ' (' + Dependence.Size + ' Mb)'];
+
+  if Length(Dependencies) > 0 then
+    LabelDependencies.Text := string.Join(', ', Dependencies)
+  else
+    LabelDependencies.Text := 'None';
 
   RectangleImage.Fill.Bitmap.Bitmap.LoadFromUrlAsync(RectangleImage, Item.Image, False,
     procedure(Success: Boolean)

@@ -5,7 +5,13 @@ interface
 uses
   Generics.Collections, Rest.Json;
 
+{$SCOPEDENUMS ON}
+
 type
+  TItemAction = (Install, Download, Uninstall, OpenUrl, CommandLine);
+
+  TOnItemAction = procedure(Sender: TObject; const ItemId: string; Action: TItemAction) of object;
+
   TBasicItem = class
   private
     FId: string;
@@ -50,6 +56,12 @@ type
 
   TCategory = class(TBasicItem);
 
+  TPackageDependence = class
+    Id: string;
+    Size: string;
+    InflateSize: string;
+  end;
+
   TGetItPackage = class
   private
     FActions: TArray<TPackageAction>;
@@ -89,6 +101,7 @@ type
     FVendor: string;
     FVendorUrl: string;
     FVersion: string;
+    FDependencies: TArray<TPackageDependence>;
   public
     property Actions: TArray<TPackageAction> read FActions write FActions;
     property AllUsers: string read FAllUsers write FAllUsers;
@@ -127,6 +140,7 @@ type
     property Vendor: string read FVendor write FVendor;
     property VendorUrl: string read FVendorUrl write FVendorUrl;
     property Version: string read FVersion write FVersion;
+    property Dependencies: TArray<TPackageDependence> read FDependencies write FDependencies;
     destructor Destroy; override;
   end;
 
@@ -162,6 +176,8 @@ begin
   for var Item in FProductVersions do
     Item.Free;
   for var Item in FActions do
+    Item.Free;
+  for var Item in FDependencies do
     Item.Free;
   inherited;
 end;

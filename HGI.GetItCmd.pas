@@ -3,7 +3,10 @@
 interface
 
 uses
-  Winapi.Windows, Winapi.ShellAPI, System.Classes, System.SysUtils, HGI.GetItAPI;
+  {$IFDEF MSWINDOWS}
+  Winapi.Windows, Winapi.ShellAPI,
+  {$ENDIF}
+  System.Classes, System.SysUtils, HGI.GetItAPI;
 
 type
   TFutureId = record
@@ -247,11 +250,13 @@ end;
 
 function TGetItCmd.Execute(const IDE: TIDEEntity; Command: TGetItCommand): Boolean;
 begin
+  {$IFDEF MSWINDOWS}
   Result := ShellExecute(0, 'open',
     PChar(IDE.GetPathGetItCmd),
     PChar(Command.Build),
     PChar(IDE.GetPathBin),
     SW_NORMAL) > SE_ERR_DLLNOTFOUND;
+  {$ENDIF}
 end;
 
 end.

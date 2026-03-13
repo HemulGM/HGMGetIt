@@ -3,13 +3,18 @@
 interface
 
 uses
-  Winapi.Windows, System.SysUtils, System.Types, System.UITypes, System.Classes,
+  System.SysUtils, System.Types, System.UITypes, System.Classes,
   System.Variants, FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs,
   FMX.Layouts, FMX.Objects, FMX.Controls.Presentation, FMX.Edit, FMX.StdCtrls,
   HGI.View.Item, HGI.GetItAPI, FMX.Ani, FMX.Filter.Effects, FMX.Menus, HGI.Item,
-  System.Threading, HGI.GetItCmd, System.ImageList, FMX.ImgList, HGM.LineStorage;
+  System.Threading, HGI.GetItCmd, System.ImageList, FMX.ImgList, HGM.LineStorage,
+  HGI.View.ItemList, FMX.Effects;
+
+{$SCOPEDENUMS ON}
 
 type
+  TViewStyle = (Card, List);
+
   TFormMain = class(TForm)
     LayoutHead: TLayout;
     LayoutMenu: TLayout;
@@ -94,6 +99,17 @@ type
     Line3: TLine;
     RadioButtonInterbase: TRadioButton;
     RadioButtonIoT: TRadioButton;
+    Label2: TLabel;
+    RadioButtonViewCard: TRadioButton;
+    RadioButtonViewList: TRadioButton;
+    LayoutClientOver: TLayout;
+    LayoutSelect: TLayout;
+    RectangleSelect: TRectangle;
+    ShadowEffect1: TShadowEffect;
+    CheckBoxSelectAll: TCheckBox;
+    ButtonInstall: TButton;
+    ButtonUninstall: TButton;
+    ButtonDownload: TButton;
     procedure EditSearchChangeTracking(Sender: TObject);
     procedure LayoutHeadResized(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -112,6 +128,8 @@ type
     procedure ButtonOptionsClick(Sender: TObject);
     procedure MenuItemOrderClick(Sender: TObject);
     procedure RadioButtonOrderNameChange(Sender: TObject);
+    procedure RadioButtonViewCardChange(Sender: TObject);
+    procedure CheckBoxSelectAllChange(Sender: TObject);
   private
     FInited: Boolean;
     FCategory: string;
@@ -119,12 +137,14 @@ type
     FOrder: Integer;
     FIDEList: TArray<TIDEEntity>;
     FCurrentIDE: TIDEEntity;
-    FPool: TTHreadPool;
     FIsNew: Boolean;
     FLastSearch: string;
     FGetItCmd: TGetItCmd;
     FPers: string;
     FGlobalOrder: Integer;
+    FViewStyle: TViewStyle;
+    FLoading: Boolean;
+    FManChangeCheck: Boolean;
     function GetPers: string;
     procedure LoadPackages(More: Boolean);
     procedure ClearItems;
@@ -146,6 +166,15 @@ type
     procedure SetPers(const Value: string);
     procedure SetOrder(const Value: Integer);
     procedure LoadCustomServers;
+    procedure SetViewStyle(const Value: TViewStyle);
+    procedure RefillList(Items: TArray<TGetItPackage>; More: Boolean);
+    procedure FOnItemChangeCheck(Sender: TObject);
+    procedure CalcSelected;
+    procedure HideSelectPanel;
+    procedure ShowSelectPanel;
+    function ExistsItemByName(const ItemName: string; var Item: TFrame): Boolean;
+    procedure AddAsVersion(Frame: TFrame; Item: TGetItPackage);
+    property ViewStyle: TViewStyle read FViewStyle write SetViewStyle;
   end;
 
 const
@@ -160,14 +189,21 @@ procedure OpenUrl(const URL: string);
 implementation
 
 uses
-  System.Math, System.IniFiles, System.IOUtils, DarkModeApi.FMX, Winapi.ShellAPI,
-  FMX.Platform.Win;
+  System.Math, System.IniFiles, System.IOUtils,
+  {$IFDEF MSWINDOWS}
+  Winapi.Windows,
+  DarkModeApi.FMX, Winapi.ShellAPI,
+  FMX.Platform.Win,
+  {$ENDIF}
+  HGM.ObjectHolder;
 
 {$R *.fmx}
 
 procedure OpenUrl(const URL: string);
 begin
+  {$IFDEF MSWINDOWS}
   ShellExecute(ApplicationHWND, 'open', PChar(URL), nil, nil, SW_SHOWNORMAL);
+  {$ENDIF}
 end;
 
 procedure TFormMain.EditSearchChangeTracking(Sender: TObject);
@@ -228,6 +264,60 @@ begin
   PopupMenuServerList.Popup(Pt.X, Pt.Y);
 end;
 
+procedure TFormMain.CheckBoxSelectAllChange(Sender: TObject);
+begin
+  if FManChangeCheck then
+    Exit;
+  FManChangeCheck := True;
+  for var Control in FlowLayoutItems.Controls do
+    if Control is TFramePackageItemList then
+      TFramePackageItemList(Control).IsChecked := CheckBoxSelectAll.IsChecked;
+  FManChangeCheck := False;
+  CalcSelected;
+end;
+
+procedure TFormMain.FOnItemChangeCheck(Sender: TObject);
+begin
+  if FManChangeCheck then
+    Exit;
+  CalcSelected;
+end;
+
+procedure TFormMain.CalcSelected;
+begin
+  var SelCnt := 0;
+  var ItemCnt := 0;
+  var Installed := 0;
+  for var Control in FlowLayoutItems.Controls do
+    if Control is TFramePackageItemList then
+    begin
+      if TFramePackageItemList(Control).IsInstalled then
+        Inc(Installed);
+      Inc(ItemCnt);
+      if TFramePackageItemList(Control).IsChecked then
+        Inc(SelCnt);
+    end;
+  ButtonUninstall.Enabled := ItemCnt = Installed;
+  ButtonInstall.Enabled := Installed = 0;
+  if SelCnt > 0 then
+    ShowSelectPanel
+  else
+    HideSelectPanel;
+  FManChangeCheck := True;
+  CheckBoxSelectAll.IsChecked := ItemCnt = SelCnt;
+  FManChangeCheck := False;
+end;
+
+procedure TFormMain.HideSelectPanel;
+begin
+  LayoutSelect.Visible := False;
+end;
+
+procedure TFormMain.ShowSelectPanel;
+begin
+  LayoutSelect.Visible := True;
+end;
+
 procedure TFormMain.ClearItems;
 begin
   FlowLayoutItems.BeginUpdate;
@@ -256,21 +346,54 @@ end;
 function TFormMain.ExistsItem(const ItemId: string): Boolean;
 begin
   for var Control in FlowLayoutItems.Controls do
+  begin
     if Control is TFramePackageItem then
       if TFramePackageItem(Control).Id = ItemId then
         Exit(True);
+    if Control is TFramePackageItemList then
+      if TFramePackageItemList(Control).Id = ItemId then
+        Exit(True);
+  end;
+  Result := False;
+end;
+
+function TFormMain.ExistsItemByName(const ItemName: string; var Item: TFrame): Boolean;
+begin
+  for var Control in FlowLayoutItems.Controls do
+  begin
+    if Control is TFramePackageItem then
+      if TFramePackageItem(Control).Item.Name = ItemName then
+      begin
+        Item := TFramePackageItem(Control);
+        Exit(True);
+      end;
+    if Control is TFramePackageItemList then
+      if TFramePackageItemList(Control).Item.Name = ItemName then
+      begin
+        Item := TFramePackageItemList(Control);
+        Exit(True);
+      end;
+  end;
   Result := False;
 end;
 
 function TFormMain.GetItemById(const ItemId: string; out Item: TGetItPackage): Boolean;
 begin
   for var Control in FlowLayoutItems.Controls do
+  begin
     if Control is TFramePackageItem then
       if TFramePackageItem(Control).Id = ItemId then
       begin
         Item := TFramePackageItem(Control).Item;
         Exit(Assigned(Item));
       end;
+    if Control is TFramePackageItemList then
+      if TFramePackageItemList(Control).Id = ItemId then
+      begin
+        Item := TFramePackageItemList(Control).Item;
+        Exit(Assigned(Item));
+      end;
+  end;
   Result := False;
 end;
 
@@ -282,15 +405,21 @@ end;
 procedure TFormMain.SetItemInstallState(const ItemId: string; State: Boolean);
 begin
   for var Control in FlowLayoutItems.Controls do
+  begin
     if Control is TFramePackageItem then
       if TFramePackageItem(Control).Id = ItemId then
         TFramePackageItem(Control).IsInstalled := State;
+    if Control is TFramePackageItemList then
+      if TFramePackageItemList(Control).Id = ItemId then
+        TFramePackageItemList(Control).IsInstalled := State;
+  end;
 end;
 
 procedure TFormMain.LoadPackages(More: Boolean);
 begin
   if not FInited then
     Exit;
+  FLoading := True;
   if not More then
     FOffset := 0
   else
@@ -302,72 +431,117 @@ begin
     FOrder := FGlobalOrder;
   LoadingBegin;
   var Pers := GetPers;
-  TTask.Run(
-    procedure
-    var
-      Items: TPackages;
+  var Search := EditSearch.Text;
+  var Category := FCategory;
+  var Order := FOrder;
+  var Offset := FOffset;
+  TaskRun(Self,
+    procedure(Holder: IComponentHolder)
     begin
       try
-        Items := nil;
+        var Items: TPackages := nil;
         try
-          if FCategory <> '-1000' then
-            TGetIt.Get(Items, FCategory, FOrder, Pers, EditSearch.Text, PageSize, FOffset)
+          if Category <> '-1000' then
+            TGetIt.Get(Items, Category, Order, Pers, Search, PageSize, Offset)
           else
-            FCurrentIDE.LoadInstalled(Items, EditSearch.Text);
-        finally
-          TThread.Queue(nil,
+            FCurrentIDE.LoadInstalled(Items, Search);
+          Sync(
             procedure
             begin
-              if not More then
-                ClearItems;
+              if not Holder.IsLive then
+                Exit;
               if Assigned(Items) then
-              try
-                for var Item in Items.Items do
-                begin
-                  if ExistsItem(Item.Id) then
-                  begin
-                    Item.Free;
-                    Continue;
-                  end;
-                  var Frame := TFramePackageItem.Create(FlowLayoutItems);
-                  Frame.Fill(Item, IsInstalled(Item.Id));
-                  Frame.Parent := FlowLayoutItems;
-                  Frame.OnAction := FOnItemAction;
-                end;
-                FlowLayoutItems.RecalcSize;
-                if not More then
-                  VertScrollBoxContent.ViewportPosition := TPointF.Create(0, 0);
-                if FlowLayoutItems.ControlsCount <= 0 then
-                begin
-                  LabelInfo.Text := 'No results';
-                  LayoutInfo.Visible := True;
-                end
-                else
-                  LayoutInfo.Visible := False;
-                NeedMore((Length(Items.Items) >= PageSize) and (FCategory <> '-1000'));
-              finally
+              begin
+                var List := Items.Items;
                 Items.Items := [];
-                Items.Free
+                RefillList(List, More);
               end
               else
-              begin
-                LabelInfo.Text := 'Error';
-                LayoutInfo.Visible := True;
-                NeedMore(More);
-              end;
-              LoadingEnd;
+                RefillList([], More);
             end);
+        finally
+          Items.Free;
         end;
       except
-        TThread.Queue(nil,
+        Queue(
           procedure
           begin
+            if not Holder.IsLive then
+              Exit;
             LabelInfo.Text := 'Error';
             LayoutInfo.Visible := True;
             NeedMore(More);
           end);
       end;
-    end, FPool);
+    end);
+end;
+
+procedure TFormMain.AddAsVersion(Frame: TFrame; Item: TGetItPackage);
+begin
+  if Frame is TFramePackageItem then
+    TFramePackageItem(Frame).AddVersion(Item)
+  else if Frame is TFramePackageItemList then
+    TFramePackageItemList(Frame).AddVersion(Item);
+end;
+
+procedure TFormMain.RefillList(Items: TArray<TGetItPackage>; More: Boolean);
+begin
+  FLoading := False;
+  if not More then
+    ClearItems;
+  FlowLayoutItems.BeginUpdate;
+  try
+    for var Item in Items do
+    begin
+      if not Assigned(Item) then
+        Continue;
+      if ExistsItem(Item.Id) then
+      begin
+        Item.Free;
+        Continue;
+      end;
+      var ItemFrame: TFrame := nil;
+      if ExistsItemByName(Item.Name, ItemFrame) then
+      begin
+        AddAsVersion(ItemFrame, Item);
+        Continue;
+      end;
+      case ViewStyle of
+        TViewStyle.Card:
+          begin
+            var Frame := TFramePackageItem.Create(FlowLayoutItems);
+            Frame.Fill(Item, IsInstalled(Item.Id));
+            Frame.Parent := FlowLayoutItems;
+            Frame.OnAction := FOnItemAction;
+          end;
+        TViewStyle.List:
+          begin
+            var Frame := TFramePackageItemList.Create(FlowLayoutItems);
+            Frame.Fill(Item, IsInstalled(Item.Id));
+            Frame.Parent := FlowLayoutItems;
+            Frame.Align := TAlignLayout.Top;
+            Frame.OnAction := FOnItemAction;
+            Frame.OnChangeCheck := FOnItemChangeCheck;
+          end;
+      end;
+    end;
+  finally
+    FlowLayoutItems.EndUpdate;
+  end;
+  FlowLayoutItems.RecalcSize;
+  if not More then
+    VertScrollBoxContent.ViewportPosition := TPointF.Create(0, 0);
+  if FlowLayoutItems.ControlsCount <= 0 then
+  begin
+    LabelInfo.Text := 'No results';
+    LayoutInfo.Visible := True;
+  end
+  else
+    LayoutInfo.Visible := False;
+  NeedMore((Length(Items) >= PageSize) and (FCategory <> '-1000'));
+
+  LoadingEnd;
+  CalcSelected;
 end;
 
 procedure TFormMain.MenuItemD103Click(Sender: TObject);
@@ -407,17 +581,34 @@ end;
 
 procedure TFormMain.FlowLayoutItemsResized(Sender: TObject);
 begin
-  var Cnt := Trunc((FlowLayoutItems.Width) / (CardMinW + 20));
-  var CardW := Max(CardMinW, (FlowLayoutItems.Width) / Cnt);
-  if CardW = Infinity then
-    CardW := CardMinW;
-  var H: Single := 0;
-  for var Control in FlowLayoutItems.Controls do
-  begin
-    Control.Width := CardW - 20;
-    H := Max(H, Control.Position.Y + Control.Height);
+  if FLoading then
+    Exit;
+  case ViewStyle of
+    TViewStyle.Card:
+      begin
+        var Cnt := Trunc((FlowLayoutItems.Width) / (CardMinW + 20));
+        var CardW := Max(CardMinW, (FlowLayoutItems.Width) / Cnt);
+        if CardW = Infinity then
+          CardW := CardMinW;
+        var H: Single := 0;
+        for var Control in FlowLayoutItems.Controls do
+        begin
+          Control.Width := CardW - 20;
+          H := Max(H, Control.Position.Y + Control.Height);
+        end;
+        FlowLayoutItems.Height := H;
+      end;
+    TViewStyle.List:
+      begin
+        var H: Single := 0;
+        for var Control in FlowLayoutItems.Controls do
+        begin
+          Control.Width := FlowLayoutItems.Width - 20;
+          H := Max(H, Control.Position.Y + Control.Height);
+        end;
+        FlowLayoutItems.Height := H;
+      end;
   end;
-  FlowLayoutItems.Height := H;
 end;
 
 procedure TFormMain.AddToInstall(const ItemId: string);
@@ -532,6 +723,26 @@ begin
     end;
 end;
 
+procedure TFormMain.SetViewStyle(const Value: TViewStyle);
+begin
+  if FViewStyle = Value then
+    Exit;
+  FViewStyle := Value;
+  case FViewStyle of
+    TViewStyle.Card:
+      begin
+        FlowLayoutItems.VerticalGap := 20;
+        FlowLayoutItems.HorizontalGap := 20;
+      end;
+    TViewStyle.List:
+      begin
+        FlowLayoutItems.VerticalGap := 5;
+        FlowLayoutItems.HorizontalGap := 20;
+      end;
+  end;
+  LoadPackages(False);
+end;
+
 procedure TFormMain.SetOrder(const Value: Integer);
 begin
   FGlobalOrder := Value;
@@ -582,13 +793,15 @@ end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
+  {$IFDEF MSWINDOWS}
   try
     SetWindowColorModeAsSystem;
   except
     // never mind
   end;
-  FPool := TThreadPool.Create;
+  {$ENDIF}
   FGetItCmd := TGetItCmd.Create;
+  FLoading := False;
   ClearItems;
   PopupMenuServerList.Clear;
   FIDEList := TIDEList.List;
@@ -621,7 +834,9 @@ begin
       Item.ImageIndex := 0;
       PopupMenuServerList.AddObject(Item);
     end;
+  LayoutSelect.Visible := False;
   EditSearch.DisableDisappear := True;
+  SetViewStyle(TViewStyle.Card);
   SetOrder(0);
   SetPers('1');
   SetCurrentIDE('');
@@ -683,7 +898,6 @@ end;
 
 procedure TFormMain.FormDestroy(Sender: TObject);
 begin
-  FPool.Free;
   FGetItCmd.Free;
 end;
 
@@ -753,6 +967,22 @@ begin
     SetOrder(0);
   end;
   LoadPackages(False);
+end;
+
+procedure TFormMain.RadioButtonViewCardChange(Sender: TObject);
+begin
+  if RadioButtonViewCard.IsChecked then
+  begin
+    ViewStyle := TViewStyle.Card;
+  end
+  else if RadioButtonViewList.IsChecked then
+  begin
+    ViewStyle := TViewStyle.List;
+  end
+  else
+  begin
+    ViewStyle := TViewStyle.Card;
+  end;
 end;
 
 procedure TFormMain.TimerSearchTimer(Sender: TObject);

@@ -10,7 +10,6 @@ object FramePackageItemFull: TFramePackageItemFull
     Size.Height = 734.000000000000000000
     Size.PlatformDefault = False
     Stroke.Kind = None
-    OnClick = ButtonCloseClick
   end
   object RectangleBG: TRectangle
     Align = Fit
@@ -86,14 +85,16 @@ object FramePackageItemFull: TFramePackageItemFull
           TabOrder = 0
         end
         object ButtonClose: TButton
+          Action = ActionClose
           Align = Right
+          ImageIndex = -1
           Position.X = 341.000000000000000000
           Size.Width = 32.000000000000000000
           Size.Height = 32.000000000000000000
           Size.PlatformDefault = False
           StyleLookup = 'buttonstyledownload'
           TabOrder = 1
-          OnClick = ButtonCloseClick
+          TextSettings.Trimming = None
           object Path2: TPath
             Align = Center
             Data.Path = {
@@ -178,7 +179,7 @@ object FramePackageItemFull: TFramePackageItemFull
             'The library provides access to the API of the OpenAI service, on' +
             ' the basis of which ChatGPT works and, for example, the generati' +
             'on of images from text using DALL-E.'
-          TabOrder = 6
+          TabOrder = 8
         end
         object Label1: TLabel
           Align = Top
@@ -192,7 +193,7 @@ object FramePackageItemFull: TFramePackageItemFull
           TextSettings.FontColor = xE6FFFFFF
           TextSettings.WordWrap = False
           Text = 'Description'
-          TabOrder = 5
+          TabOrder = 7
         end
         object Label2: TLabel
           Align = Top
@@ -207,7 +208,7 @@ object FramePackageItemFull: TFramePackageItemFull
           TextSettings.FontColor = xE6FFFFFF
           TextSettings.WordWrap = False
           Text = 'Tags'
-          TabOrder = 2
+          TabOrder = 4
         end
         object LabelTags: TLabel
           Align = Top
@@ -225,13 +226,13 @@ object FramePackageItemFull: TFramePackageItemFull
             'The library provides access to the API of the OpenAI service, on' +
             ' the basis of which ChatGPT works and, for example, the generati' +
             'on of images from text using DALL-E.'
-          TabOrder = 3
+          TabOrder = 5
         end
         object Label3: TLabel
           Align = Top
           StyledSettings = [Style]
           Margins.Top = 20.000000000000000000
-          Position.Y = 278.000000000000000000
+          Position.Y = 353.000000000000000000
           Size.Width = 467.000000000000000000
           Size.Height = 38.000000000000000000
           Size.PlatformDefault = False
@@ -244,11 +245,11 @@ object FramePackageItemFull: TFramePackageItemFull
         end
         object FlowLayoutPlatforms: TFlowLayout
           Align = Top
-          Position.Y = 316.000000000000000000
+          Position.Y = 391.000000000000000000
           Size.Width = 467.000000000000000000
           Size.Height = 105.000000000000000000
           Size.PlatformDefault = False
-          TabOrder = 7
+          TabOrder = 9
           Justify = Left
           JustifyLastLine = Left
           FlowDirection = LeftToRight
@@ -831,13 +832,13 @@ object FramePackageItemFull: TFramePackageItemFull
           TextSettings.FontColor = xE6FFFFFF
           TextSettings.WordWrap = False
           Text = 'Info'
-          TabOrder = 4
+          TabOrder = 6
         end
         object EditId: TEdit
           Touch.InteractiveGestures = [LongTap, DoubleTap]
           Align = Top
           StyleLookup = 'transparentedit'
-          TabOrder = 9
+          TabOrder = 11
           ReadOnly = True
           TextSettings.Font.Family = 'Roboto'
           TextSettings.Font.Size = 14.000000000000000000
@@ -852,7 +853,7 @@ object FramePackageItemFull: TFramePackageItemFull
           Align = Top
           StyledSettings = [Style]
           Margins.Top = 20.000000000000000000
-          Position.Y = 441.000000000000000000
+          Position.Y = 516.000000000000000000
           Size.Width = 467.000000000000000000
           Size.Height = 38.000000000000000000
           Size.PlatformDefault = False
@@ -867,16 +868,46 @@ object FramePackageItemFull: TFramePackageItemFull
           Touch.InteractiveGestures = [LongTap, DoubleTap]
           Align = Top
           StyleLookup = 'transparentedit'
-          TabOrder = 8
+          TabOrder = 10
           ReadOnly = True
           TextSettings.Font.Family = 'Roboto'
           TextSettings.Font.Size = 14.000000000000000000
           TextSettings.FontColor = xFF9095AF
-          Position.Y = 479.000000000000000000
+          Position.Y = 554.000000000000000000
           Size.Width = 467.000000000000000000
           Size.Height = 22.000000000000000000
           Size.PlatformDefault = False
           StyledSettings = [Style]
+        end
+        object Label11: TLabel
+          Align = Top
+          StyledSettings = [Style]
+          Margins.Top = 20.000000000000000000
+          Position.Y = 278.000000000000000000
+          Size.Width = 467.000000000000000000
+          Size.Height = 38.000000000000000000
+          Size.PlatformDefault = False
+          TextSettings.Font.Family = 'Roboto'
+          TextSettings.Font.Size = 20.000000000000000000
+          TextSettings.FontColor = xE6FFFFFF
+          TextSettings.WordWrap = False
+          Text = 'Dependencies'
+          TabOrder = 2
+        end
+        object LabelDependencies: TLabel
+          Align = Top
+          AutoSize = True
+          StyledSettings = [Style]
+          Position.Y = 316.000000000000000000
+          Size.Width = 467.000000000000000000
+          Size.Height = 17.000000000000000000
+          Size.PlatformDefault = False
+          TextSettings.Font.Family = 'Roboto'
+          TextSettings.Font.Size = 14.000000000000000000
+          TextSettings.FontColor = xFF9095AF
+          TextSettings.VertAlign = Leading
+          Text = 'Lib1, Lib2, Lib3'
+          TabOrder = 3
         end
       end
     end
@@ -931,6 +962,7 @@ object FramePackageItemFull: TFramePackageItemFull
         TabOrder = 4
         Text = 'INSTALL'
         TextSettings.Font.Size = 13.000000000000000000
+        TextSettings.Trimming = None
         OnClick = ButtonInstallClick
       end
       object ButtonWebSite: TButton
@@ -947,6 +979,7 @@ object FramePackageItemFull: TFramePackageItemFull
         TabOrder = 3
         Text = 'Web Site'
         TextSettings.Font.Size = 13.000000000000000000
+        TextSettings.Trimming = None
         OnClick = ButtonWebSiteClick
         object CircleGitHub: TCircle
           Fill.Color = claBlack
@@ -1014,6 +1047,7 @@ object FramePackageItemFull: TFramePackageItemFull
         StyleLookup = 'buttonstyledownload'
         TabOrder = 2
         TextSettings.Font.Size = 13.000000000000000000
+        TextSettings.Trimming = None
         OnClick = ButtonBuyClick
         object Path1: TPath
           Align = Left
@@ -1074,6 +1108,7 @@ object FramePackageItemFull: TFramePackageItemFull
         StyleLookup = 'buttonstyledownload'
         TabOrder = 1
         TextSettings.Font.Size = 13.000000000000000000
+        TextSettings.Trimming = None
         OnClick = ButtonDownloadClick
         object Path3: TPath
           Align = Left
@@ -1100,6 +1135,14 @@ object FramePackageItemFull: TFramePackageItemFull
           WrapMode = Fit
         end
       end
+    end
+  end
+  object ActionListInfo: TActionList
+    Left = 472
+    Top = 352
+    object ActionClose: TAction
+      ShortCut = 27
+      OnExecute = ActionCloseExecute
     end
   end
 end

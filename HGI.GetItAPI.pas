@@ -36,8 +36,11 @@ const
 implementation
 
 uses
-  Winapi.Windows, System.Net.HttpClient, System.Net.Mime, System.Classes,
-  Rest.Json, System.Win.Registry, System.IOUtils;
+  {$IFDEF MSWINDOWS}
+  Winapi.Windows, System.Win.Registry,
+  {$ENDIF}
+  System.Net.HttpClient, System.Net.Mime, System.Classes,
+  Rest.Json, System.IOUtils;
 
 { TGetIt }
 
@@ -73,9 +76,10 @@ begin
       if Count > 0 then
         Body.AddField('End', Count.ToString);
       Body.AddField('Order', Order.ToString);
-      Body.AddField('Language', '0');
+      //Body.AddField('Language', '0');
       Body.AddField('CatalogVersion', '5');
-      Body.AddField('ProductSKU', '52');
+      Body.AddField('CalculateSize', '1');
+      Body.AddField('ProductSKU', '52'); //idk why 52
       Body.AddField('Personalities', Personalities); // delphi  1
       //Body.AddField('Identity', 'C++'); //DELPHI
       Body.AddField('Version', Version);
@@ -144,6 +148,7 @@ end;
 { TIDEList }
 
 class function TIDEList.List: TArray<TIDEEntity>;
+{$IFDEF MSWINDOWS}
 
   function ReadSection(Reg: TRegistry; const Section: string; out Entity: TIDEEntity): Boolean;
   begin
@@ -204,6 +209,11 @@ begin
     Reg.Free;
   end;
 end;
+{$ELSE}
+begin
+  //
+end;
+{$ENDIF}
 
 { TIDEEntity }
 
@@ -218,6 +228,7 @@ begin
 end;
 
 procedure TIDEEntity.LoadInstalled(out Items: TPackages; const Search: string);
+{$IFDEF MSWINDOWS}
 var
   Reg: TRegistry;
   SearchStr: string;
@@ -348,6 +359,11 @@ begin
     Items.Free;
   end;
 end;
+{$ELSE}
+begin
+
+end;
+{$ENDIF}
 
 end.
 
