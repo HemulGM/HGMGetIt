@@ -3,12 +3,12 @@
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes,
-  System.Variants, FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs,
-  FMX.Layouts, FMX.Objects, FMX.Controls.Presentation, FMX.Edit, FMX.StdCtrls,
-  HGI.View.Item, HGI.GetItAPI, FMX.Ani, FMX.Filter.Effects, FMX.Menus, HGI.Item,
-  System.Threading, HGI.GetItCmd, System.ImageList, FMX.ImgList, HGM.LineStorage,
-  HGI.View.ItemList, FMX.Effects;
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+  FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Layouts,
+  FMX.Objects, FMX.Controls.Presentation, FMX.Edit, FMX.StdCtrls, HGI.View.Item,
+  HGI.GetItAPI, FMX.Ani, FMX.Filter.Effects, FMX.Menus, HGI.Item,
+  System.Threading, HGI.GetItCmd, System.ImageList, FMX.ImgList,
+  HGI.View.ItemList, FMX.Effects, HGM.LineStorage;
 
 {$SCOPEDENUMS ON}
 
@@ -110,6 +110,7 @@ type
     ButtonInstall: TButton;
     ButtonUninstall: TButton;
     ButtonDownload: TButton;
+    RadioButtonBooks: TRadioButton;
     procedure EditSearchChangeTracking(Sender: TObject);
     procedure LayoutHeadResized(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -174,6 +175,7 @@ type
     procedure ShowSelectPanel;
     function ExistsItemByName(const ItemName: string; var Item: TFrame): Boolean;
     procedure AddAsVersion(Frame: TFrame; Item: TGetItPackage);
+    procedure UpdateCategories(Items: TCategories);
     property ViewStyle: TViewStyle read FViewStyle write SetViewStyle;
   end;
 
@@ -191,9 +193,7 @@ implementation
 uses
   System.Math, System.IniFiles, System.IOUtils,
   {$IFDEF MSWINDOWS}
-  Winapi.Windows,
-  DarkModeApi.FMX, Winapi.ShellAPI,
-  FMX.Platform.Win,
+  Winapi.Windows, DarkModeApi.FMX, Winapi.ShellAPI, FMX.Platform.Win,
   {$ENDIF}
   HGM.ObjectHolder;
 
@@ -419,6 +419,7 @@ procedure TFormMain.LoadPackages(More: Boolean);
 begin
   if not FInited then
     Exit;
+
   FLoading := True;
   if not More then
     FOffset := 0
@@ -440,7 +441,13 @@ begin
     begin
       try
         var Items: TPackages := nil;
+        var Categories: TCategories := nil;
         try
+          if not More then
+          begin
+            TGetIt.Categories(Categories, Pers);
+          end;
+
           if Category <> '-1000' then
             TGetIt.Get(Items, Category, Order, Pers, Search, PageSize, Offset)
           else
@@ -458,9 +465,14 @@ begin
               end
               else
                 RefillList([], More);
+              if Assigned(Categories) then
+              begin
+                UpdateCategories(Categories);
+              end;
             end);
         finally
           Items.Free;
+          Categories.Free;
         end;
       except
         Queue(
@@ -846,7 +858,7 @@ begin
   VertScrollBoxContent.AniCalculations.Animation := True;
 
   RadioButtonNew.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('new');
-  RadioButtonNew.TagString := '98';
+  RadioButtonNew.TagString := '98; 35';
   RadioButtonPromoted.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('promoted');
   RadioButtonPromoted.TagString := '998';
   RadioButtonAll.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('all');
@@ -889,6 +901,8 @@ begin
   RadioButtonFonts.TagString := '14';
   RadioButtonPython.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('python');
   RadioButtonPython.TagString := '47';
+  RadioButtonBooks.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('books');
+  RadioButtonBooks.TagString := '1008';
 
   RadioButtonNew.IsChecked := True;
   LayoutMore.Visible := False;
@@ -993,6 +1007,32 @@ begin
     FLastSearch := EditSearch.Text;
     LoadPackages(False);
   end;
+end;
+
+procedure TFormMain.UpdateCategories(Items: TCategories);
+begin
+  for var Control in VertScrollBoxCats.Content.Controls do
+    if Control is TRadioButton then
+    begin
+      var Button := TRadioButton(Control);
+      var IDs := Button.TagString.Replace(' ', '', [rfReplaceAll]).Split([';']);
+      var Founded := False;
+      for var Item in Items.Items do
+      begin
+        for var Id in IDs do
+          if Item.Id = Id then
+          begin
+            if Id = '35' then
+              Button.StylesData['num'] := '●'
+            else
+              Button.StylesData['num'] := Item.NumElements;
+            Founded := True;
+            Break;
+          end;
+        if Founded then
+          Break;
+      end;
+    end;
 end;
 
 initialization

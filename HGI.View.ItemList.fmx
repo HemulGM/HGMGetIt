@@ -75,7 +75,6 @@ object FramePackageItemList: TFramePackageItemList
           TabOrder = 2
           Text = 'INSTALL'
           TextSettings.Font.Size = 13.000000000000000000
-          TextSettings.Trimming = None
           OnClick = ButtonInstallClick
           object ButtonInstallOpt: TButton
             Align = Right
@@ -88,7 +87,6 @@ object FramePackageItemList: TFramePackageItemList
             TabOrder = 1
             Text = 'DOWNLOAD'
             TextSettings.Font.Size = 13.000000000000000000
-            TextSettings.Trimming = None
             OnClick = ButtonInstallOptClick
           end
         end

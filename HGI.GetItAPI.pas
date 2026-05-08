@@ -11,6 +11,7 @@ type
       Url, Version: string;
     class function Get(out Items: TPackages; const Categories: string; Order: Integer; const Personalities: string; const Search: string = ''; const Count: Integer = 0; const Offset: Integer = 0): Boolean;
     class function ParseDate(const Value: string): string; static;
+    class function Categories(out Items: TCategories; const Personalities: string): Boolean; static;
   end;
 
   TIDEEntity = record
@@ -39,8 +40,8 @@ uses
   {$IFDEF MSWINDOWS}
   Winapi.Windows, System.Win.Registry,
   {$ENDIF}
-  System.Net.HttpClient, System.Net.Mime, System.Classes,
-  Rest.Json, System.IOUtils;
+  System.Net.HttpClient, System.Net.Mime, System.Classes, Rest.Json,
+  System.IOUtils;
 
 { TGetIt }
 
@@ -54,6 +55,37 @@ begin
     Result := FormatDateTime('DD.MM.YYYY', Date)
   else
     Result := 'Unkonwn';
+end;
+
+class function TGetIt.Categories(out Items: TCategories; const Personalities: string): Boolean;
+var
+  HTTP: THTTPClient;
+begin
+  Result := False;
+  Items := nil;
+  HTTP := THTTPClient.Create;
+  try
+    var Body := TMultipartFormData.Create;
+    var Response := TStringStream.Create('', TEncoding.UTF8);
+    try
+      Body.AddField('CatalogVersion', '5');
+      Body.AddField('CalculateSize', '1');
+      Body.AddField('ProductSKU', '52'); //idk why 52
+      Body.AddField('Personalities', Personalities); // delphi  1
+      Body.AddField('Version', Version);
+
+      if HTTP.Post(Url + '/categories/info', Body, Response).StatusCode = 200 then
+      begin
+        Items := TJson.JsonToObject<TCategories>('{ "items": ' + Response.DataString + '}');
+        Result := True;
+      end;
+    finally
+      Body.Free;
+      Response.Free;
+    end;
+  finally
+    HTTP.Free;
+  end;
 end;
 
 class function TGetIt.Get(out Items: TPackages; const Categories: string; Order: Integer; const Personalities: string; const Search: string; const Count, Offset: Integer): Boolean;
@@ -144,47 +176,64 @@ end;
 //+ 998 - Promoted
 //+ 999 - Patches and Hotfixes
 //+ 1001 - Tools
+//+ 1008 - Books
 
 { TIDEList }
 
-class function TIDEList.List: TArray<TIDEEntity>;
 {$IFDEF MSWINDOWS}
 
-  function ReadSection(Reg: TRegistry; const Section: string; out Entity: TIDEEntity): Boolean;
-  begin
-    Result := False;
-    Reg.CloseKey;
-    if not Reg.OpenKeyReadOnly('Software\Embarcadero\BDS\' + Section) then
-      Exit;
-    if not Reg.KeyExists('CatalogRepository') then
-      Exit;
-    try
-      Entity.Version := Section;
-      Entity.RootDir := Reg.ReadString('RootDir');
-      if not Reg.OpenKeyReadOnly('Personalities') then
-        Exit;
-      Entity.Personalities := Reg.ReadString('');
-      Reg.CloseKey;
-      if not Reg.OpenKeyReadOnly('Software\Embarcadero\BDS\' + Section + '\CatalogRepository') then
-        Exit;
-      Entity.ServiceUrl := Reg.ReadString('ServiceUrl');
-      if Reg.OpenKeyReadOnly('Elements') then
-      begin
-        var Elements := TStringList.Create;
-        try
-          Reg.GetKeyNames(Elements);
-          Entity.Elements := Elements.ToStringArray;
-        finally
-          Elements.Free;
-        end;
-      end;
-      Result := True;
-    except
-      Exit;
-    end;
-  end;
-
+function ReadSection(Reg: TRegistry; const Section: string; out Entity: TIDEEntity): Boolean;
 begin
+  Result := False;
+  Reg.CloseKey;
+  if not Reg.OpenKeyReadOnly('Software\Embarcadero\BDS\' + Section) then
+    Exit;
+  if not Reg.KeyExists('CatalogRepository') then
+    Exit;
+  try
+    Entity.Version := Section;
+    Entity.RootDir := Reg.ReadString('RootDir');
+    if not Reg.OpenKeyReadOnly('Personalities') then
+      Exit;
+    Entity.Personalities := Reg.ReadString('');
+    Reg.CloseKey;
+    if not Reg.OpenKeyReadOnly('Software\Embarcadero\BDS\' + Section + '\CatalogRepository') then
+      Exit;
+    Entity.ServiceUrl := Reg.ReadString('ServiceUrl');
+    Reg.CloseKey;
+    if Reg.OpenKeyReadOnly('Software\Embarcadero\BDS\' + Section + '\CatalogRepository\Elements') then
+    begin
+      var Elements := TStringList.Create;
+      try
+        Reg.GetKeyNames(Elements);
+        Entity.Elements := Elements.ToStringArray;
+      finally
+        Elements.Free;
+      end;
+      Reg.CloseKey;
+    end;
+    if Reg.OpenKeyReadOnly('Software\Embarcadero\BDS\' + Section + '\CatalogRepository\Packages') then
+    begin
+      var Packages := TStringList.Create;
+      try
+        Reg.GetKeyNames(Packages);
+        Entity.Elements := Entity.Elements + Packages.ToStringArray;
+      finally
+        Packages.Free;
+      end;
+      Reg.CloseKey;
+    end;
+    Result := True;
+  except
+    Exit;
+  end;
+end;
+
+{$ENDIF}
+
+class function TIDEList.List: TArray<TIDEEntity>;
+begin
+  {$IFDEF MSWINDOWS}
   Result := [];
   var Reg := TRegistry.Create(KEY_QUERY_VALUE);
   try
@@ -208,12 +257,8 @@ begin
   finally
     Reg.Free;
   end;
+  {$ENDIF}
 end;
-{$ELSE}
-begin
-  //
-end;
-{$ENDIF}
 
 { TIDEEntity }
 
@@ -233,122 +278,203 @@ var
   Reg: TRegistry;
   SearchStr: string;
 
-  function ReadItem(Item: TGetItPackage): Boolean;
+  function ReadInteger(const Key: string; Default: Integer = 0): Integer;
   begin
-    Result := True;
-    Item.Name := Reg.ReadString('Name');
-    Item.Tags := Reg.ReadString('Tags');
-    Item.Description := Reg.ReadString('Description');
-    if not SearchStr.IsEmpty then
-    begin
-      if not Item.Name.ToLower.Contains(SearchStr) then
-        if not Item.Tags.ToLower.Contains(SearchStr) then
-          if not Item.Description.ToLower.Contains(SearchStr) then
-            Exit(False);
-    end;
-
-    Item.LibCode := Reg.ReadInteger('Code').ToString;
-    Item.LibCodeName := Reg.ReadString('CodeName');
-    Item.AllUsers := Reg.ReadInteger('AllUsers').ToString;
-    Item.Compatibility := Reg.ReadInteger('Compatibility').ToString;
-    Item.Icon := Reg.ReadString('Icon');
-    Item.Image := Reg.ReadString('Image');
-    Item.LibGenerateTmpUrl := Reg.ReadInteger('LibGenerateTmpUrl').ToString;
-    Item.LibLicenseName := Reg.ReadString('LicenseName');
-    Item.LicenseState := Reg.ReadInteger('LibGenerateTmpUrl').ToString;
-    Item.Modified := FormatDateTime('YYYY-MM-DD', Reg.ReadDateTime('Modified'));
-    Item.PurchaseUrl := Reg.ReadString('PurchaseUrl');
-    Item.RequireElevation := Reg.ReadInteger('RequireElevation').ToString;
-    Item.State := Reg.ReadInteger('State').ToString;
-    Item.TargetPath := Reg.ReadString('TargetPath');
-    Item.TypeDescription := Reg.ReadString('TypeDescription');
-    Item.TypeId := Reg.ReadInteger('TypeId').ToString;
-    Item.Vendor := Reg.ReadString('Vendor');
-    Item.VendorUrl := Reg.ReadString('VendorUrl');
-    Item.Version := Reg.ReadString('Version');
-    Item.LibUrl := Reg.ReadString('Url');
-    var List := TStringList.Create;
     try
-      var Tmp := Reg.ReadString('OSes');
-      List.Delimiter := ';';
-      List.DelimitedText := Tmp;
-      var LibOSes: TArray<TLibOS>;
-      try
-        for var SItem in List do
-        begin
-          var Arr := SItem.Split(['=']);
-          if Length(Arr) > 1 then
-          begin
-            var OS := TLibOS.Create;
-            OS.Id := Arr[0];
-            OS.Name := Arr[1];
-            SetLength(LibOSes, Length(LibOSes) + 1);
-            LibOSes[High(LibOSes)] := OS;
-          end;
-        end;
-      finally
-        Item.LibOSes := LibOSes;
-      end;
-
-      Tmp := Reg.ReadString('Platforms');
-      List.Delimiter := ';';
-      List.DelimitedText := Tmp;
-      var Platforms: TArray<TLibPlatform>;
-      try
-        for var SItem in List do
-        begin
-          var
-            Arr := SItem.Split(['=']);
-          if Length(Arr) > 1 then
-          begin
-            var LibPlatform := TLibPlatform.Create;
-            LibPlatform.Id := Arr[0];
-            LibPlatform.Name := Arr[1];
-            SetLength(Platforms, Length(Platforms) + 1);
-            Platforms[High(Platforms)] := LibPlatform;
-          end;
-        end;
-      finally
-        Item.LibPlatforms := Platforms;
-      end;
-    finally
-      List.Free;
+      if Reg.ValueExists(Key) then
+        Result := Reg.ReadInteger(Key)
+      else
+        Result := Default;
+    except
+      Result := Default;
     end;
   end;
 
+  function ReadString(const Key: string; Default: string = ''): string;
+  begin
+    try
+      if Reg.ValueExists(Key) then
+        Result := Reg.ReadString(Key)
+      else
+        Result := Default;
+    except
+      Result := Default;
+    end;
+  end;
+
+  function ReadDateTime(const Key: string; Default: TDateTime = 0.0): TDateTime;
+  begin
+    try
+      if Reg.ValueExists(Key) then
+        Result := Reg.ReadDateTime(Key)
+      else
+        Result := Default;
+    except
+      Result := Default;
+    end;
+  end;
+
+  function ReadItem(Item: TGetItPackage): Boolean;
+  begin
+    Result := True;
+    try
+      if not Reg.ValueExists('Name') then
+        Exit(False);
+      Item.Name := ReadString('Name');
+      Item.Tags := ReadString('Tags');
+      Item.Description := ReadString('Description');
+      if not SearchStr.IsEmpty then
+      begin
+        if not Item.Name.ToLower.Contains(SearchStr) then
+          if not Item.Tags.ToLower.Contains(SearchStr) then
+            if not Item.Description.ToLower.Contains(SearchStr) then
+              Exit(False);
+      end;
+
+      Item.LibCode := ReadInteger('Code').ToString;
+      Item.LibCodeName := ReadString('CodeName');
+      Item.AllUsers := ReadInteger('AllUsers').ToString;
+      Item.Compatibility := ReadInteger('Compatibility').ToString;
+      Item.Icon := ReadString('Icon');
+      Item.Image := ReadString('Image');
+      Item.LibGenerateTmpUrl := ReadInteger('LibGenerateTmpUrl').ToString;
+      Item.LibLicenseName := ReadString('LicenseName');
+      Item.LicenseState := ReadInteger('LibGenerateTmpUrl').ToString;
+      Item.Modified := FormatDateTime('YYYY-MM-DD', ReadDateTime('Modified'));
+      Item.PurchaseUrl := ReadString('PurchaseUrl');
+      Item.RequireElevation := ReadInteger('RequireElevation').ToString;
+      Item.State := ReadInteger('State').ToString;
+      Item.TargetPath := ReadString('TargetPath');
+      Item.TypeDescription := ReadString('TypeDescription');
+      Item.TypeId := ReadInteger('TypeId').ToString;
+      Item.Vendor := ReadString('Vendor');
+      Item.VendorUrl := ReadString('VendorUrl');
+      Item.Version := ReadString('Version');
+      Item.LibUrl := ReadString('Url');
+      var List := TStringList.Create;
+      try
+        var Tmp := ReadString('OSes');
+        List.Delimiter := ';';
+        List.DelimitedText := Tmp;
+        var LibOSes: TArray<TLibOS>;
+        try
+          for var SItem in List do
+          begin
+            var Arr := SItem.Split(['=']);
+            if Length(Arr) > 1 then
+            begin
+              var OS := TLibOS.Create;
+              OS.Id := Arr[0];
+              OS.Name := Arr[1];
+              SetLength(LibOSes, Length(LibOSes) + 1);
+              LibOSes[High(LibOSes)] := OS;
+            end;
+          end;
+        finally
+          Item.LibOSes := LibOSes;
+        end;
+
+        Tmp := ReadString('Platforms');
+        List.Delimiter := ';';
+        List.DelimitedText := Tmp;
+        var Platforms: TArray<TLibPlatform>;
+        try
+          for var SItem in List do
+          begin
+            var
+              Arr := SItem.Split(['=']);
+            if Length(Arr) > 1 then
+            begin
+              var LibPlatform := TLibPlatform.Create;
+              LibPlatform.Id := Arr[0];
+              LibPlatform.Name := Arr[1];
+              SetLength(Platforms, Length(Platforms) + 1);
+              Platforms[High(Platforms)] := LibPlatform;
+            end;
+          end;
+        finally
+          Item.LibPlatforms := Platforms;
+        end;
+      finally
+        List.Free;
+      end;
+    except
+      Result := False;
+    end;
+  end;
+{$ENDIF}
+
+
+
 begin
+  {$IFDEF MSWINDOWS}
   Items := TPackages.Create;
   SearchStr := Search.ToLower;
-  var
-    FItems: TArray<TGetItPackage>;
+  var FItems: TArray<TGetItPackage> := [];
   try
     Reg := TRegistry.Create(KEY_QUERY_VALUE);
     try
       Reg.RootKey := HKEY_CURRENT_USER;
-      var RegRoot := RegPath + '\CatalogRepository\Elements';
-      if not Reg.OpenKeyReadOnly(RegRoot) then
-        Exit;
-      var List := TStringList.Create;
+      // Elements
       try
-        Reg.GetKeyNames(List);
-        for var Key in List do
-        begin
-          Reg.CloseKey;
-          if Reg.OpenKeyReadOnly(RegRoot + '\' + Key) then
+        var RegRoot := RegPath + '\CatalogRepository\Elements';
+        if not Reg.OpenKeyReadOnly(RegRoot) then
+          Exit;
+        var List := TStringList.Create;
+        try
+          Reg.GetKeyNames(List);
+          for var Key in List do
           begin
-            var Item := TGetItPackage.Create;
-            if not ReadItem(Item) then
+            Reg.CloseKey;
+            if Reg.OpenKeyReadOnly(RegRoot + '\' + Key) then
             begin
-              Item.Free;
-              Continue;
+              var Item := TGetItPackage.Create;
+              if not ReadItem(Item) then
+              begin
+                Item.Free;
+                Continue;
+              end;
+              Item.Id := Key;
+              SetLength(FItems, Length(FItems) + 1);
+              FItems[High(FItems)] := Item;
             end;
-            Item.Id := Key;
-            SetLength(FItems, Length(FItems) + 1);
-            FItems[High(FItems)] := Item;
           end;
+        finally
+          List.Free;
         end;
-      finally
-        List.Free;
+        Reg.CloseKey;
+      except
+      end;
+
+      // Packages
+      try
+        var RegRoot := RegPath + '\CatalogRepository\Packages';
+        if not Reg.OpenKeyReadOnly(RegRoot) then
+          Exit;
+        var List := TStringList.Create;
+        try
+          Reg.GetKeyNames(List);
+          for var Key in List do
+          begin
+            Reg.CloseKey;
+            if Reg.OpenKeyReadOnly(RegRoot + '\' + Key) then
+            begin
+              var Item := TGetItPackage.Create;
+              if not ReadItem(Item) then
+              begin
+                Item.Free;
+                Continue;
+              end;
+              Item.Id := Key;
+              SetLength(FItems, Length(FItems) + 1);
+              FItems[High(FItems)] := Item;
+            end;
+          end;
+        finally
+          List.Free;
+        end;
+        Reg.CloseKey;
+      except
       end;
     finally
       Reg.Free;
@@ -357,13 +483,10 @@ begin
   except
     Items.Items := FItems;
     Items.Free;
+    Items := nil;
   end;
+  {$ENDIF}
 end;
-{$ELSE}
-begin
-
-end;
-{$ENDIF}
 
 end.
 

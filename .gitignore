@@ -69,3 +69,4 @@ __recovery/
 modules/
 /Win32/Release/HGetIt.zip
 *.zip
+*.dsv

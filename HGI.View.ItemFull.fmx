@@ -94,7 +94,6 @@ object FramePackageItemFull: TFramePackageItemFull
           Size.PlatformDefault = False
           StyleLookup = 'buttonstyledownload'
           TabOrder = 1
-          TextSettings.Trimming = None
           object Path2: TPath
             Align = Center
             Data.Path = {
@@ -962,7 +961,6 @@ object FramePackageItemFull: TFramePackageItemFull
         TabOrder = 4
         Text = 'INSTALL'
         TextSettings.Font.Size = 13.000000000000000000
-        TextSettings.Trimming = None
         OnClick = ButtonInstallClick
       end
       object ButtonWebSite: TButton
@@ -979,7 +977,6 @@ object FramePackageItemFull: TFramePackageItemFull
         TabOrder = 3
         Text = 'Web Site'
         TextSettings.Font.Size = 13.000000000000000000
-        TextSettings.Trimming = None
         OnClick = ButtonWebSiteClick
         object CircleGitHub: TCircle
           Fill.Color = claBlack
@@ -1047,7 +1044,6 @@ object FramePackageItemFull: TFramePackageItemFull
         StyleLookup = 'buttonstyledownload'
         TabOrder = 2
         TextSettings.Font.Size = 13.000000000000000000
-        TextSettings.Trimming = None
         OnClick = ButtonBuyClick
         object Path1: TPath
           Align = Left
@@ -1108,7 +1104,6 @@ object FramePackageItemFull: TFramePackageItemFull
         StyleLookup = 'buttonstyledownload'
         TabOrder = 1
         TextSettings.Font.Size = 13.000000000000000000
-        TextSettings.Trimming = None
         OnClick = ButtonDownloadClick
         object Path3: TPath
           Align = Left

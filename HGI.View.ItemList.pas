@@ -144,11 +144,27 @@ end;
 
 function TFramePackageItemList.FormatSize(const Value: string): string;
 begin
-  var F: Single;
-  if TryStrToFloat(Value.Replace(',', FormatSettings.DecimalSeparator).Replace('.', FormatSettings.DecimalSeparator), F) then
-    Result := ' ' + Max(1, Round(F)).ToString + 'MB'
+  if Value.Contains('.') then
+  begin
+    var F: Single;
+    if TryStrToFloat(Value.Replace(',', FormatSettings.DecimalSeparator).Replace('.', FormatSettings.DecimalSeparator), F) then
+    begin
+      if F > 1024 then
+        Result := ' ' + Max(1, Round(F / 1024)).ToString + ' GB'
+      else
+        Result := ' ' + Max(1, Round(F)).ToString + ' MB';
+    end
+    else
+      Result := '';
+  end
   else
-    Result := '';
+  begin
+    var I: Integer;
+    if TryStrToInt(Value, I) then
+      Result := ' ' + Max(1, Round(I / 1024)).ToString + ' MB'
+    else
+      Result := '';
+  end;
 end;
 
 function TFramePackageItemList.GetId: string;

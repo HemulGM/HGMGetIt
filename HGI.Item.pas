@@ -3,7 +3,7 @@
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, Rest.Json.Types;
 
 {$SCOPEDENUMS ON}
 
@@ -54,7 +54,12 @@ type
 
   TLibPlatform = class(TBasicItem);
 
-  TCategory = class(TBasicItem);
+  TCategory = class(TBasicItem)
+  private
+    FNumElements: string;
+  public
+    property NumElements: string read FNumElements write FNumElements;
+  end;
 
   TPackageDependence = class
     Id: string;
@@ -102,45 +107,61 @@ type
     FVendorUrl: string;
     FVersion: string;
     FDependencies: TArray<TPackageDependence>;
+    FLibInflateSize: string;
+    FVersionTimestamp: string;
+    FTryNow: string;
+    FLangCode: string;
+    FMinClientVersion: string;
+    FLibMD5: string;
+    FExternalUrl: string;
+    FSubscription: string;
   public
     property Actions: TArray<TPackageAction> read FActions write FActions;
-    property AllUsers: string read FAllUsers write FAllUsers;
+    property AllUsers: string read FAllUsers write FAllUsers; // 0/1
     property Categories: TArray<TCategory> read FCategories write FCategories;
-    property Compatibility: string read FCompatibility write FCompatibility;
-    property Description: string read FDescription write FDescription;
-    property Icon: string read FIcon write FIcon;
-    property Id: string read FId write FId;
-    property Image: string read FImage write FImage;
+    property Compatibility: string read FCompatibility write FCompatibility; // 0
+    property Description: string read FDescription write FDescription; // text
+    property Dependencies: TArray<TPackageDependence> read FDependencies write FDependencies;
+    property ExternalUrl: string read FExternalUrl write FExternalUrl; // url ?
+    property Icon: string read FIcon write FIcon; // url
+    property Id: string read FId write FId; // text
+    property Image: string read FImage write FImage; // url
+    property LangCode: string read FLangCode write FLangCode; // text EN
     property LibAkamaiUrl: string read FLibAkamaiUrl write FLibAkamaiUrl;
     property LibCloudfrontUrl: string read FLibCloudfrontUrl write FLibCloudfrontUrl;
-    property LibCode: string read FLibCode write FLibCode;
-    property LibCodeName: string read FLibCodeName write FLibCodeName;
-    property LibGenerateTmpUrl: string read FLibGenerateTmpUrl write FLibGenerateTmpUrl;
-    property LibLicense: string read FLibLicense write FLibLicense;
-    property LibLicenseName: string read FLibLicenseName write FLibLicenseName;
+    property LibCode: string read FLibCode write FLibCode; // int
+    property LibCodeName: string read FLibCodeName write FLibCodeName; // text
+    property LibGenerateTmpUrl: string read FLibGenerateTmpUrl write FLibGenerateTmpUrl; // 0
+    property LibInflateSize: string read FLibInflateSize write FLibInflateSize; // 0
+    property LibLicense: string read FLibLicense write FLibLicense; // url
+    property LibLicenseName: string read FLibLicenseName write FLibLicenseName; // text
+    property LibMD5: string read FLibMD5 write FLibMD5; // text ?
     property LibOSes: TArray<TLibOS> read FLibOSes write FLibOSes;
     property LibPlatforms: TArray<TLibPlatform> read FLibPlatforms write FLibPlatforms;
     property LibProjectUrl: string read FLibProjectUrl write FLibProjectUrl;
     property LibSignAkamaiUrl: string read FLibSignAkamaiUrl write FLibSignAkamaiUrl;
     property LibSignCloudfrontUrl: string read FLibSignCloudfrontUrl write FLibSignCloudfrontUrl;
-    property LibSize: string read FLibSize write FLibSize;
-    property LibUrl: string read FLibUrl write FLibUrl;
-    property LibUrlProvider: string read FLibUrlProvider write FLibUrlProvider;
-    property LicenseState: string read FLicenseState write FLicenseState;
-    property Modified: string read FModified write FModified;
-    property Name: string read FName write FName;
+    property LibSize: string read FLibSize write FLibSize; // float 0.0
+    property LibUrl: string read FLibUrl write FLibUrl; // url
+    property LibUrlProvider: string read FLibUrlProvider write FLibUrlProvider; // url
+    property LicenseState: string read FLicenseState write FLicenseState; // 0
+    property MinClientVersion: string read FMinClientVersion write FMinClientVersion; // text ?
+    property Modified: string read FModified write FModified; //2024-01-30 13:02:33
+    property Name: string read FName write FName; // text
     property ProductVersions: TArray<TProductVersion> read FProductVersions write FProductVersions;
-    property PurchaseUrl: string read FPurchaseUrl write FPurchaseUrl;
-    property RequireElevation: string read FRequireElevation write FRequireElevation;
-    property State: string read FState write FState;
-    property Tags: string read FTags write FTags;
-    property TargetPath: string read FTargetPath write FTargetPath;
-    property TypeDescription: string read FTypeDescription write FTypeDescription;
-    property TypeId: string read FTypeId write FTypeId;
-    property Vendor: string read FVendor write FVendor;
-    property VendorUrl: string read FVendorUrl write FVendorUrl;
-    property Version: string read FVersion write FVersion;
-    property Dependencies: TArray<TPackageDependence> read FDependencies write FDependencies;
+    property PurchaseUrl: string read FPurchaseUrl write FPurchaseUrl; // url
+    property RequireElevation: string read FRequireElevation write FRequireElevation; // 0/1
+    property State: string read FState write FState; // 1
+    property Subscription: string read FSubscription write FSubscription; // 0
+    property Tags: string read FTags write FTags; // string array
+    property TargetPath: string read FTargetPath write FTargetPath; // ?
+    property TryNow: string read FTryNow write FTryNow; // 0
+    property TypeDescription: string read FTypeDescription write FTypeDescription; // text
+    property TypeId: string read FTypeId write FTypeId; // 1
+    property Vendor: string read FVendor write FVendor; // text
+    property VendorUrl: string read FVendorUrl write FVendorUrl; // url
+    property Version: string read FVersion write FVersion; // 1.0
+    property VersionTimestamp: string read FVersionTimestamp write FVersionTimestamp; // 2022-10-20T10:00:00Z
     destructor Destroy; override;
   end;
 
@@ -149,6 +170,15 @@ type
     FItems: TArray<TGetItPackage>;
   public
     property Items: TArray<TGetItPackage> read FItems write FItems;
+    destructor Destroy; override;
+  end;
+
+  TCategories = class
+  private
+    [JsonNameAttribute('items')]
+    FItems: TArray<TCategory>;
+  public
+    property Items: TArray<TCategory> read FItems write FItems;
     destructor Destroy; override;
   end;
 
@@ -185,6 +215,15 @@ end;
 { TPackages }
 
 destructor TPackages.Destroy;
+begin
+  for var Item in FItems do
+    Item.Free;
+  inherited;
+end;
+
+{ TCategories }
+
+destructor TCategories.Destroy;
 begin
   for var Item in FItems do
     Item.Free;
