@@ -755,7 +755,7 @@ object FramePackageItemFull: TFramePackageItemFull
           Size.PlatformDefault = False
           TextSettings.Font.Size = 20.000000000000000000
           TextSettings.WordWrap = False
-          Text = 'Info'
+          Text = 'Package name'
           TabOrder = 6
         end
         object EditId: TEdit
@@ -914,10 +914,10 @@ object FramePackageItemFull: TFramePackageItemFull
         object CircleGitHub: TCircle
           Fill.Kind = None
           HitTest = False
-          Position.X = 8.000000000000000000
-          Position.Y = 8.000000000000000000
-          Size.Width = 21.000000000000000000
-          Size.Height = 21.000000000000000000
+          Position.X = 12.000000000000000000
+          Position.Y = 10.000000000000000000
+          Size.Width = 18.000000000000000000
+          Size.Height = 18.000000000000000000
           Size.PlatformDefault = False
           Stroke.Kind = None
           Visible = False
@@ -953,8 +953,8 @@ object FramePackageItemFull: TFramePackageItemFull
               020000009B59A34334B3EF430200000033F3CF43CD8CE043020000000000F043
               CD8CB543020000000000F0439AD98243020000000000F043CDCC064302000000
               9AD9BD4300000042020000000000804300000042030000000000804300000042}
-            Size.Width = 21.000000000000000000
-            Size.Height = 21.000000000000000000
+            Size.Width = 18.000000000000000000
+            Size.Height = 18.000000000000000000
             Size.PlatformDefault = False
             WrapMode = Fit
           end
@@ -962,10 +962,10 @@ object FramePackageItemFull: TFramePackageItemFull
         object CircleSite: TCircle
           Fill.Kind = None
           HitTest = False
-          Position.X = 8.000000000000000000
-          Position.Y = 8.000000000000000000
-          Size.Width = 21.000000000000000000
-          Size.Height = 21.000000000000000000
+          Position.X = 12.000000000000000000
+          Position.Y = 10.000000000000000000
+          Size.Width = 18.000000000000000000
+          Size.Height = 18.000000000000000000
           Size.PlatformDefault = False
           Stroke.Kind = None
           object PathLabelSite: TPathLabel
@@ -1011,8 +1011,8 @@ object FramePackageItemFull: TFramePackageItemFull
               CB2E8C410000B041020000000000B041CB2E8C41020000000000B04100004041
               020000000000B041D544CF4002000000CB2E8C41000000400200000000004041
               00000040}
-            Size.Width = 21.000000000000000000
-            Size.Height = 21.000000000000000000
+            Size.Width = 18.000000000000000000
+            Size.Height = 18.000000000000000000
             Size.PlatformDefault = False
             WrapMode = Fit
           end
@@ -1034,7 +1034,7 @@ object FramePackageItemFull: TFramePackageItemFull
         TextSettings.Font.Size = 13.000000000000000000
         OnClick = ButtonBuyClick
         object Path1: TPathLabel
-          Align = Left
+          Align = Center
           Data.Path = {
             41000000000000000000C0400000804102000000CDCC9C400000804102000000
             00008040333387410200000000008040000090410200000000008040CDCC9841
@@ -1065,9 +1065,7 @@ object FramePackageItemFull: TFramePackageItemFull
           Margins.Top = 10.000000000000000000
           Margins.Right = 10.000000000000000000
           Margins.Bottom = 10.000000000000000000
-          Position.X = 10.000000000000000000
-          Position.Y = 10.000000000000000000
-          Size.Width = 18.000000000000000000
+          Size.Width = 16.000000000000000000
           Size.Height = 18.000000000000000000
           Size.PlatformDefault = False
           WrapMode = Fit

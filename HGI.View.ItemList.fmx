@@ -58,13 +58,14 @@ object FramePackageItemList: TFramePackageItemList
           Margins.Left = 10.000000000000000000
           Margins.Right = 10.000000000000000000
           Position.X = 10.000000000000000000
-          Position.Y = 20.000000000000000000
+          Position.Y = 22.000000000000000000
           Size.Width = 720.000000000000000000
-          Size.Height = 20.000000000000000000
+          Size.Height = 18.000000000000000000
           Size.PlatformDefault = False
           TextSettings.Font.Family = 'Roboto'
           TextSettings.Font.Size = 14.000000000000000000
           TextSettings.FontColor = xFF9095AF
+          TextSettings.WordWrap = False
           Text = 
             'The library provides access to the API of the OpenAI service, on' +
             ' the basis of which ChatGPT works and, for example, the generati' +
@@ -95,7 +96,7 @@ object FramePackageItemList: TFramePackageItemList
           Margins.Right = 10.000000000000000000
           Position.X = 667.000000000000000000
           Size.Width = 63.000000000000000000
-          Size.Height = 20.000000000000000000
+          Size.Height = 22.000000000000000000
           Size.PlatformDefault = False
           TextSettings.Font.Family = 'Roboto'
           TextSettings.FontColor = xC89095AF
@@ -137,7 +138,7 @@ object FramePackageItemList: TFramePackageItemList
             Margins.Left = -24.000000000000000000
             Position.X = -24.000000000000000000
             Size.Width = 16.000000000000000000
-            Size.Height = 20.000000000000000000
+            Size.Height = 22.000000000000000000
             Size.PlatformDefault = False
             WrapMode = Fit
           end
@@ -148,7 +149,7 @@ object FramePackageItemList: TFramePackageItemList
           Margins.Left = 10.000000000000000000
           Margins.Right = 10.000000000000000000
           Size.Width = 623.000000000000000000
-          Size.Height = 20.000000000000000000
+          Size.Height = 22.000000000000000000
           Size.PlatformDefault = False
           TextSettings.Font.Family = 'Roboto'
           TextSettings.Font.Size = 17.000000000000000000
@@ -167,9 +168,9 @@ object FramePackageItemList: TFramePackageItemList
       Padding.Bottom = 2.000000000000000000
       Margins.Top = 10.000000000000000000
       Position.X = 40.000000000000000000
-      Position.Y = 58.000000000000000000
+      Position.Y = 56.000000000000000000
       Size.Width = 920.000000000000000000
-      Size.Height = 20.000000000000000000
+      Size.Height = 22.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 1
       object PathWindows: TPathLabel
@@ -190,7 +191,7 @@ object FramePackageItemList: TFramePackageItemList
         Position.X = 25.000000000000000000
         Position.Y = 2.000000000000000000
         Size.Width = 20.000000000000000000
-        Size.Height = 16.000000000000000000
+        Size.Height = 18.000000000000000000
         Size.PlatformDefault = False
         WrapMode = Fit
       end
@@ -253,7 +254,7 @@ object FramePackageItemList: TFramePackageItemList
         Position.X = 113.000000000000000000
         Position.Y = 2.000000000000000000
         Size.Width = 20.000000000000000000
-        Size.Height = 16.000000000000000000
+        Size.Height = 18.000000000000000000
         Size.PlatformDefault = False
         WrapMode = Fit
       end
@@ -324,7 +325,7 @@ object FramePackageItemList: TFramePackageItemList
         Position.X = 91.000000000000000000
         Position.Y = 2.000000000000000000
         Size.Width = 20.000000000000000000
-        Size.Height = 16.000000000000000000
+        Size.Height = 18.000000000000000000
         Size.PlatformDefault = False
         WrapMode = Fit
       end
@@ -572,7 +573,7 @@ object FramePackageItemList: TFramePackageItemList
         Position.X = 69.000000000000000000
         Position.Y = 2.000000000000000000
         Size.Width = 20.000000000000000000
-        Size.Height = 16.000000000000000000
+        Size.Height = 18.000000000000000000
         Size.PlatformDefault = False
         WrapMode = Fit
       end
@@ -618,7 +619,7 @@ object FramePackageItemList: TFramePackageItemList
         Position.X = 47.000000000000000000
         Position.Y = 2.000000000000000000
         Size.Width = 20.000000000000000000
-        Size.Height = 16.000000000000000000
+        Size.Height = 18.000000000000000000
         Size.PlatformDefault = False
         WrapMode = Fit
       end
@@ -626,7 +627,7 @@ object FramePackageItemList: TFramePackageItemList
         Align = Client
         Opacity = 0.500000000000000000
         Size.Width = 783.000000000000000000
-        Size.Height = 16.000000000000000000
+        Size.Height = 18.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
         TextSettings.FontColor = xC89095AF
@@ -645,7 +646,7 @@ object FramePackageItemList: TFramePackageItemList
         Position.X = 2.000000000000000000
         Position.Y = 2.000000000000000000
         Size.Width = 16.000000000000000000
-        Size.Height = 16.000000000000000000
+        Size.Height = 18.000000000000000000
         Size.PlatformDefault = False
       end
       object Line1: TLine
@@ -657,7 +658,7 @@ object FramePackageItemList: TFramePackageItemList
         Position.X = 21.000000000000000000
         Position.Y = 2.000000000000000000
         Size.Width = 1.000000000000000000
-        Size.Height = 16.000000000000000000
+        Size.Height = 18.000000000000000000
         Size.PlatformDefault = False
         Stroke.Color = x28FFFFFF
       end
@@ -694,7 +695,7 @@ object FramePackageItemList: TFramePackageItemList
       StyledSettings = [Family, Style, FontColor]
       Opacity = 0.500000000000000000
       Position.X = 805.000000000000000000
-      Position.Y = 73.000000000000000000
+      Position.Y = 75.000000000000000000
       Size.Width = 155.000000000000000000
       Size.Height = 11.000000000000000000
       Size.PlatformDefault = False
