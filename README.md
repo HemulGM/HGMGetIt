@@ -11,4 +11,4 @@
 4. The regular package manager is used (getitcmd.exe)
 5. Official installation servers are used (for a specific IDE)
 
-![preview](https://github.com/HemulGM/HGMGetIt/blob/main/preview.png?raw=true)
+![preview](https://raw.githubusercontent.com/HemulGM/HGMGetIt/refs/heads/main/preview.png)
