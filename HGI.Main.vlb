@@ -422,14 +422,11 @@ Coordinates=888,690,90,58
 [FramePackageItem6.ButtonInstall]
 Coordinates=1136,418,208,58
 
-[LineStoragePath]
+[]
 Coordinates=1750,500,110,80
 Visible=True
 LayerNames=NewLayer0
 ExplicitSubNodes=Lines['new'];Self.Lines['new']
-
-[]
-Coordinates=618,214,62,58
 
 [Module Settings]
 ModelLayerNames=NewLayer0

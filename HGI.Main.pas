@@ -67,7 +67,6 @@ type
     MenuItemD103: TMenuItem;
     RadioButtonInstalled: TRadioButton;
     ImageList16: TImageList;
-    LineStoragePath: TLineStorage;
     RadioButtonPlatforms: TRadioButton;
     EditSearch: TEdit;
     ClearEditButtonSearch: TClearEditButton;
@@ -126,6 +125,13 @@ type
     LabelTitle: TLabel;
     LayoutIcon: TLayout;
     ImageIcon: TImage;
+    FrameDetailVersion: TFramePackageItemFull;
+    LayoutVersion: TLayout;
+    Layout7: TLayout;
+    ButtonCloseVersion: TButton;
+    Label3: TLabel;
+    PathLabel2: TPathLabel;
+    PathLabel3: TPathLabel;
     procedure EditSearchChangeTracking(Sender: TObject);
     procedure LayoutHeadResized(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -148,6 +154,7 @@ type
     procedure CheckBoxSelectAllChange(Sender: TObject);
     procedure VertScrollBoxCatsViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
     procedure ComboBoxThemeChange(Sender: TObject);
+    procedure ButtonCloseVersionClick(Sender: TObject);
   private
     FInited: Boolean;
     FCategory: string;
@@ -194,6 +201,8 @@ type
     procedure AddAsVersion(Frame: TFrame; Item: TGetItPackage);
     procedure UpdateCategories(Items: TCategories);
     procedure FOnItemClick(Sender: TObject);
+    procedure CloseVersion;
+    procedure ShowVersion(Sender: TObject; Item: TGetItPackage);
     property ViewStyle: TViewStyle read FViewStyle write SetViewStyle;
   protected
     procedure DoOnSettingChange; override;
@@ -212,6 +221,7 @@ implementation
 
 uses
   System.Math, System.IniFiles, System.IOUtils, WinUI3.Style, WinUI3.Dialogs,
+  HGI.DM.Store,
   {$IFDEF MSWINDOWS}
   Winapi.Windows, Winapi.ShellAPI, FMX.Platform.Win, System.Messaging,
   {$ENDIF}
@@ -287,6 +297,17 @@ begin
   FloatAnimationShd.Inverse := True;
   FloatAnimationShd.StartFromCurrent := True;
   FloatAnimationShd.Start;
+end;
+
+procedure TFormMain.ButtonCloseVersionClick(Sender: TObject);
+begin
+  CloseVersion;
+end;
+
+procedure TFormMain.CloseVersion;
+begin
+  LayoutVersion.Visible := False;
+  FrameDetail.Visible := True;
 end;
 
 procedure TFormMain.ButtonMoreClick(Sender: TObject);
@@ -376,6 +397,7 @@ end;
 
 procedure TFormMain.ClearItems;
 begin
+  CloseVersion;
   FrameDetail.Visible := False;
   LabelSelectItems.Visible := True;
   FlowLayoutItems.BeginUpdate;
@@ -579,9 +601,19 @@ begin
   else
     Exit;
   FrameDetail.OnAction := FOnItemAction;
+  FrameDetail.OnShowVersion := ShowVersion;
   FrameDetail.Visible := True;
   LabelSelectItems.Visible := False;
   FrameDetail.Fill(Item, IsInstalled, Versions);
+  CloseVersion;
+end;
+
+procedure TFormMain.ShowVersion(Sender: TObject; Item: TGetItPackage);
+begin
+  LayoutVersion.Visible := True;
+  FrameDetailVersion.OnAction := FOnItemAction;
+  FrameDetailVersion.Fill(Item, False, []);
+  FrameDetail.Visible := False;
 end;
 
 procedure TFormMain.RefillList(Items: TArray<TGetItPackage>; More: Boolean);
@@ -946,51 +978,51 @@ begin
   VertScrollBoxCats.AniCalculations.Animation := True;
   VertScrollBoxContent.AniCalculations.Animation := True;
 
-  RadioButtonNew.StylesData['path.Data.Data'] := LineStoragePath.GetByName('new');
+  RadioButtonNew.StylesData['path.Data.Data'] := DataModuleStore.LineStoragePath.GetByName('new');
   RadioButtonNew.TagString := '98; 35';
-  RadioButtonPromoted.StylesData['path.Data.Data'] := LineStoragePath.GetByName('promoted');
+  RadioButtonPromoted.StylesData['path.Data.Data'] := DataModuleStore.LineStoragePath.GetByName('promoted');
   RadioButtonPromoted.TagString := '998';
-  RadioButtonAll.StylesData['path.Data.Data'] := LineStoragePath.GetByName('all');
+  RadioButtonAll.StylesData['path.Data.Data'] := DataModuleStore.LineStoragePath.GetByName('all');
   RadioButtonAll.TagString := '';
-  RadioButtonInstalled.StylesData['path.Data.Data'] := LineStoragePath.GetByName('installed');
+  RadioButtonInstalled.StylesData['path.Data.Data'] := DataModuleStore.LineStoragePath.GetByName('installed');
   RadioButtonInstalled.TagString := '-1000';
-  RadioButtonLibs.StylesData['path.Data.Data'] := LineStoragePath.GetByName('lib');
+  RadioButtonLibs.StylesData['path.Data.Data'] := DataModuleStore.LineStoragePath.GetByName('lib');
   RadioButtonLibs.TagString := '1';
-  RadioButtonComponents.StylesData['path.Data.Data'] := LineStoragePath.GetByName('comps');
+  RadioButtonComponents.StylesData['path.Data.Data'] := DataModuleStore.LineStoragePath.GetByName('comps');
   RadioButtonComponents.TagString := '2';
-  RadioButtonTrial.StylesData['path.Data.Data'] := LineStoragePath.GetByName('trial');
+  RadioButtonTrial.StylesData['path.Data.Data'] := DataModuleStore.LineStoragePath.GetByName('trial');
   RadioButtonTrial.TagString := '33';
-  RadioButtonTools.StylesData['path.Data.Data'] := LineStoragePath.GetByName('tools');
+  RadioButtonTools.StylesData['path.Data.Data'] := DataModuleStore.LineStoragePath.GetByName('tools');
   RadioButtonTools.TagString := '46';
-  RadioButtonStyles.StylesData['path.Data.Data'] := LineStoragePath.GetByName('styles');
+  RadioButtonStyles.StylesData['path.Data.Data'] := DataModuleStore.LineStoragePath.GetByName('styles');
   RadioButtonStyles.TagString := '38';
-  RadioButtonPatchesFixes.StylesData['path.Data.Data'] := LineStoragePath.GetByName('patches');
+  RadioButtonPatchesFixes.StylesData['path.Data.Data'] := DataModuleStore.LineStoragePath.GetByName('patches');
   RadioButtonPatchesFixes.TagString := '999';
-  RadioButtonIDPlugins.StylesData['path.Data.Data'] := LineStoragePath.GetByName('plugins');
+  RadioButtonIDPlugins.StylesData['path.Data.Data'] := DataModuleStore.LineStoragePath.GetByName('plugins');
   RadioButtonIDPlugins.TagString := '37';
-  RadioButtonSamples.StylesData['path.Data.Data'] := LineStoragePath.GetByName('samples');
+  RadioButtonSamples.StylesData['path.Data.Data'] := DataModuleStore.LineStoragePath.GetByName('samples');
   RadioButtonSamples.TagString := '16';
-  RadioButtonSampleProjects.StylesData['path.Data.Data'] := LineStoragePath.GetByName('samples');
+  RadioButtonSampleProjects.StylesData['path.Data.Data'] := DataModuleStore.LineStoragePath.GetByName('samples');
   RadioButtonSampleProjects.TagString := '99; 40';
-  RadioButtonIT.StylesData['path.Data.Data'] := LineStoragePath.GetByName('industry');
+  RadioButtonIT.StylesData['path.Data.Data'] := DataModuleStore.LineStoragePath.GetByName('industry');
   RadioButtonIT.TagString := '36';
-  RadioButtonIoT.StylesData['path.Data.Data'] := LineStoragePath.GetByName('iot');
+  RadioButtonIoT.StylesData['path.Data.Data'] := DataModuleStore.LineStoragePath.GetByName('iot');
   RadioButtonIoT.TagString := '4';
-  RadioButtonPlatforms.StylesData['path.Data.Data'] := LineStoragePath.GetByName('platforms');
+  RadioButtonPlatforms.StylesData['path.Data.Data'] := DataModuleStore.LineStoragePath.GetByName('platforms');
   RadioButtonPlatforms.TagString := '15';
-  RadioButtonTeeChart.StylesData['path.Data.Data'] := LineStoragePath.GetByName('teechart');
+  RadioButtonTeeChart.StylesData['path.Data.Data'] := DataModuleStore.LineStoragePath.GetByName('teechart');
   RadioButtonTeeChart.TagString := '21';
-  RadioButtonDUnit.StylesData['path.Data.Data'] := LineStoragePath.GetByName('dunit');
+  RadioButtonDUnit.StylesData['path.Data.Data'] := DataModuleStore.LineStoragePath.GetByName('dunit');
   RadioButtonDUnit.TagString := '22';
-  RadioButtonInterbase.StylesData['path.Data.Data'] := LineStoragePath.GetByName('interbase');
+  RadioButtonInterbase.StylesData['path.Data.Data'] := DataModuleStore.LineStoragePath.GetByName('interbase');
   RadioButtonInterbase.TagString := '23; 42';
-  RadioButtonHelp.StylesData['path.Data.Data'] := LineStoragePath.GetByName('help');
+  RadioButtonHelp.StylesData['path.Data.Data'] := DataModuleStore.LineStoragePath.GetByName('help');
   RadioButtonHelp.TagString := '17';
-  RadioButtonFonts.StylesData['path.Data.Data'] := LineStoragePath.GetByName('fonts');
+  RadioButtonFonts.StylesData['path.Data.Data'] := DataModuleStore.LineStoragePath.GetByName('fonts');
   RadioButtonFonts.TagString := '14';
-  RadioButtonPython.StylesData['path.Data.Data'] := LineStoragePath.GetByName('python');
+  RadioButtonPython.StylesData['path.Data.Data'] := DataModuleStore.LineStoragePath.GetByName('python');
   RadioButtonPython.TagString := '47';
-  RadioButtonBooks.StylesData['path.Data.Data'] := LineStoragePath.GetByName('books');
+  RadioButtonBooks.StylesData['path.Data.Data'] := DataModuleStore.LineStoragePath.GetByName('books');
   RadioButtonBooks.TagString := '1008';
 
   RadioButtonNew.IsChecked := True;

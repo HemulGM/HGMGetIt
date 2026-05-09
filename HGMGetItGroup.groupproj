@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{7582EF3E-E256-43F2-8CA5-3F9C4FE087DA}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="HGetIt.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="LineStorage\HGMLineStorage.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="HGetIt">
+        <MSBuild Projects="HGetIt.dproj"/>
+    </Target>
+    <Target Name="HGetIt:Clean">
+        <MSBuild Projects="HGetIt.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="HGetIt:Make">
+        <MSBuild Projects="HGetIt.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="HGMLineStorage">
+        <MSBuild Projects="LineStorage\HGMLineStorage.dproj"/>
+    </Target>
+    <Target Name="HGMLineStorage:Clean">
+        <MSBuild Projects="LineStorage\HGMLineStorage.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="HGMLineStorage:Make">
+        <MSBuild Projects="LineStorage\HGMLineStorage.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="HGetIt;HGMLineStorage"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="HGetIt:Clean;HGMLineStorage:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="HGetIt:Make;HGMLineStorage:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

@@ -18,12 +18,15 @@ uses
   FMX.Windows.Hints in 'DelphiWinUI3\FMXWindowsHint\FMX.Windows.Hints.pas',
   FMX.Menus in 'DelphiWinUI3\Fixes\D13\FMX.Menus.pas',
   FMX.Platform.Win in 'DelphiWinUI3\Fixes\D13\FMX.Platform.Win.pas',
-  FMX.StyledContextMenu in 'DelphiWinUI3\Fixes\D13\FMX.StyledContextMenu.pas';
+  FMX.StyledContextMenu in 'DelphiWinUI3\Fixes\D13\FMX.StyledContextMenu.pas',
+  HGM.Common.Download in 'Components\HGM.Common.Download.pas',
+  HGI.DM.Store in 'HGI.DM.Store.pas' {DataModuleStore: TDataModule};
 
 {$R *.res}
 
 begin
   Application.Initialize;
+  Application.CreateForm(TDataModuleStore, DataModuleStore);
   Application.CreateForm(TFormMain, FormMain);
   Application.Run;
 end.

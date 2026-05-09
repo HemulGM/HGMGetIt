@@ -8,9 +8,13 @@ uses
 {$SCOPEDENUMS ON}
 
 type
+  TGetItPackage = class;
+
   TItemAction = (Install, Download, Uninstall, OpenUrl, CommandLine);
 
   TOnItemAction = procedure(Sender: TObject; const ItemId: string; Action: TItemAction) of object;
+
+  TOnShowVersion = procedure(Sender: TObject; Item: TGetItPackage) of object;
 
   TBasicItem = class
   private
