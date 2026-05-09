@@ -20,22 +20,22 @@ type
     LabelDesc: TLabel;
     LabelInfo: TLabel;
     LayoutOS: TLayout;
-    PathWindows: TPath;
-    PathIOS: TPath;
-    PathAndroid: TPath;
-    PathLinux: TPath;
-    PathMacOS: TPath;
+    PathWindows: TPathLabel;
+    PathIOS: TPathLabel;
+    PathAndroid: TPathLabel;
+    PathLinux: TPathLabel;
+    PathMacOS: TPathLabel;
     LabelLicense: TLabel;
-    ButtonInstallOpt: TButton;
     ImagePers: TImage;
     Line1: TLine;
     PopupMenuOpt: TPopupMenu;
     MenuItemDownload: TMenuItem;
     MenuItemWebSite: TMenuItem;
     MenuItemShowCommand: TMenuItem;
-    PathGutHub: TPath;
+    PathGutHub: TPathLabel;
     ColorAnimation1: TColorAnimation;
     LabelVersions: TLabel;
+    ButtonBG: TButton;
     procedure RectangleBGClick(Sender: TObject);
     procedure ButtonInstallClick(Sender: TObject);
     procedure ButtonInstallOptClick(Sender: TObject);
@@ -47,10 +47,12 @@ type
     FOnAction: TOnItemAction;
     FIsInstalled: Boolean;
     FVersions: TArray<TGetItPackage>;
+    FOnItemClick: TNotifyEvent;
     function FormatSize(const Value: string): string;
     procedure SetOnAction(const Value: TOnItemAction);
     function GetId: string;
     procedure SetIsInstalled(const Value: Boolean);
+    procedure SetOnItemClick(const Value: TNotifyEvent);
   public
     procedure Fill(Item: TGetItPackage; Installed: Boolean);
     property OnAction: TOnItemAction read FOnAction write SetOnAction;
@@ -60,13 +62,15 @@ type
     property Item: TGetItPackage read FItem;
     procedure AddVersion(Item: TGetItPackage);
     procedure UpdateVersions;
+    property OnItemClick: TNotifyEvent read FOnItemClick write SetOnItemClick;
+    property Versions: TArray<TGetItPackage> read FVersions;
     destructor Destroy; override;
   end;
 
 implementation
 
 uses
-  HGM.FMX.Image, System.Math, HGI.View.ItemFull, HGI.GetItAPI;
+  HGM.FMX.Image, System.Math, HGI.View.ItemFull, System.Rtti, HGI.GetItAPI;
 
 {$R *.fmx}
 
@@ -165,13 +169,15 @@ begin
   if Assigned(FItem) then
     FItem.Free;
   FItem := Item;
+  if Item.TryNow = '1' then
+    ButtonBG.Text := 'Try Now';
   LabelTitle.Text := Item.Name;
   LabelDesc.Text := Item.Description;
-  LabelInfo.Text := Item.Version + ' (' + TGetIt.ParseDate(Item.Modified) + ')' + #13#10 + 'by ' + Item.Vendor;
+  LabelInfo.Text := Item.Version + ' (' + TGetIt.ParseDate(Item.Modified) + ')' + #13#10 + Item.Vendor;
   LabelLicense.Text := Item.LibLicenseName;
   ButtonInstall.TagString := Item.LibUrl;
   IsInstalled := Installed;
-  ButtonInstall.StylesData['bg.Padding.Right'] := ButtonInstallOpt.Width + 5;
+  ButtonInstall.StylesData['arrow.OnClick'] := TValue.From<TNotifyEvent>(ButtonInstallOptClick);
   MenuItemDownload.Enabled := not Item.LibUrl.IsEmpty;
   MenuItemWebSite.Enabled := not Item.LibProjectUrl.IsEmpty;
   PathGutHub.Visible := Item.LibProjectUrl.ToLower.Contains('github.com') or Item.LibProjectUrl.ToLower.Contains('gitlab.com');
@@ -227,11 +233,8 @@ end;
 
 procedure TFramePackageItem.RectangleBGClick(Sender: TObject);
 begin
-  var Frame := TFramePackageItemFull.Create(Self);
-  Frame.Parent := Application.MainForm;
-  Frame.Fill(FItem, FIsInstalled, FVersions);
-  Frame.RecalcSize;
-  Frame.OnAction := OnAction;
+  if Assigned(FOnItemClick) then
+    FOnItemClick(Self);
 end;
 
 procedure TFramePackageItem.SetIsInstalled(const Value: Boolean);
@@ -248,10 +251,15 @@ begin
   FOnAction := Value;
 end;
 
+procedure TFramePackageItem.SetOnItemClick(const Value: TNotifyEvent);
+begin
+  FOnItemClick := Value;
+end;
+
 procedure TFramePackageItem.UpdateVersions;
 begin
   LabelVersions.Visible := Length(FVersions) > 0;
-  LabelVersions.Text := 'Несколько версий (' + Length(FVersions).ToString + ')';
+  LabelVersions.Text := 'Multiple versions (' + Length(FVersions).ToString + ')';
 end;
 
 end.

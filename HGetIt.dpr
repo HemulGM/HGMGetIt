@@ -11,14 +11,14 @@ uses
   HGI.GetItAPI in 'HGI.GetItAPI.pas',
   HGI.View.ItemFull in 'HGI.View.ItemFull.pas' {FramePackageItemFull},
   HGI.GetItCmd in 'HGI.GetItCmd.pas',
-  DarkModeApi.Consts in 'WindowDarkMode\DarkModeApi.Consts.pas',
-  DarkModeApi.FMX in 'WindowDarkMode\DarkModeApi.FMX.pas',
-  DarkModeApi in 'WindowDarkMode\DarkModeApi.pas',
-  DarkModeApi.Types in 'WindowDarkMode\DarkModeApi.Types.pas',
   HGM.LineStorage in 'LineStorage\HGM.LineStorage.pas',
   HGM.FMX.Image in 'Components\HGM.FMX.Image.pas',
   HGI.View.ItemList in 'HGI.View.ItemList.pas' {FramePackageItemList},
-  HGM.ObjectHolder in 'AsyncObjectHolder\HGM.ObjectHolder.pas';
+  HGM.ObjectHolder in 'AsyncObjectHolder\HGM.ObjectHolder.pas',
+  FMX.Windows.Hints in 'DelphiWinUI3\FMXWindowsHint\FMX.Windows.Hints.pas',
+  FMX.Menus in 'DelphiWinUI3\Fixes\D13\FMX.Menus.pas',
+  FMX.Platform.Win in 'DelphiWinUI3\Fixes\D13\FMX.Platform.Win.pas',
+  FMX.StyledContextMenu in 'DelphiWinUI3\Fixes\D13\FMX.StyledContextMenu.pas';
 
 {$R *.res}
 

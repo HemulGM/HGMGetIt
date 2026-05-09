@@ -6,11 +6,11 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Objects, FMX.Layouts, FMX.Controls.Presentation, HGI.Item,
-  FMX.Filter.Effects, FMX.Edit, HGI.View.Item, System.Actions, FMX.ActnList;
+  FMX.Filter.Effects, FMX.Edit, HGI.View.Item, System.Actions, FMX.ActnList,
+  FMX.Memo.Types, FMX.ScrollBox, FMX.Memo;
 
 type
   TFramePackageItemFull = class(TFrame)
-    RectangleShd: TRectangle;
     RectangleBG: TRectangle;
     Layout1: TLayout;
     RectangleImage: TRectangle;
@@ -30,15 +30,15 @@ type
     Label2: TLabel;
     LabelTags: TLabel;
     ButtonBuy: TButton;
-    Path1: TPath;
+    Path1: TPathLabel;
     Label3: TLabel;
     FlowLayoutPlatforms: TFlowLayout;
     LayoutPfWin: TLayout;
-    PathAndroid: TPath;
-    PathIOS: TPath;
-    PathLinux: TPath;
-    PathMacOS: TPath;
-    PathWindows: TPath;
+    PathAndroid: TPathLabel;
+    PathIOS: TPathLabel;
+    PathLinux: TPathLabel;
+    PathMacOS: TPathLabel;
+    PathWindows: TPathLabel;
     LayoutPfLin: TLayout;
     LayoutPfAndr: TLayout;
     LayoutPfIOS: TLayout;
@@ -48,27 +48,24 @@ type
     Label6: TLabel;
     Label7: TLabel;
     Label8: TLabel;
-    ButtonClose: TButton;
-    Path2: TPath;
     Label10: TLabel;
     EditId: TEdit;
     ButtonDownload: TButton;
-    Path3: TPath;
     Label9: TLabel;
-    EditLibUrl: TEdit;
+    EditLibUrl: TMemo;
     CircleGitHub: TCircle;
-    PathGutHub: TPath;
+    PathGutHub: TPathLabel;
     Label11: TLabel;
     LabelDependencies: TLabel;
-    ActionListInfo: TActionList;
-    ActionClose: TAction;
+    CircleSite: TCircle;
+    PathLabelSite: TPathLabel;
+    PanelMenuDiv: TPanel;
     procedure FlowLayoutPlatformsResize(Sender: TObject);
-    procedure RectangleBGResize(Sender: TObject);
     procedure ButtonWebSiteClick(Sender: TObject);
     procedure ButtonBuyClick(Sender: TObject);
     procedure ButtonDownloadClick(Sender: TObject);
     procedure ButtonInstallClick(Sender: TObject);
-    procedure ActionCloseExecute(Sender: TObject);
+    procedure VertScrollBoxTextViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
   private
     FLibUrl: string;
     FLibProjectUrl: string;
@@ -107,11 +104,6 @@ end;
 procedure TFramePackageItemFull.Close;
 begin
   Release;
-end;
-
-procedure TFramePackageItemFull.ActionCloseExecute(Sender: TObject);
-begin
-  Close;
 end;
 
 procedure TFramePackageItemFull.ButtonBuyClick(Sender: TObject);
@@ -174,12 +166,13 @@ end;
 
 procedure TFramePackageItemFull.Fill(Item: TGetItPackage; Installed: Boolean; Versions: TArray<TGetItPackage>);
 begin
-  IsInstalled := Installed;
   FLibUrl := Item.LibUrl;
   FLibProjectUrl := Item.LibProjectUrl;
   FLibId := Item.Id;
   FLibSize := Item.LibSize;
   FPurchaseUrl := Item.PurchaseUrl;
+
+  IsInstalled := Installed;
 
   EditId.Text := Item.Id;
   EditLibUrl.Text := Item.LibUrl;
@@ -187,24 +180,34 @@ begin
   LabelDesc.Text := Item.Description;
   if LabelDesc.Text.IsEmpty then
     LabelDesc.Text := 'None';
-  LabelInfo.Text := Item.Version + #13#10 + 'by ' + Item.Vendor + #13#10 + Item.VendorUrl;
+  LabelInfo.Text := Item.Version + #13#10 + Item.Vendor + #13#10 + Item.VendorUrl;
   LabelLicense.Text := Item.LibLicenseName;
   if LabelLicense.Text.IsEmpty then
     LabelLicense.Text := 'The license is not defined';
+
+  ButtonDownload.Visible := not Item.LibUrl.IsEmpty;
+  ButtonWebSite.Visible := not Item.LibProjectUrl.IsEmpty;
+  ButtonWebSite.Hint := Item.LibProjectUrl;
+  CircleGitHub.Visible := Item.LibProjectUrl.ToLower.Contains('github.com') or Item.LibProjectUrl.ToLower.Contains('gitlab.com');
+  if CircleGitHub.Visible then
+    if Item.LibProjectUrl.ToLower.Contains('github.com') then
+      ButtonWebSite.Text := 'GitHub'
+    else
+      ButtonWebSite.Text := 'GitLab'
+  else
+    ButtonWebSite.Text := 'Web Site';
+  CircleSite.Visible := not CircleGitHub.Visible;
+  ButtonBuy.Visible := not Item.PurchaseUrl.IsEmpty;
+  LabelTags.Text := Item.Tags;
+  if LabelTags.Text.IsEmpty then
+    LabelTags.Text := 'None';
+  LabelDate.Text := 'Updated ' + TGetIt.ParseDate(Item.Modified);
 
   LayoutPfWin.Visible := False;
   LayoutPfLin.Visible := False;
   LayoutPfMac.Visible := False;
   LayoutPfAndr.Visible := False;
   LayoutPfIOS.Visible := False;
-  ButtonDownload.Visible := not Item.LibUrl.IsEmpty;
-  ButtonWebSite.Visible := not Item.LibProjectUrl.IsEmpty;
-  CircleGitHub.Visible := Item.LibProjectUrl.ToLower.Contains('github.com') or Item.LibProjectUrl.ToLower.Contains('gitlab.com');
-  ButtonBuy.Visible := not Item.PurchaseUrl.IsEmpty;
-  LabelTags.Text := Item.Tags;
-  if LabelTags.Text.IsEmpty then
-    LabelTags.Text := 'None';
-  LabelDate.Text := 'Updated ' + TGetIt.ParseDate(Item.Modified);
   for var OS in Item.LibOSes do
   begin
     if OS.Id = '1' then
@@ -228,6 +231,7 @@ begin
   else
     LabelDependencies.Text := 'None';
 
+  RectangleImage.Fill.Kind := TBrushKind.Solid;
   RectangleImage.Fill.Bitmap.Bitmap.LoadFromUrlAsync(RectangleImage, Item.Image, False,
     procedure(Success: Boolean)
     begin
@@ -246,30 +250,9 @@ procedure TFramePackageItemFull.FlowLayoutPlatformsResize(Sender: TObject);
 begin
   var H: Single := 0;
   for var Control in FlowLayoutPlatforms.Controls do
-    H := Max(H, Control.Position.Y + Control.Height);
+    if Control.Visible then
+      H := Max(H, Control.Position.Y + Control.Height);
   FlowLayoutPlatforms.Height := H;
-end;
-
-procedure TFramePackageItemFull.RectangleBGResize(Sender: TObject);
-begin
-  if (Width < 600) or (Height < 600) then
-  begin
-    RectangleBG.Align := TAlignLayout.Client;
-    RectangleBG.Margins.Rect := TRectF.Create(0, 0, 0, 0);
-    RectangleBG.Corners := [];
-  end
-  else
-  begin
-    if RectangleBG.Align <> TAlignLayout.Fit then
-    begin
-      RectangleBG.Align := TAlignLayout.None;
-      RectangleBG.Margins.Rect := TRectF.Create(50, 50, 50, 50);
-      RectangleBG.Corners := AllCorners;
-      RectangleBG.Width := 513;
-      RectangleBG.Height := 634;
-      RectangleBG.Align := TAlignLayout.Fit;
-    end;
-  end;
 end;
 
 procedure TFramePackageItemFull.SetIsInstalled(const Value: Boolean);
@@ -284,6 +267,11 @@ end;
 procedure TFramePackageItemFull.SetOnAction(const Value: TOnItemAction);
 begin
   FOnAction := Value;
+end;
+
+procedure TFramePackageItemFull.VertScrollBoxTextViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
+begin
+  PanelMenuDiv.Visible := NewViewportPosition.Y <> 0;
 end;
 
 end.

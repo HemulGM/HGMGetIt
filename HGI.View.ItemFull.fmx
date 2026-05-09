@@ -1,40 +1,26 @@
 object FramePackageItemFull: TFramePackageItemFull
   Align = Contents
-  Size.Width = 967.000000000000000000
-  Size.Height = 734.000000000000000000
+  Size.Width = 496.000000000000000000
+  Size.Height = 762.000000000000000000
   Size.PlatformDefault = False
-  object RectangleShd: TRectangle
-    Align = Contents
-    Fill.Color = xC8000000
-    Size.Width = 967.000000000000000000
-    Size.Height = 734.000000000000000000
-    Size.PlatformDefault = False
-    Stroke.Kind = None
-  end
   object RectangleBG: TRectangle
-    Align = Fit
-    Fill.Color = xFF0F111A
+    Align = Client
+    ClipChildren = True
+    Fill.Kind = None
     Padding.Left = 15.000000000000000000
     Padding.Top = 15.000000000000000000
     Padding.Right = 15.000000000000000000
     Padding.Bottom = 15.000000000000000000
-    Margins.Left = 50.000000000000000000
-    Margins.Top = 50.000000000000000000
-    Margins.Right = 50.000000000000000000
-    Margins.Bottom = 50.000000000000000000
-    Size.Width = 513.000000000000000000
-    Size.Height = 634.000000000000000000
+    Size.Width = 496.000000000000000000
+    Size.Height = 762.000000000000000000
     Size.PlatformDefault = False
     Stroke.Kind = None
-    XRadius = 2.000000000000000000
-    YRadius = 2.000000000000000000
-    OnResize = RectangleBGResize
-    OnResized = RectangleBGResize
     object Layout1: TLayout
       Align = Top
+      ClipChildren = True
       Position.X = 15.000000000000000000
-      Position.Y = 15.000000000000000000
-      Size.Width = 483.000000000000000000
+      Position.Y = 75.000000000000000000
+      Size.Width = 466.000000000000000000
       Size.Height = 100.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 0
@@ -51,14 +37,13 @@ object FramePackageItemFull: TFramePackageItemFull
       end
       object LabelInfo: TLabel
         Align = Client
-        StyledSettings = [Size, Style]
+        Opacity = 0.500000000000000000
         Margins.Left = 10.000000000000000000
         Margins.Right = 10.000000000000000000
-        Size.Width = 363.000000000000000000
+        Size.Width = 346.000000000000000000
         Size.Height = 44.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
-        TextSettings.FontColor = xC89095AF
         TextSettings.WordWrap = False
         Text = '1.0'#13#10'by HGM'#13#10'hemulgm.ru'
         TabOrder = 1
@@ -67,14 +52,14 @@ object FramePackageItemFull: TFramePackageItemFull
         Align = Top
         Margins.Left = 10.000000000000000000
         Position.X = 110.000000000000000000
-        Size.Width = 373.000000000000000000
+        Size.Width = 356.000000000000000000
         Size.Height = 32.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 2
         object LabelTitle: TLabel
           Align = Client
-          StyledSettings = [Style]
-          Size.Width = 341.000000000000000000
+          StyledSettings = [Family, Style, FontColor]
+          Size.Width = 356.000000000000000000
           Size.Height = 32.000000000000000000
           Size.PlatformDefault = False
           TextSettings.Font.Family = 'Roboto'
@@ -84,64 +69,19 @@ object FramePackageItemFull: TFramePackageItemFull
           Text = 'OpenAI for Delphi'
           TabOrder = 0
         end
-        object ButtonClose: TButton
-          Action = ActionClose
-          Align = Right
-          ImageIndex = -1
-          Position.X = 341.000000000000000000
-          Size.Width = 32.000000000000000000
-          Size.Height = 32.000000000000000000
-          Size.PlatformDefault = False
-          StyleLookup = 'buttonstyledownload'
-          TabOrder = 1
-          object Path2: TPath
-            Align = Center
-            Data.Path = {
-              3800000000000000CDCCDD43CD8CC1430100000033339C4366667F4301000000
-              33F3DD43CCCCFA420200000066A6E043FFFFEF420200000066A6E0436666DE42
-              0200000033F3DD439999D342010000000040CB43666688420200000033F3C943
-              33338342020000003333C84366668042020000009A59C6436666804202000000
-              0080C443666680420200000000C0C24366668342020000003473C14366668842
-              0100000000008043CDCC454301000000CDCCF9429A998842020000009A99F442
-              67668342020000009A99ED429A998042020000003333E6429A99804202000000
-              CDCCDE429A99804202000000CDCCD7429A998342020000009999D2429A998842
-              0100000000008842CDCCD3420200000066667A429A99DE420200000066667A42
-              3333F04202000000000088420000FB42010000000080474300807F4301000000
-              CDCC8842CD8CC143020000009A9983429AD9C243020000009A9980429A99C443
-              020000009A9980423373C643020000009A998042CD4CC8430200000067668342
-              CD0CCA4302000000CDCC88429959CB43010000009A99D3426626DE4302000000
-              0000D9420080DF43020000000000E0423333E043020000003433E7423333E043
-              020000003433EE423333E043020000006766F542CD8CDF4302000000CECCFA42
-              6626DE430100000000008043CD8C9C43010000009A59C1439A19DE4302000000
-              34B3C2433473DF43020000003473C4436726E043020000000040C6436726E043
-              020000000000C8436726E04302000000CDCCC9430180DF43020000006626CB43
-              9A19DE430100000099D9DD43CD4CCB43020000006626DF430000CA4302000000
-              66E6DF430040C8430200000066E6DF436766C643020000009AD9DF439A99C443
-              020000009A19DF439AD9C24302000000CDCCDD43CD8CC14303000000CDCCDD43
-              CD8CC143}
-            EnableDragHighlight = False
-            Fill.Color = xFAFFFFFF
-            HitTest = False
-            Size.Width = 16.000000000000000000
-            Size.Height = 16.000000000000000000
-            Size.PlatformDefault = False
-            Stroke.Kind = None
-            WrapMode = Fit
-          end
-        end
       end
       object LabelDate: TLabel
         Align = Bottom
-        StyledSettings = [Style]
+        StyledSettings = [Family, Style, FontColor]
+        Opacity = 0.500000000000000000
         Margins.Left = 10.000000000000000000
         Position.X = 110.000000000000000000
         Position.Y = 76.000000000000000000
-        Size.Width = 373.000000000000000000
+        Size.Width = 356.000000000000000000
         Size.Height = 24.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
         TextSettings.Font.Size = 14.000000000000000000
-        TextSettings.FontColor = xFF9095AF
         TextSettings.WordWrap = False
         Text = 'Update 11.03.2023'
         TabOrder = 3
@@ -150,29 +90,29 @@ object FramePackageItemFull: TFramePackageItemFull
     object Layout3: TLayout
       Align = Client
       Margins.Top = 10.000000000000000000
-      Size.Width = 483.000000000000000000
-      Size.Height = 404.000000000000000000
+      Size.Width = 466.000000000000000000
+      Size.Height = 532.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 1
       object VertScrollBoxText: TVertScrollBox
         Align = Client
-        Size.Width = 483.000000000000000000
-        Size.Height = 404.000000000000000000
+        ClipChildren = True
+        Size.Width = 466.000000000000000000
+        Size.Height = 532.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 0
-        Viewport.Width = 467.000000000000000000
-        Viewport.Height = 404.000000000000000000
+        OnViewportPositionChange = VertScrollBoxTextViewportPositionChange
+        Viewport.Width = 450.000000000000000000
+        Viewport.Height = 532.000000000000000000
         object LabelDesc: TLabel
           Align = Top
           AutoSize = True
-          StyledSettings = [Style]
-          Position.Y = 98.000000000000000000
-          Size.Width = 467.000000000000000000
-          Size.Height = 51.000000000000000000
+          Opacity = 0.500000000000000000
+          Position.Y = 108.000000000000000000
+          Size.Width = 450.000000000000000000
+          Size.Height = 32.000000000000000000
           Size.PlatformDefault = False
-          TextSettings.Font.Family = 'Roboto'
           TextSettings.Font.Size = 14.000000000000000000
-          TextSettings.FontColor = xFF9095AF
           TextSettings.VertAlign = Leading
           Text = 
             'The library provides access to the API of the OpenAI service, on' +
@@ -182,29 +122,25 @@ object FramePackageItemFull: TFramePackageItemFull
         end
         object Label1: TLabel
           Align = Top
-          StyledSettings = [Style]
-          Position.Y = 60.000000000000000000
-          Size.Width = 467.000000000000000000
+          StyledSettings = [Family, Style, FontColor]
+          Position.Y = 70.000000000000000000
+          Size.Width = 450.000000000000000000
           Size.Height = 38.000000000000000000
           Size.PlatformDefault = False
-          TextSettings.Font.Family = 'Roboto'
           TextSettings.Font.Size = 20.000000000000000000
-          TextSettings.FontColor = xE6FFFFFF
           TextSettings.WordWrap = False
           Text = 'Description'
           TabOrder = 7
         end
         object Label2: TLabel
           Align = Top
-          StyledSettings = [Style]
+          StyledSettings = [Family, Style, FontColor]
           Margins.Top = 20.000000000000000000
-          Position.Y = 169.000000000000000000
-          Size.Width = 467.000000000000000000
+          Position.Y = 160.000000000000000000
+          Size.Width = 450.000000000000000000
           Size.Height = 38.000000000000000000
           Size.PlatformDefault = False
-          TextSettings.Font.Family = 'Roboto'
           TextSettings.Font.Size = 20.000000000000000000
-          TextSettings.FontColor = xE6FFFFFF
           TextSettings.WordWrap = False
           Text = 'Tags'
           TabOrder = 4
@@ -212,14 +148,12 @@ object FramePackageItemFull: TFramePackageItemFull
         object LabelTags: TLabel
           Align = Top
           AutoSize = True
-          StyledSettings = [Style]
-          Position.Y = 207.000000000000000000
-          Size.Width = 467.000000000000000000
-          Size.Height = 51.000000000000000000
+          Opacity = 0.500000000000000000
+          Position.Y = 198.000000000000000000
+          Size.Width = 450.000000000000000000
+          Size.Height = 32.000000000000000000
           Size.PlatformDefault = False
-          TextSettings.Font.Family = 'Roboto'
           TextSettings.Font.Size = 14.000000000000000000
-          TextSettings.FontColor = xFF9095AF
           TextSettings.VertAlign = Leading
           Text = 
             'The library provides access to the API of the OpenAI service, on' +
@@ -229,23 +163,21 @@ object FramePackageItemFull: TFramePackageItemFull
         end
         object Label3: TLabel
           Align = Top
-          StyledSettings = [Style]
+          StyledSettings = [Family, Style, FontColor]
           Margins.Top = 20.000000000000000000
-          Position.Y = 353.000000000000000000
-          Size.Width = 467.000000000000000000
+          Position.Y = 324.000000000000000000
+          Size.Width = 450.000000000000000000
           Size.Height = 38.000000000000000000
           Size.PlatformDefault = False
-          TextSettings.Font.Family = 'Roboto'
           TextSettings.Font.Size = 20.000000000000000000
-          TextSettings.FontColor = xE6FFFFFF
           TextSettings.WordWrap = False
           Text = 'Supported Platforms'
           TabOrder = 1
         end
         object FlowLayoutPlatforms: TFlowLayout
           Align = Top
-          Position.Y = 391.000000000000000000
-          Size.Width = 467.000000000000000000
+          Position.Y = 362.000000000000000000
+          Size.Width = 450.000000000000000000
           Size.Height = 105.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 9
@@ -256,11 +188,13 @@ object FramePackageItemFull: TFramePackageItemFull
           OnResized = FlowLayoutPlatformsResize
           object LayoutPfWin: TLayout
             Align = VertCenter
-            Size.Width = 91.000000000000000000
+            Hint = 'Windows'
+            HitTest = True
+            Size.Width = 111.000000000000000000
             Size.Height = 50.000000000000000000
             Size.PlatformDefault = False
             TabOrder = 5
-            object PathWindows: TPath
+            object PathWindows: TPathLabel
               Align = Left
               Data.Path = {
                 1800000000000000C3F57040B072394201000000D9CEBC41A4F0444201000000
@@ -273,39 +207,38 @@ object FramePackageItemFull: TFramePackageItemFull
                 FA7ED24183C0024101000000FA7ED241365EDC410100000046B65342365EDC41
                 0100000046B653423F358A4001000000FA7ED24183C0024103000000FA7ED241
                 83C00241}
-              Fill.Color = xE6FFFFFF
-              Hint = 'Windows'
-              Margins.Left = 4.000000000000000000
-              Margins.Right = 4.000000000000000000
-              Position.X = 4.000000000000000000
+              Margins.Left = 5.000000000000000000
+              Margins.Right = 5.000000000000000000
+              Position.X = 5.000000000000000000
               Size.Width = 20.000000000000000000
               Size.Height = 50.000000000000000000
               Size.PlatformDefault = False
-              Stroke.Kind = None
               WrapMode = Fit
             end
             object Label4: TLabel
               Align = Client
               AutoSize = True
-              StyledSettings = [Style]
-              Size.Width = 63.000000000000000000
+              StyledSettings = [Family, Style, FontColor]
+              Opacity = 0.500000000000000000
+              Margins.Left = 10.000000000000000000
+              Size.Width = 71.000000000000000000
               Size.Height = 50.000000000000000000
               Size.PlatformDefault = False
-              TextSettings.Font.Family = 'Roboto'
               TextSettings.Font.Size = 14.000000000000000000
-              TextSettings.FontColor = xFF9095AF
               TextSettings.WordWrap = False
               Text = 'Windows'
               TabOrder = 2
             end
           end
           object LayoutPfLin: TLayout
-            Position.X = 91.000000000000000000
-            Size.Width = 89.000000000000000000
+            Hint = 'Linux'
+            HitTest = True
+            Position.X = 111.000000000000000000
+            Size.Width = 106.000000000000000000
             Size.Height = 50.000000000000000000
             Size.PlatformDefault = False
             TabOrder = 6
-            object PathLinux: TPath
+            object PathLinux: TPathLabel
               Align = Left
               Data.Path = {
                 74020000000000004A0C48410000000002000000699145410000000002000000
@@ -544,39 +477,38 @@ object FramePackageItemFull: TFramePackageItemFull
                 02000000FCA9314146E1B24002000000CFF73141002BB34002000000713D3241
                 09D7B34002000000DD243241E07AB44001000000DD243241E826B54001000000
                 27313241E826B5400300000028313241192FB540}
-              Fill.Color = xE6FFFFFF
-              Hint = 'Linux'
-              Margins.Left = 4.000000000000000000
-              Margins.Right = 4.000000000000000000
-              Position.X = 4.000000000000000000
+              Margins.Left = 5.000000000000000000
+              Margins.Right = 5.000000000000000000
+              Position.X = 5.000000000000000000
               Size.Width = 20.000000000000000000
               Size.Height = 50.000000000000000000
               Size.PlatformDefault = False
-              Stroke.Kind = None
               WrapMode = Fit
             end
             object Label5: TLabel
               Align = Client
               AutoSize = True
-              StyledSettings = [Style]
-              Size.Width = 61.000000000000000000
+              StyledSettings = [Family, Style, FontColor]
+              Opacity = 0.500000000000000000
+              Margins.Left = 10.000000000000000000
+              Size.Width = 66.000000000000000000
               Size.Height = 50.000000000000000000
               Size.PlatformDefault = False
-              TextSettings.Font.Family = 'Roboto'
               TextSettings.Font.Size = 14.000000000000000000
-              TextSettings.FontColor = xFF9095AF
               TextSettings.WordWrap = False
               Text = 'Linux 64'
               TabOrder = 2
             end
           end
           object LayoutPfAndr: TLayout
-            Position.X = 180.000000000000000000
-            Size.Width = 81.000000000000000000
+            Hint = 'Android'
+            HitTest = True
+            Position.X = 217.000000000000000000
+            Size.Width = 103.000000000000000000
             Size.Height = 50.000000000000000000
             Size.PlatformDefault = False
             TabOrder = 9
-            object PathAndroid: TPath
+            object PathAndroid: TPathLabel
               Align = Left
               Data.Path = {
                 9B0000000000000081150C428716094101000000A2450E42CEF7F74001000000
@@ -638,39 +570,38 @@ object FramePackageItemFull: TFramePackageItemFull
                 0200000026B1464258390E420100000026B1464291EDB8410200000027B14642
                 6F12AC4102000000EE7C4142FCA9A1410200000068113B42FCA9A14103000000
                 68113B42FCA9A141}
-              Fill.Color = xE6FFFFFF
-              Hint = 'Android'
-              Margins.Left = 4.000000000000000000
-              Margins.Right = 4.000000000000000000
-              Position.X = 4.000000000000000000
+              Margins.Left = 5.000000000000000000
+              Margins.Right = 5.000000000000000000
+              Position.X = 5.000000000000000000
               Size.Width = 20.000000000000000000
               Size.Height = 50.000000000000000000
               Size.PlatformDefault = False
-              Stroke.Kind = None
               WrapMode = Fit
             end
             object Label6: TLabel
               Align = Client
               AutoSize = True
-              StyledSettings = [Style]
-              Size.Width = 53.000000000000000000
+              StyledSettings = [Family, Style, FontColor]
+              Opacity = 0.500000000000000000
+              Margins.Left = 10.000000000000000000
+              Size.Width = 63.000000000000000000
               Size.Height = 50.000000000000000000
               Size.PlatformDefault = False
-              TextSettings.Font.Family = 'Roboto'
               TextSettings.Font.Size = 14.000000000000000000
-              TextSettings.FontColor = xFF9095AF
               TextSettings.WordWrap = False
               Text = 'Android'
               TabOrder = 2
             end
           end
           object LayoutPfIOS: TLayout
-            Position.X = 261.000000000000000000
-            Size.Width = 57.000000000000000000
+            Hint = 'iOS'
+            HitTest = True
+            Position.X = 320.000000000000000000
+            Size.Width = 73.000000000000000000
             Size.Height = 50.000000000000000000
             Size.PlatformDefault = False
             TabOrder = 8
-            object PathIOS: TPath
+            object PathIOS: TPathLabel
               Align = Left
               Data.Path = {
                 8600000000000000CD8CEEC300803DC3020000000040F0C300803DC302000000
@@ -724,39 +655,38 @@ object FramePackageItemFull: TFramePackageItemFull
                 000011C30200000099D9DBC3CD4C10C3020000003373DCC39A1910C302000000
                 9AD9DDC3000010C3020000009A59DEC39A1910C3010000009A59DEC39A1910C3
                 030000009A59DEC39A1910C3}
-              Fill.Color = xE6FFFFFF
-              Hint = 'iOS'
-              Margins.Left = 4.000000000000000000
-              Margins.Right = 4.000000000000000000
-              Position.X = 4.000000000000000000
+              Margins.Left = 5.000000000000000000
+              Margins.Right = 5.000000000000000000
+              Position.X = 5.000000000000000000
               Size.Width = 20.000000000000000000
               Size.Height = 50.000000000000000000
               Size.PlatformDefault = False
-              Stroke.Kind = None
               WrapMode = Fit
             end
             object Label7: TLabel
               Align = Client
               AutoSize = True
-              StyledSettings = [Style]
-              Size.Width = 29.000000000000000000
+              StyledSettings = [Family, Style, FontColor]
+              Opacity = 0.500000000000000000
+              Margins.Left = 10.000000000000000000
+              Size.Width = 33.000000000000000000
               Size.Height = 50.000000000000000000
               Size.PlatformDefault = False
-              TextSettings.Font.Family = 'Roboto'
               TextSettings.Font.Size = 14.000000000000000000
-              TextSettings.FontColor = xFF9095AF
               TextSettings.WordWrap = False
               Text = 'iOS'
               TabOrder = 2
             end
           end
           object LayoutPfMac: TLayout
-            Position.X = 318.000000000000000000
-            Size.Width = 78.000000000000000000
+            Hint = 'MacOS'
+            HitTest = True
+            Position.Y = 50.000000000000000000
+            Size.Width = 100.000000000000000000
             Size.Height = 50.000000000000000000
             Size.PlatformDefault = False
             TabOrder = 7
-            object PathMacOS: TPath
+            object PathMacOS: TPathLabel
               Align = Left
               Data.Path = {
                 580000000000000033B33943CDCCFE420200000066E643436766FE4202000000
@@ -793,27 +723,24 @@ object FramePackageItemFull: TFramePackageItemFull
                 CC4C7F430000F0420200000066E67F439999E64202000000CD0C80436666E342
                 0200000066E67F430000E0420200000066E67F43CDCCDC420300000066E67F43
                 CDCCDC42}
-              Fill.Color = xE6FFFFFF
-              Hint = 'MacOS'
-              Margins.Left = 4.000000000000000000
-              Margins.Right = 4.000000000000000000
-              Position.X = 4.000000000000000000
+              Margins.Left = 5.000000000000000000
+              Margins.Right = 5.000000000000000000
+              Position.X = 5.000000000000000000
               Size.Width = 20.000000000000000000
               Size.Height = 50.000000000000000000
               Size.PlatformDefault = False
-              Stroke.Kind = None
               WrapMode = Fit
             end
             object Label8: TLabel
               Align = Client
               AutoSize = True
-              StyledSettings = [Style]
-              Size.Width = 50.000000000000000000
+              StyledSettings = [Family, Style, FontColor]
+              Opacity = 0.500000000000000000
+              Margins.Left = 10.000000000000000000
+              Size.Width = 60.000000000000000000
               Size.Height = 50.000000000000000000
               Size.PlatformDefault = False
-              TextSettings.Font.Family = 'Roboto'
               TextSettings.Font.Size = 14.000000000000000000
-              TextSettings.FontColor = xFF9095AF
               TextSettings.WordWrap = False
               Text = 'MacOS'
               TabOrder = 2
@@ -822,13 +749,11 @@ object FramePackageItemFull: TFramePackageItemFull
         end
         object Label10: TLabel
           Align = Top
-          StyledSettings = [Style]
-          Size.Width = 467.000000000000000000
+          StyledSettings = [Family, Style, FontColor]
+          Size.Width = 450.000000000000000000
           Size.Height = 38.000000000000000000
           Size.PlatformDefault = False
-          TextSettings.Font.Family = 'Roboto'
           TextSettings.Font.Size = 20.000000000000000000
-          TextSettings.FontColor = xE6FFFFFF
           TextSettings.WordWrap = False
           Text = 'Info'
           TabOrder = 6
@@ -838,57 +763,55 @@ object FramePackageItemFull: TFramePackageItemFull
           Align = Top
           StyleLookup = 'transparentedit'
           TabOrder = 11
+          Cursor = crArrow
           ReadOnly = True
-          TextSettings.Font.Family = 'Roboto'
           TextSettings.Font.Size = 14.000000000000000000
-          TextSettings.FontColor = xFF9095AF
           Position.Y = 38.000000000000000000
-          Size.Width = 467.000000000000000000
-          Size.Height = 22.000000000000000000
+          Size.Width = 450.000000000000000000
+          Size.Height = 32.000000000000000000
           Size.PlatformDefault = False
-          StyledSettings = [Style]
+          Caret.Color = x00FFFFFF
         end
         object Label9: TLabel
           Align = Top
-          StyledSettings = [Style]
+          StyledSettings = [Family, Style, FontColor]
           Margins.Top = 20.000000000000000000
-          Position.Y = 516.000000000000000000
-          Size.Width = 467.000000000000000000
+          Position.Y = 487.000000000000000000
+          Size.Width = 450.000000000000000000
           Size.Height = 38.000000000000000000
           Size.PlatformDefault = False
-          TextSettings.Font.Family = 'Roboto'
           TextSettings.Font.Size = 20.000000000000000000
-          TextSettings.FontColor = xE6FFFFFF
           TextSettings.WordWrap = False
           Text = 'Download link'
           TabOrder = 0
         end
-        object EditLibUrl: TEdit
+        object EditLibUrl: TMemo
           Touch.InteractiveGestures = [LongTap, DoubleTap]
-          Align = Top
-          StyleLookup = 'transparentedit'
-          TabOrder = 10
+          Caret.Color = x00FFFFFF
+          DataDetectorTypes = []
           ReadOnly = True
-          TextSettings.Font.Family = 'Roboto'
           TextSettings.Font.Size = 14.000000000000000000
-          TextSettings.FontColor = xFF9095AF
-          Position.Y = 554.000000000000000000
-          Size.Width = 467.000000000000000000
-          Size.Height = 22.000000000000000000
+          TextSettings.WordWrap = True
+          Align = Top
+          Cursor = crArrow
+          Position.Y = 525.000000000000000000
+          Size.Width = 450.000000000000000000
+          Size.Height = 64.000000000000000000
           Size.PlatformDefault = False
-          StyledSettings = [Style]
+          StyleLookup = 'memostyle_clear'
+          TabOrder = 10
+          Viewport.Width = 432.000000000000000000
+          Viewport.Height = 52.000000000000000000
         end
         object Label11: TLabel
           Align = Top
-          StyledSettings = [Style]
+          StyledSettings = [Family, Style, FontColor]
           Margins.Top = 20.000000000000000000
-          Position.Y = 278.000000000000000000
-          Size.Width = 467.000000000000000000
+          Position.Y = 250.000000000000000000
+          Size.Width = 450.000000000000000000
           Size.Height = 38.000000000000000000
           Size.PlatformDefault = False
-          TextSettings.Font.Family = 'Roboto'
           TextSettings.Font.Size = 20.000000000000000000
-          TextSettings.FontColor = xE6FFFFFF
           TextSettings.WordWrap = False
           Text = 'Dependencies'
           TabOrder = 2
@@ -896,42 +819,51 @@ object FramePackageItemFull: TFramePackageItemFull
         object LabelDependencies: TLabel
           Align = Top
           AutoSize = True
-          StyledSettings = [Style]
-          Position.Y = 316.000000000000000000
-          Size.Width = 467.000000000000000000
-          Size.Height = 17.000000000000000000
+          Opacity = 0.500000000000000000
+          Position.Y = 288.000000000000000000
+          Size.Width = 450.000000000000000000
+          Size.Height = 16.000000000000000000
           Size.PlatformDefault = False
-          TextSettings.Font.Family = 'Roboto'
           TextSettings.Font.Size = 14.000000000000000000
-          TextSettings.FontColor = xFF9095AF
           TextSettings.VertAlign = Leading
           Text = 'Lib1, Lib2, Lib3'
           TabOrder = 3
         end
       end
+      object PanelMenuDiv: TPanel
+        Align = Top
+        Margins.Left = -20.000000000000000000
+        Margins.Top = -1.000000000000000000
+        Margins.Right = -20.000000000000000000
+        Position.X = -20.000000000000000000
+        Position.Y = -1.000000000000000000
+        Size.Width = 506.000000000000000000
+        Size.Height = 1.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'panelstyle_divider'
+        TabOrder = 22
+      end
     end
     object LayoutOS: TLayout
       Align = Bottom
+      ClipChildren = True
       Padding.Left = 2.000000000000000000
       Padding.Top = 2.000000000000000000
       Padding.Right = 2.000000000000000000
       Padding.Bottom = 2.000000000000000000
       Margins.Top = 10.000000000000000000
-      Margins.Bottom = 10.000000000000000000
       Position.X = 15.000000000000000000
-      Position.Y = 539.000000000000000000
-      Size.Width = 483.000000000000000000
+      Position.Y = 727.000000000000000000
+      Size.Width = 466.000000000000000000
       Size.Height = 20.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 2
       object LabelLicense: TLabel
         Align = Client
-        StyledSettings = [Style]
-        Size.Width = 479.000000000000000000
+        Opacity = 0.500000000000000000
+        Size.Width = 462.000000000000000000
         Size.Height = 16.000000000000000000
         Size.PlatformDefault = False
-        TextSettings.Font.Family = 'Roboto'
-        TextSettings.FontColor = xC89095AF
         TextSettings.HorzAlign = Trailing
         TextSettings.WordWrap = False
         Text = 'MIT 1.0'
@@ -939,10 +871,12 @@ object FramePackageItemFull: TFramePackageItemFull
       end
     end
     object Layout4: TLayout
-      Align = Bottom
+      Align = MostTop
+      ClipChildren = True
+      Margins.Bottom = 10.000000000000000000
       Position.X = 15.000000000000000000
-      Position.Y = 569.000000000000000000
-      Size.Width = 483.000000000000000000
+      Position.Y = 15.000000000000000000
+      Size.Width = 466.000000000000000000
       Size.Height = 50.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 3
@@ -952,12 +886,12 @@ object FramePackageItemFull: TFramePackageItemFull
         Hint = 'Install/Uninstall'
         Margins.Top = 6.000000000000000000
         Margins.Bottom = 6.000000000000000000
-        Position.X = 363.000000000000000000
+        Position.X = 346.000000000000000000
         Position.Y = 6.000000000000000000
         Size.Width = 120.000000000000000000
         Size.Height = 38.000000000000000000
         Size.PlatformDefault = False
-        StyleLookup = 'buttonstyledownload'
+        StyleLookup = 'buttonstyle_accent'
         TabOrder = 4
         Text = 'INSTALL'
         TextSettings.Font.Size = 13.000000000000000000
@@ -973,13 +907,12 @@ object FramePackageItemFull: TFramePackageItemFull
         Size.Width = 120.000000000000000000
         Size.Height = 38.000000000000000000
         Size.PlatformDefault = False
-        StyleLookup = 'buttonstyledownload'
         TabOrder = 3
         Text = 'Web Site'
         TextSettings.Font.Size = 13.000000000000000000
         OnClick = ButtonWebSiteClick
         object CircleGitHub: TCircle
-          Fill.Color = claBlack
+          Fill.Kind = None
           HitTest = False
           Position.X = 8.000000000000000000
           Position.Y = 8.000000000000000000
@@ -987,7 +920,8 @@ object FramePackageItemFull: TFramePackageItemFull
           Size.Height = 21.000000000000000000
           Size.PlatformDefault = False
           Stroke.Kind = None
-          object PathGutHub: TPath
+          Visible = False
+          object PathGutHub: TPathLabel
             Align = Client
             Data.Path = {
               4D00000000000000000080430000004202000000CD4C04430000004202000000
@@ -1019,12 +953,67 @@ object FramePackageItemFull: TFramePackageItemFull
               020000009B59A34334B3EF430200000033F3CF43CD8CE043020000000000F043
               CD8CB543020000000000F0439AD98243020000000000F043CDCC064302000000
               9AD9BD4300000042020000000000804300000042030000000000804300000042}
-            Fill.Color = claWhite
-            HitTest = False
             Size.Width = 21.000000000000000000
             Size.Height = 21.000000000000000000
             Size.PlatformDefault = False
-            Stroke.Kind = None
+            WrapMode = Fit
+          end
+        end
+        object CircleSite: TCircle
+          Fill.Kind = None
+          HitTest = False
+          Position.X = 8.000000000000000000
+          Position.Y = 8.000000000000000000
+          Size.Width = 21.000000000000000000
+          Size.Height = 21.000000000000000000
+          Size.PlatformDefault = False
+          Stroke.Kind = None
+          object PathLabelSite: TPathLabel
+            Align = Client
+            Data.Path = {
+              680000000000000048E1824100006041020000001F858341A470554102000000
+              0000844148E14A410200000000008441000040410200000000008441B81E3541
+              020000001F8583415C8F2A410200000048E18241000020410100000086EB9D41
+              000020410200000034339F41713D2A41020000000100A041C2F5344102000000
+              0100A04100004041020000000100A0413E0A4B410200000034339F418FC25541
+              0200000086EB9D410000604100000000A6706941E17A9C4102000000400A7341
+              999993410200000068667A4100008A410200000021857F410000804101000000
+              2A5C97410000804102000000FF9B8F41A0588D41020000001C508341BA749741
+              02000000A6706941E07A9C4100000000A470654100006041010000005C8F1A41
+              0000604102000000C2F51841A4705541020000000000184148E14A4102000000
+              00001841000040410200000000001841B81E354102000000C3F5184166662A41
+              020000005C8F1A410000204101000000A4706541000020410200000048E16641
+              66662A410200000000006841B81E354102000000000068410000404102000000
+              0000684148E14A410200000048E16641A470554102000000A470654100006041
+              000000000000404114AE9F410200000052B832417A1496410200000000002841
+              A3708B4102000000A4702141FFFF7F41010000005C8F5E41FFFF7F4102000000
+              00005841A3708B4102000000AE474D417A149641020000000000404114AE9F41
+              000000000000004100000041010000005C8FA24000000041020000008C3CC140
+              1177CA40020000009B63F240B1F5A14002000000656616417B148E4002000000
+              CDCC0C419A99B140020000009A9905410000D840020000000000004100000041
+              000000005C8FA24000008041010000000000004100008041020000009A990541
+              00008A4102000000CDCC0C419A9993410200000066661641E17A9C4102000000
+              2A81F2405A75974102000000D26AC14074588D41020000005D8FA24000008041
+              00000000EC5188400000604102000000333383408FC255410200000000008040
+              3D0A4B410200000000008040000040410200000000008040C3F5344102000000
+              33338340713D2A4102000000EC5188400000204101000000E27AF44000002041
+              0200000086EBF1405C8F2A41020000000100F040B81E3541020000000100F040
+              00004041020000000100F04048E14A410200000086EBF140A470554102000000
+              E27AF440000060410000000000004041C3F5804002000000AE474D412A5CA740
+              0200000000005841713DD240020000005C8F5E410000004101000000A4702141
+              000000410200000000002841713DD2400200000052B83241295CA74002000000
+              00004041C2F5804000000000295C974100000041010000001F857F4100000041
+              0200000038817A41295FD8400200000004177341861DB24002000000A6706941
+              80148E4002000000A5708341763DA2400200000016AE8F414DE1CA4002000000
+              2A5C974102000041000000000000404100000040020000003D0ACF4000000040
+              02000000000000400000D0400200000000000040000040410200000000000040
+              CB2E8C4102000000D544CF400000B04102000000000040410000B04102000000
+              CB2E8C410000B041020000000000B041CB2E8C41020000000000B04100004041
+              020000000000B041D544CF4002000000CB2E8C41000000400200000000004041
+              00000040}
+            Size.Width = 21.000000000000000000
+            Size.Height = 21.000000000000000000
+            Size.PlatformDefault = False
             WrapMode = Fit
           end
         end
@@ -1041,11 +1030,10 @@ object FramePackageItemFull: TFramePackageItemFull
         Size.Width = 39.000000000000000000
         Size.Height = 38.000000000000000000
         Size.PlatformDefault = False
-        StyleLookup = 'buttonstyledownload'
         TabOrder = 2
         TextSettings.Font.Size = 13.000000000000000000
         OnClick = ButtonBuyClick
-        object Path1: TPath
+        object Path1: TPathLabel
           Align = Left
           Data.Path = {
             41000000000000000000C0400000804102000000CDCC9C400000804102000000
@@ -1073,8 +1061,6 @@ object FramePackageItemFull: TFramePackageItemFull
             00009041CDCC9841020000000000904100009041020000000000904133338741
             02000000CDCC8841000080410200000000008041000080410100000000008041
             00008041030000000000804100008041}
-          Fill.Color = xC8FFFFFF
-          HitTest = False
           Margins.Left = 10.000000000000000000
           Margins.Top = 10.000000000000000000
           Margins.Right = 10.000000000000000000
@@ -1084,7 +1070,6 @@ object FramePackageItemFull: TFramePackageItemFull
           Size.Width = 18.000000000000000000
           Size.Height = 18.000000000000000000
           Size.PlatformDefault = False
-          Stroke.Kind = None
           WrapMode = Fit
         end
       end
@@ -1096,48 +1081,17 @@ object FramePackageItemFull: TFramePackageItemFull
         Margins.Top = 6.000000000000000000
         Margins.Right = 6.000000000000000000
         Margins.Bottom = 6.000000000000000000
-        Position.X = 318.000000000000000000
+        Position.X = 301.000000000000000000
         Position.Y = 6.000000000000000000
         Size.Width = 39.000000000000000000
         Size.Height = 38.000000000000000000
         Size.PlatformDefault = False
-        StyleLookup = 'buttonstyledownload'
+        StyleLookup = 'organizetoolbuttonbordered'
         TabOrder = 1
+        Text = 'organizetoolbuttonbordered'
         TextSettings.Font.Size = 13.000000000000000000
         OnClick = ButtonDownloadClick
-        object Path3: TPath
-          Align = Left
-          Data.Path = {
-            1100000000000000000060410000C04001000000000020410000C04001000000
-            000020410000000001000000000080400000000001000000000080400000C040
-            01000000000000000000C040010000000000E040000050410100000000006041
-            0000C04001000000000060410000C04003000000000060410000C04000000000
-            0000000000007041010000000000000000008841010000000000604100008841
-            0100000000006041000070410100000000000000000070410100000000000000
-            00007041030000000000000000007041}
-          Fill.Color = xC8FFFFFF
-          HitTest = False
-          Margins.Left = 10.000000000000000000
-          Margins.Top = 10.000000000000000000
-          Margins.Right = 10.000000000000000000
-          Margins.Bottom = 10.000000000000000000
-          Position.X = 10.000000000000000000
-          Position.Y = 10.000000000000000000
-          Size.Width = 18.000000000000000000
-          Size.Height = 18.000000000000000000
-          Size.PlatformDefault = False
-          Stroke.Kind = None
-          WrapMode = Fit
-        end
       end
-    end
-  end
-  object ActionListInfo: TActionList
-    Left = 472
-    Top = 352
-    object ActionClose: TAction
-      ShortCut = 27
-      OnExecute = ActionCloseExecute
     end
   end
 end

@@ -2,9 +2,19 @@ object FramePackageItemList: TFramePackageItemList
   Size.Width = 970.000000000000000000
   Size.Height = 88.000000000000000000
   Size.PlatformDefault = False
+  object ButtonBG: TButton
+    Align = Client
+    Size.Width = 970.000000000000000000
+    Size.Height = 88.000000000000000000
+    Size.PlatformDefault = False
+    StyleLookup = 'toolbutton_bordered'
+    TabOrder = 1
+    OnClick = RectangleBGClick
+  end
   object RectangleBG: TRectangle
     Align = Client
-    Fill.Color = xFF0F111A
+    Fill.Kind = None
+    HitTest = False
     Padding.Left = 10.000000000000000000
     Padding.Top = 10.000000000000000000
     Padding.Right = 10.000000000000000000
@@ -12,7 +22,7 @@ object FramePackageItemList: TFramePackageItemList
     Size.Width = 970.000000000000000000
     Size.Height = 88.000000000000000000
     Size.PlatformDefault = False
-    Stroke.Kind = None
+    Stroke.Color = x96828282
     XRadius = 10.000000000000000000
     YRadius = 10.000000000000000000
     OnClick = RectangleBGClick
@@ -44,7 +54,7 @@ object FramePackageItemList: TFramePackageItemList
         TabOrder = 0
         object LabelDesc: TLabel
           Align = Bottom
-          StyledSettings = [Style]
+          Opacity = 0.500000000000000000
           Margins.Left = 10.000000000000000000
           Margins.Right = 10.000000000000000000
           Position.X = 10.000000000000000000
@@ -71,41 +81,28 @@ object FramePackageItemList: TFramePackageItemList
           Size.Width = 140.000000000000000000
           Size.Height = 28.000000000000000000
           Size.PlatformDefault = False
-          StyleLookup = 'buttonstyledownload'
+          StyleLookup = 'buttonstyle_accent_split'
           TabOrder = 2
           Text = 'INSTALL'
           TextSettings.Font.Size = 13.000000000000000000
           OnClick = ButtonInstallClick
-          object ButtonInstallOpt: TButton
-            Align = Right
-            StyledSettings = [Family, Style, FontColor]
-            Position.X = 112.000000000000000000
-            Size.Width = 28.000000000000000000
-            Size.Height = 28.000000000000000000
-            Size.PlatformDefault = False
-            StyleLookup = 'buttonstyledrop'
-            TabOrder = 1
-            Text = 'DOWNLOAD'
-            TextSettings.Font.Size = 13.000000000000000000
-            OnClick = ButtonInstallOptClick
-          end
         end
         object LabelInfo: TLabel
           Align = Right
           AutoSize = True
-          StyledSettings = [Size, Style]
+          Opacity = 0.500000000000000000
           Margins.Left = 24.000000000000000000
           Margins.Right = 10.000000000000000000
-          Position.X = 687.000000000000000000
-          Size.Width = 43.000000000000000000
+          Position.X = 667.000000000000000000
+          Size.Width = 63.000000000000000000
           Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
           TextSettings.Font.Family = 'Roboto'
           TextSettings.FontColor = xC89095AF
           TextSettings.WordWrap = False
-          Text = '1.0'#13#10'by HGM'
+          Text = '1.0 by HGM'
           TabOrder = 3
-          object PathGutHub: TPath
+          object PathGutHub: TPathLabel
             Align = Left
             Data.Path = {
               4D00000000000000000080430000004202000000CD4C04430000004202000000
@@ -137,23 +134,20 @@ object FramePackageItemList: TFramePackageItemList
               020000009B59A34334B3EF430200000033F3CF43CD8CE043020000000000F043
               CD8CB543020000000000F0439AD98243020000000000F043CDCC064302000000
               9AD9BD4300000042020000000000804300000042030000000000804300000042}
-            Fill.Color = claWhite
-            HitTest = False
             Margins.Left = -24.000000000000000000
             Position.X = -24.000000000000000000
             Size.Width = 16.000000000000000000
             Size.Height = 20.000000000000000000
             Size.PlatformDefault = False
-            Stroke.Kind = None
             WrapMode = Fit
           end
         end
         object LabelTitle: TLabel
           Align = Client
-          StyledSettings = [Style]
+          StyledSettings = [Family, Style, FontColor]
           Margins.Left = 10.000000000000000000
           Margins.Right = 10.000000000000000000
-          Size.Width = 643.000000000000000000
+          Size.Width = 623.000000000000000000
           Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
           TextSettings.Font.Family = 'Roboto'
@@ -178,7 +172,7 @@ object FramePackageItemList: TFramePackageItemList
       Size.Height = 20.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 1
-      object PathWindows: TPath
+      object PathWindows: TPathLabel
         Align = Left
         Data.Path = {
           1800000000000000C3F57040B072394201000000D9CEBC41A4F0444201000000
@@ -191,19 +185,16 @@ object FramePackageItemList: TFramePackageItemList
           FA7ED24183C0024101000000FA7ED241365EDC410100000046B65342365EDC41
           0100000046B653423F358A4001000000FA7ED24183C0024103000000FA7ED241
           83C00241}
-        Fill.Color = xE6FFFFFF
         Hint = 'Windows'
-        HitTest = False
         Margins.Right = 2.000000000000000000
         Position.X = 25.000000000000000000
         Position.Y = 2.000000000000000000
         Size.Width = 20.000000000000000000
         Size.Height = 16.000000000000000000
         Size.PlatformDefault = False
-        Stroke.Kind = None
         WrapMode = Fit
       end
-      object PathIOS: TPath
+      object PathIOS: TPathLabel
         Align = Left
         Data.Path = {
           8600000000000000CD8CEEC300803DC3020000000040F0C300803DC302000000
@@ -257,19 +248,16 @@ object FramePackageItemList: TFramePackageItemList
           000011C30200000099D9DBC3CD4C10C3020000003373DCC39A1910C302000000
           9AD9DDC3000010C3020000009A59DEC39A1910C3010000009A59DEC39A1910C3
           030000009A59DEC39A1910C3}
-        Fill.Color = xE6FFFFFF
         Hint = 'iOS'
-        HitTest = False
         Margins.Right = 2.000000000000000000
         Position.X = 113.000000000000000000
         Position.Y = 2.000000000000000000
         Size.Width = 20.000000000000000000
         Size.Height = 16.000000000000000000
         Size.PlatformDefault = False
-        Stroke.Kind = None
         WrapMode = Fit
       end
-      object PathAndroid: TPath
+      object PathAndroid: TPathLabel
         Align = Left
         Data.Path = {
           9B0000000000000081150C428716094101000000A2450E42CEF7F74001000000
@@ -331,19 +319,16 @@ object FramePackageItemList: TFramePackageItemList
           0200000026B1464258390E420100000026B1464291EDB8410200000027B14642
           6F12AC4102000000EE7C4142FCA9A1410200000068113B42FCA9A14103000000
           68113B42FCA9A141}
-        Fill.Color = xE6FFFFFF
         Hint = 'Android'
-        HitTest = False
         Margins.Right = 2.000000000000000000
         Position.X = 91.000000000000000000
         Position.Y = 2.000000000000000000
         Size.Width = 20.000000000000000000
         Size.Height = 16.000000000000000000
         Size.PlatformDefault = False
-        Stroke.Kind = None
         WrapMode = Fit
       end
-      object PathLinux: TPath
+      object PathLinux: TPathLabel
         Align = Left
         Data.Path = {
           74020000000000004A0C48410000000002000000699145410000000002000000
@@ -582,19 +567,16 @@ object FramePackageItemList: TFramePackageItemList
           02000000FCA9314146E1B24002000000CFF73141002BB34002000000713D3241
           09D7B34002000000DD243241E07AB44001000000DD243241E826B54001000000
           27313241E826B5400300000028313241192FB540}
-        Fill.Color = xE6FFFFFF
         Hint = 'Linux'
-        HitTest = False
         Margins.Right = 2.000000000000000000
         Position.X = 69.000000000000000000
         Position.Y = 2.000000000000000000
         Size.Width = 20.000000000000000000
         Size.Height = 16.000000000000000000
         Size.PlatformDefault = False
-        Stroke.Kind = None
         WrapMode = Fit
       end
-      object PathMacOS: TPath
+      object PathMacOS: TPathLabel
         Align = Left
         Data.Path = {
           580000000000000033B33943CDCCFE420200000066E643436766FE4202000000
@@ -631,21 +613,18 @@ object FramePackageItemList: TFramePackageItemList
           CC4C7F430000F0420200000066E67F439999E64202000000CD0C80436666E342
           0200000066E67F430000E0420200000066E67F43CDCCDC420300000066E67F43
           CDCCDC42}
-        Fill.Color = xE6FFFFFF
         Hint = 'MacOS'
-        HitTest = False
         Margins.Right = 2.000000000000000000
         Position.X = 47.000000000000000000
         Position.Y = 2.000000000000000000
         Size.Width = 20.000000000000000000
         Size.Height = 16.000000000000000000
         Size.PlatformDefault = False
-        Stroke.Kind = None
         WrapMode = Fit
       end
       object LabelLicense: TLabel
         Align = Client
-        StyledSettings = [Style]
+        Opacity = 0.500000000000000000
         Size.Width = 783.000000000000000000
         Size.Height = 16.000000000000000000
         Size.PlatformDefault = False
@@ -702,7 +681,8 @@ object FramePackageItemList: TFramePackageItemList
       TabOrder = 2
       object CheckBoxSelected: TCheckBox
         Align = Top
-        Size.Width = 30.000000000000000000
+        Margins.Right = 8.000000000000000000
+        Size.Width = 22.000000000000000000
         Size.Height = 34.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 0
@@ -711,17 +691,18 @@ object FramePackageItemList: TFramePackageItemList
     end
     object LabelVersions: TLabel
       Anchors = [akRight, akBottom]
-      StyledSettings = [Family, Style]
+      StyledSettings = [Family, Style, FontColor]
+      Opacity = 0.500000000000000000
       Position.X = 805.000000000000000000
       Position.Y = 73.000000000000000000
       Size.Width = 155.000000000000000000
       Size.Height = 11.000000000000000000
       Size.PlatformDefault = False
-      TextSettings.Font.Size = 8.000000000000000000
+      TextSettings.Font.Size = 9.000000000000000000
       TextSettings.FontColor = xC89095AF
       TextSettings.HorzAlign = Trailing
       TextSettings.WordWrap = False
-      Text = #1053#1077#1089#1082#1086#1083#1100#1082#1086' '#1074#1077#1088#1089#1080#1081' (1)'
+      Text = 'Versions (1)'
       TabOrder = 4
     end
   end

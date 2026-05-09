@@ -7,26 +7,25 @@ uses
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Layouts,
   FMX.Objects, FMX.Controls.Presentation, FMX.Edit, FMX.StdCtrls, HGI.View.Item,
   HGI.GetItAPI, FMX.Ani, FMX.Filter.Effects, FMX.Menus, HGI.Item,
-  System.Threading, HGI.GetItCmd, System.ImageList, FMX.ImgList,
-  HGI.View.ItemList, FMX.Effects, HGM.LineStorage;
+  System.Threading, HGI.GetItCmd, System.ImageList, FMX.ImgList, WinUI3.Form,
+  HGI.View.ItemList, FMX.Effects, HGM.LineStorage, HGI.View.ItemFull,
+  FMX.ListBox;
 
 {$SCOPEDENUMS ON}
 
 type
   TViewStyle = (Card, List);
 
-  TFormMain = class(TForm)
+  TFormMain = class(TWinUIForm)
     LayoutHead: TLayout;
     LayoutMenu: TLayout;
     LayoutClient: TLayout;
-    Rectangle2: TRectangle;
-    StyleBook: TStyleBook;
+    StyleBookOld: TStyleBook;
     RadioButtonComponents: TRadioButton;
     RadioButtonAll: TRadioButton;
     RadioButtonLibs: TRadioButton;
     Layout3: TLayout;
     LabelCaption: TLabel;
-    Path1: TPath;
     RadioButtonTrial: TRadioButton;
     RadioButtonIT: TRadioButton;
     RadioButtonIDPlugins: TRadioButton;
@@ -44,7 +43,6 @@ type
     FramePackageItem5: TFramePackageItem;
     FramePackageItem6: TFramePackageItem;
     Circle1: TCircle;
-    PathCurrentCat: TPath;
     LabelCurrentCatTitle: TLabel;
     LabelCurrentCatDesc: TLabel;
     TimerSearch: TTimer;
@@ -60,10 +58,9 @@ type
     Layout2: TLayout;
     Layout4: TLayout;
     RadioButtonNew: TRadioButton;
-    Line1: TLine;
+    Line1: TPanel;
     RadioButtonPromoted: TRadioButton;
     ButtonServer: TButton;
-    ButtonServerList: TButton;
     PopupMenuServerList: TPopupMenu;
     MenuItemD11: TMenuItem;
     MenuItemD104: TMenuItem;
@@ -72,17 +69,14 @@ type
     ImageList16: TImageList;
     LineStoragePath: TLineStorage;
     RadioButtonPlatforms: TRadioButton;
-    Rectangle1: TRectangle;
     EditSearch: TEdit;
     ClearEditButtonSearch: TClearEditButton;
     ButtonPers: TButton;
-    ButtonPersList: TButton;
     PopupMenuPersList: TPopupMenu;
     MenuItemPersDelphi: TMenuItem;
     MenuItemPersCPP: TMenuItem;
     LayoutActions: TLayout;
     ButtonOptions: TButton;
-    Path2: TPath;
     PopupOptions: TPopup;
     Label1: TLabel;
     PopupMenuOrderList: TPopupMenu;
@@ -90,27 +84,48 @@ type
     MenuItemOrderDate: TMenuItem;
     RadioButtonOrderName: TRadioButton;
     RadioButtonOrderDate: TRadioButton;
-    Line2: TLine;
+    Line2: TPanel;
     RadioButtonTeeChart: TRadioButton;
     RadioButtonFonts: TRadioButton;
     RadioButtonHelp: TRadioButton;
     RadioButtonDUnit: TRadioButton;
     RadioButtonSamples: TRadioButton;
-    Line3: TLine;
+    Line3: TPanel;
     RadioButtonInterbase: TRadioButton;
     RadioButtonIoT: TRadioButton;
-    Label2: TLabel;
-    RadioButtonViewCard: TRadioButton;
-    RadioButtonViewList: TRadioButton;
     LayoutClientOver: TLayout;
     LayoutSelect: TLayout;
-    RectangleSelect: TRectangle;
+    RectangleSelect: TPanel;
     ShadowEffect1: TShadowEffect;
     CheckBoxSelectAll: TCheckBox;
     ButtonInstall: TButton;
     ButtonUninstall: TButton;
     ButtonDownload: TButton;
     RadioButtonBooks: TRadioButton;
+    LayoutItemDetail: TLayout;
+    FrameDetail: TFramePackageItemFull;
+    LabelSelectItems: TLabel;
+    SplitterDetail: TSplitter;
+    RadioButtonViewCard: TRadioButton;
+    RadioButtonViewList: TRadioButton;
+    StyleBookWinUI3: TStyleBook;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    Layout5: TLayout;
+    PathCurrentCat: TPathLabel;
+    PanelMenuDiv: TPanel;
+    StyleBookWinUI3Light: TStyleBook;
+    PathLabel1: TPathLabel;
+    Panel3: TPanel;
+    Label2: TLabel;
+    ComboBoxTheme: TComboBox;
+    LayoutCaption: TLayout;
+    ButtonWinMin: TButton;
+    ButtonWinMax: TButton;
+    ButtonWinClose: TButton;
+    LabelTitle: TLabel;
+    LayoutIcon: TLayout;
+    ImageIcon: TImage;
     procedure EditSearchChangeTracking(Sender: TObject);
     procedure LayoutHeadResized(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -129,8 +144,10 @@ type
     procedure ButtonOptionsClick(Sender: TObject);
     procedure MenuItemOrderClick(Sender: TObject);
     procedure RadioButtonOrderNameChange(Sender: TObject);
-    procedure RadioButtonViewCardChange(Sender: TObject);
+    procedure RadioButtonViewCard1Change(Sender: TObject);
     procedure CheckBoxSelectAllChange(Sender: TObject);
+    procedure VertScrollBoxCatsViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
+    procedure ComboBoxThemeChange(Sender: TObject);
   private
     FInited: Boolean;
     FCategory: string;
@@ -176,7 +193,10 @@ type
     function ExistsItemByName(const ItemName: string; var Item: TFrame): Boolean;
     procedure AddAsVersion(Frame: TFrame; Item: TGetItPackage);
     procedure UpdateCategories(Items: TCategories);
+    procedure FOnItemClick(Sender: TObject);
     property ViewStyle: TViewStyle read FViewStyle write SetViewStyle;
+  protected
+    procedure DoOnSettingChange; override;
   end;
 
 const
@@ -191,9 +211,9 @@ procedure OpenUrl(const URL: string);
 implementation
 
 uses
-  System.Math, System.IniFiles, System.IOUtils,
+  System.Math, System.IniFiles, System.IOUtils, WinUI3.Style, WinUI3.Dialogs,
   {$IFDEF MSWINDOWS}
-  Winapi.Windows, DarkModeApi.FMX, Winapi.ShellAPI, FMX.Platform.Win,
+  Winapi.Windows, Winapi.ShellAPI, FMX.Platform.Win, System.Messaging,
   {$ENDIF}
   HGM.ObjectHolder;
 
@@ -204,6 +224,42 @@ begin
   {$IFDEF MSWINDOWS}
   ShellExecute(ApplicationHWND, 'open', PChar(URL), nil, nil, SW_SHOWNORMAL);
   {$ENDIF}
+end;
+
+procedure TFormMain.DoOnSettingChange;
+begin
+  var OverAccentColor := SystemAccentColor;
+
+  // Override theme color
+  case ComboBoxTheme.ItemIndex of
+    0:
+      ThemeKind := TSystemThemeKind.Unspecified;
+    1:
+      ThemeKind := TSystemThemeKind.Light;
+    2:
+      ThemeKind := TSystemThemeKind.Dark;
+  end;
+
+  SystemBackdropType := TWindowBackdropType.Disable;
+
+  // Set stylebook and color for theme
+  if IsDark then
+  begin
+    // Set accent color for stylebook
+    ChangeStyleBookColor(StyleBookWinUI3, OverAccentColor);
+    StyleBook := StyleBookWinUI3;
+  end
+  else
+  begin
+    // Set accent color for stylebook
+    ChangeStyleBookColor(StyleBookWinUI3Light, OverAccentColor);
+    StyleBook := StyleBookWinUI3Light;
+  end;
+
+  inherited;
+  Fill.Kind := TBrushKind.None;
+  TMessageManager.DefaultManager.SendMessage(Self, TStyleChangedMessage.Create(StyleBook, Self), True);
+  TMessageManager.DefaultManager.SendMessage(Self, TInternalSettingChangedMessage.Create(StyleBook, Self), True);
 end;
 
 procedure TFormMain.EditSearchChangeTracking(Sender: TObject);
@@ -320,6 +376,8 @@ end;
 
 procedure TFormMain.ClearItems;
 begin
+  FrameDetail.Visible := False;
+  LabelSelectItems.Visible := True;
   FlowLayoutItems.BeginUpdate;
   try
     while FlowLayoutItems.ControlsCount > 0 do
@@ -328,6 +386,11 @@ begin
     FlowLayoutItems.EndUpdate;
   end;
   FlowLayoutItems.RecalcSize;
+end;
+
+procedure TFormMain.ComboBoxThemeChange(Sender: TObject);
+begin
+  DoOnSettingChange;
 end;
 
 procedure TFormMain.NeedMore(Value: Boolean);
@@ -496,6 +559,31 @@ begin
     TFramePackageItemList(Frame).AddVersion(Item);
 end;
 
+procedure TFormMain.FOnItemClick(Sender: TObject);
+begin
+  var Item: TGetItPackage;
+  var IsInstalled: Boolean;
+  var Versions: TArray<TGetItPackage>;
+  if Sender is TFramePackageItem then
+  begin
+    Item := TFramePackageItem(Sender).Item;
+    IsInstalled := TFramePackageItem(Sender).IsInstalled;
+    Versions := TFramePackageItem(Sender).Versions;
+  end
+  else if Sender is TFramePackageItemList then
+  begin
+    Item := TFramePackageItemList(Sender).Item;
+    IsInstalled := TFramePackageItemList(Sender).IsInstalled;
+    Versions := TFramePackageItemList(Sender).Versions;
+  end
+  else
+    Exit;
+  FrameDetail.OnAction := FOnItemAction;
+  FrameDetail.Visible := True;
+  LabelSelectItems.Visible := False;
+  FrameDetail.Fill(Item, IsInstalled, Versions);
+end;
+
 procedure TFormMain.RefillList(Items: TArray<TGetItPackage>; More: Boolean);
 begin
   FLoading := False;
@@ -525,6 +613,7 @@ begin
             Frame.Fill(Item, IsInstalled(Item.Id));
             Frame.Parent := FlowLayoutItems;
             Frame.OnAction := FOnItemAction;
+            Frame.OnItemClick := FOnItemClick;
           end;
         TViewStyle.List:
           begin
@@ -534,6 +623,7 @@ begin
             Frame.Align := TAlignLayout.Top;
             Frame.OnAction := FOnItemAction;
             Frame.OnChangeCheck := FOnItemChangeCheck;
+            Frame.OnItemClick := FOnItemClick;
           end;
       end;
     end;
@@ -605,20 +695,20 @@ begin
         var H: Single := 0;
         for var Control in FlowLayoutItems.Controls do
         begin
-          Control.Width := CardW - 20;
+          Control.Width := Trunc(CardW - 20);
           H := Max(H, Control.Position.Y + Control.Height);
         end;
-        FlowLayoutItems.Height := H;
+        FlowLayoutItems.Height := Trunc(H);
       end;
     TViewStyle.List:
       begin
         var H: Single := 0;
         for var Control in FlowLayoutItems.Controls do
         begin
-          Control.Width := FlowLayoutItems.Width - 20;
+          Control.Width := Trunc(FlowLayoutItems.Width - 20);
           H := Max(H, Control.Position.Y + Control.Height);
         end;
-        FlowLayoutItems.Height := H;
+        FlowLayoutItems.Height := Trunc(H);
       end;
   end;
 end;
@@ -627,7 +717,7 @@ procedure TFormMain.AddToInstall(const ItemId: string);
 begin
   if FCurrentIDE.IsCustom then
   begin
-    ShowMessage('Installation or deinstallation is not possible with a custom server');
+    ShowUIMessage(Self, 'Warning', 'Installation or deinstallation is not possible with a custom server');
     Exit;
   end;
   if FGetItCmd.Execute(FCurrentIDE, TGetItCommand.Create.Install([ItemId]).Config(UseOnline).AcceptEULAs) then
@@ -658,7 +748,7 @@ procedure TFormMain.AddToUninstall(const ItemId: string);
 begin
   if FCurrentIDE.IsCustom then
   begin
-    ShowMessage('Installation or deinstallation is not possible with a custom server');
+    ShowUIMessage(Self, 'Warning', 'Installation or deinstallation is not possible with a custom server');
     Exit;
   end;
   if FGetItCmd.Execute(FCurrentIDE, TGetItCommand.Create.Uninstall([ItemId])) then
@@ -667,7 +757,7 @@ end;
 
 procedure TFormMain.ShowCommandLine(const ItemId: string);
 begin
-  ShowMessage(FCurrentIDE.GetPathGetItCmd + ' ' + TGetItCommand.Create.Install([ItemId]).Config(UseOnline).AcceptEULAs.Build);
+  ShowUIMessage(Self, 'Command line', FCurrentIDE.GetPathGetItCmd + ' ' + TGetItCommand.Create.Install([ItemId]).Config(UseOnline).AcceptEULAs.Build);
 end;
 
 procedure TFormMain.DownloadItem(const ItemId: string);
@@ -799,19 +889,18 @@ begin
     end;
   except
     on E: Exception do
-      ShowMessage('Error of reading servers.ini:' + #13#10 + E.Message);
+      ShowUIMessage(Self, 'Error', 'Error of reading servers.ini:' + #13#10 + E.Message);
   end;
 end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
-  {$IFDEF MSWINDOWS}
-  try
-    SetWindowColorModeAsSystem;
-  except
-    // never mind
-  end;
-  {$ENDIF}
+  SetSystemWindowControls(ButtonWinClose, ButtonWinMax, ButtonWinMin);
+  CaptionControls := [LayoutCaption, LayoutHead];
+  OffsetControls := [LayoutHead];
+  TitleControls := [LabelTitle];
+  IconControl := ImageIcon;
+  HideTitleBar := True;
   FGetItCmd := TGetItCmd.Create;
   FLoading := False;
   ClearItems;
@@ -857,51 +946,51 @@ begin
   VertScrollBoxCats.AniCalculations.Animation := True;
   VertScrollBoxContent.AniCalculations.Animation := True;
 
-  RadioButtonNew.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('new');
+  RadioButtonNew.StylesData['path.Data.Data'] := LineStoragePath.GetByName('new');
   RadioButtonNew.TagString := '98; 35';
-  RadioButtonPromoted.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('promoted');
+  RadioButtonPromoted.StylesData['path.Data.Data'] := LineStoragePath.GetByName('promoted');
   RadioButtonPromoted.TagString := '998';
-  RadioButtonAll.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('all');
+  RadioButtonAll.StylesData['path.Data.Data'] := LineStoragePath.GetByName('all');
   RadioButtonAll.TagString := '';
-  RadioButtonInstalled.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('installed');
+  RadioButtonInstalled.StylesData['path.Data.Data'] := LineStoragePath.GetByName('installed');
   RadioButtonInstalled.TagString := '-1000';
-  RadioButtonLibs.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('lib');
+  RadioButtonLibs.StylesData['path.Data.Data'] := LineStoragePath.GetByName('lib');
   RadioButtonLibs.TagString := '1';
-  RadioButtonComponents.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('comps');
+  RadioButtonComponents.StylesData['path.Data.Data'] := LineStoragePath.GetByName('comps');
   RadioButtonComponents.TagString := '2';
-  RadioButtonTrial.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('trial');
+  RadioButtonTrial.StylesData['path.Data.Data'] := LineStoragePath.GetByName('trial');
   RadioButtonTrial.TagString := '33';
-  RadioButtonTools.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('tools');
+  RadioButtonTools.StylesData['path.Data.Data'] := LineStoragePath.GetByName('tools');
   RadioButtonTools.TagString := '46';
-  RadioButtonStyles.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('styles');
+  RadioButtonStyles.StylesData['path.Data.Data'] := LineStoragePath.GetByName('styles');
   RadioButtonStyles.TagString := '38';
-  RadioButtonPatchesFixes.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('patches');
+  RadioButtonPatchesFixes.StylesData['path.Data.Data'] := LineStoragePath.GetByName('patches');
   RadioButtonPatchesFixes.TagString := '999';
-  RadioButtonIDPlugins.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('plugins');
+  RadioButtonIDPlugins.StylesData['path.Data.Data'] := LineStoragePath.GetByName('plugins');
   RadioButtonIDPlugins.TagString := '37';
-  RadioButtonSamples.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('samples');
+  RadioButtonSamples.StylesData['path.Data.Data'] := LineStoragePath.GetByName('samples');
   RadioButtonSamples.TagString := '16';
-  RadioButtonSampleProjects.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('samples');
+  RadioButtonSampleProjects.StylesData['path.Data.Data'] := LineStoragePath.GetByName('samples');
   RadioButtonSampleProjects.TagString := '99; 40';
-  RadioButtonIT.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('industry');
+  RadioButtonIT.StylesData['path.Data.Data'] := LineStoragePath.GetByName('industry');
   RadioButtonIT.TagString := '36';
-  RadioButtonIoT.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('iot');
+  RadioButtonIoT.StylesData['path.Data.Data'] := LineStoragePath.GetByName('iot');
   RadioButtonIoT.TagString := '4';
-  RadioButtonPlatforms.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('platforms');
+  RadioButtonPlatforms.StylesData['path.Data.Data'] := LineStoragePath.GetByName('platforms');
   RadioButtonPlatforms.TagString := '15';
-  RadioButtonTeeChart.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('teechart');
+  RadioButtonTeeChart.StylesData['path.Data.Data'] := LineStoragePath.GetByName('teechart');
   RadioButtonTeeChart.TagString := '21';
-  RadioButtonDUnit.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('dunit');
+  RadioButtonDUnit.StylesData['path.Data.Data'] := LineStoragePath.GetByName('dunit');
   RadioButtonDUnit.TagString := '22';
-  RadioButtonInterbase.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('interbase');
+  RadioButtonInterbase.StylesData['path.Data.Data'] := LineStoragePath.GetByName('interbase');
   RadioButtonInterbase.TagString := '23; 42';
-  RadioButtonHelp.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('help');
+  RadioButtonHelp.StylesData['path.Data.Data'] := LineStoragePath.GetByName('help');
   RadioButtonHelp.TagString := '17';
-  RadioButtonFonts.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('fonts');
+  RadioButtonFonts.StylesData['path.Data.Data'] := LineStoragePath.GetByName('fonts');
   RadioButtonFonts.TagString := '14';
-  RadioButtonPython.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('python');
+  RadioButtonPython.StylesData['path.Data.Data'] := LineStoragePath.GetByName('python');
   RadioButtonPython.TagString := '47';
-  RadioButtonBooks.StylesData['icon.Data.Data'] := LineStoragePath.GetByName('books');
+  RadioButtonBooks.StylesData['path.Data.Data'] := LineStoragePath.GetByName('books');
   RadioButtonBooks.TagString := '1008';
 
   RadioButtonNew.IsChecked := True;
@@ -917,12 +1006,12 @@ end;
 
 procedure TFormMain.LayoutHeadResized(Sender: TObject);
 begin
-  EditSearch.Width := Min(460, LayoutHead.Width) - 20;
+  EditSearch.Width := Min(500, LayoutHead.Width - LabelCaption.Width - LayoutIcon.Width) - 20;
   EditSearch.Position.X := LayoutHead.Width / 2 - EditSearch.Width / 2;
-  if EditSearch.Width > (LayoutActions.Position.X - EditSearch.Position.X - 20) then
+  if EditSearch.Position.X + EditSearch.Width + 20 > LayoutActions.Position.X then
   begin
-    EditSearch.Width := Min(460, LayoutActions.Position.X) - 20;
-    EditSearch.Position.X := LayoutActions.Position.X / 2 - EditSearch.Width / 2;
+    EditSearch.Width := Min(500, LayoutActions.Position.X) - 20;
+    EditSearch.Position.X := LabelCaption.Position.X + LabelCaption.Width;
   end;
 end;
 
@@ -932,7 +1021,7 @@ var
 begin
   if Button.IsChecked then
   begin
-    PathCurrentCat.Data.Data := Button.StylesData['icon.Data.Data'].AsString;
+    PathCurrentCat.Data.Data := Button.StylesData['path.Data.Data'].AsString;
     LabelCurrentCatTitle.Text := Button.Text;
     LabelCurrentCatDesc.Text := Button.Hint;
     FLastSearch := '';
@@ -949,7 +1038,7 @@ var
 begin
   if Button.IsChecked then
   begin
-    PathCurrentCat.Data.Data := Button.StylesData['icon.Data.Data'].AsString;
+    PathCurrentCat.Data.Data := Button.StylesData['path.Data.Data'].AsString;
     LabelCurrentCatTitle.Text := Button.Text;
     LabelCurrentCatDesc.Text := Button.Hint;
     FCategory := '-1';
@@ -983,7 +1072,7 @@ begin
   LoadPackages(False);
 end;
 
-procedure TFormMain.RadioButtonViewCardChange(Sender: TObject);
+procedure TFormMain.RadioButtonViewCard1Change(Sender: TObject);
 begin
   if RadioButtonViewCard.IsChecked then
   begin
@@ -1033,6 +1122,11 @@ begin
           Break;
       end;
     end;
+end;
+
+procedure TFormMain.VertScrollBoxCatsViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
+begin
+  PanelMenuDiv.Visible := NewViewportPosition.Y <> 0;
 end;
 
 initialization

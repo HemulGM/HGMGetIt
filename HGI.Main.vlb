@@ -43,9 +43,6 @@ Coordinates=829,1172,133,36
 [FramePackageItem5.RectangleImage]
 Coordinates=588,1172,231,36
 
-[ButtonServerList]
-Coordinates=545,690,110,58
-
 [FramePackageItem6.MenuItemDownload]
 Coordinates=327,1172,251,36
 
@@ -134,17 +131,11 @@ Coordinates=750,1034,99,36
 [FramePackageItem5.LabelTitle]
 Coordinates=415,214,193,58
 
-[Rectangle2]
-Coordinates=660,1034,80,36
-
 [FramePackageItem6.MenuItemWebSite]
 Coordinates=10,1034,243,36
 
 [FramePackageItem5.RectangleBG]
 Coordinates=1351,988,213,36
-
-[StyleBook]
-Coordinates=1869,694,72,36
 
 [RadioButtonAll]
 Coordinates=1241,988,100,36
@@ -191,9 +182,6 @@ Coordinates=693,988,55,36
 
 [AniIndicator1]
 Coordinates=593,988,90,36
-
-[Path1]
-Coordinates=618,214,62,58
 
 [VertScrollBoxCats]
 Coordinates=10,988,119,36
@@ -341,9 +329,6 @@ LayerNames=NewLayer0
 [FramePackageItem3.RectangleImage]
 Coordinates=973,804,231,36
 
-[PathCurrentCat]
-Coordinates=206,690,104,58
-
 [FramePackageItem5.LabelLicense]
 Coordinates=654,10,213,58
 
@@ -444,7 +429,7 @@ LayerNames=NewLayer0
 ExplicitSubNodes=Lines['new'];Self.Lines['new']
 
 []
-Coordinates=661,896,80,36
+Coordinates=618,214,62,58
 
 [Module Settings]
 ModelLayerNames=NewLayer0
@@ -454,4 +439,7 @@ EditingLayerName=NewLayer0
 [RadioButtonSampleProjects]
 Coordinates=1080,758,135,36
 LayerNames=NewLayer0
+
+[StyleBookOld]
+Coordinates=1869,694,72,36
 

@@ -21,24 +21,24 @@ type
     LabelDesc: TLabel;
     LabelInfo: TLabel;
     LayoutIndicates: TLayout;
-    PathWindows: TPath;
-    PathIOS: TPath;
-    PathAndroid: TPath;
-    PathLinux: TPath;
-    PathMacOS: TPath;
+    PathWindows: TPathLabel;
+    PathIOS: TPathLabel;
+    PathAndroid: TPathLabel;
+    PathLinux: TPathLabel;
+    PathMacOS: TPathLabel;
     LabelLicense: TLabel;
-    ButtonInstallOpt: TButton;
     ImagePers: TImage;
     Line1: TLine;
     PopupMenuOpt: TPopupMenu;
     MenuItemDownload: TMenuItem;
     MenuItemWebSite: TMenuItem;
     MenuItemShowCommand: TMenuItem;
-    PathGutHub: TPath;
+    PathGutHub: TPathLabel;
     ColorAnimationOver: TColorAnimation;
     LayoutSelect: TLayout;
     CheckBoxSelected: TCheckBox;
     LabelVersions: TLabel;
+    ButtonBG: TButton;
     procedure RectangleBGClick(Sender: TObject);
     procedure ButtonInstallClick(Sender: TObject);
     procedure ButtonInstallOptClick(Sender: TObject);
@@ -52,6 +52,7 @@ type
     FIsInstalled: Boolean;
     FOnChangeCheck: TNotifyEvent;
     FVersions: TArray<TGetItPackage>;
+    FOnItemClick: TNotifyEvent;
     function FormatSize(const Value: string): string;
     procedure SetOnAction(const Value: TOnItemAction);
     function GetId: string;
@@ -60,6 +61,7 @@ type
     procedure SetIsChecked(const Value: Boolean);
     procedure SetOnChangeCheck(const Value: TNotifyEvent);
     procedure UpdateVersions;
+    procedure SetOnItemClick(const Value: TNotifyEvent);
   public
     procedure Fill(Item: TGetItPackage; Installed: Boolean);
     property OnAction: TOnItemAction read FOnAction write SetOnAction;
@@ -69,14 +71,16 @@ type
     property Item: TGetItPackage read FItem;
     property IsChecked: Boolean read GetIsChecked write SetIsChecked;
     property OnChangeCheck: TNotifyEvent read FOnChangeCheck write SetOnChangeCheck;
+    property OnItemClick: TNotifyEvent read FOnItemClick write SetOnItemClick;
     procedure AddVersion(Item: TGetItPackage);
+    property Versions: TArray<TGetItPackage> read FVersions;
     destructor Destroy; override;
   end;
 
 implementation
 
 uses
-  HGM.FMX.Image, System.Math, HGI.View.ItemFull, HGI.GetItAPI;
+  HGM.FMX.Image, System.Math, HGI.View.ItemFull, System.Rtti, HGI.GetItAPI;
 
 {$R *.fmx}
 
@@ -91,7 +95,7 @@ end;
 procedure TFramePackageItemList.UpdateVersions;
 begin
   LabelVersions.Visible := Length(FVersions) > 0;
-  LabelVersions.Text := 'Несколько версий (' + Length(FVersions).ToString + ')';
+  LabelVersions.Text := 'Multiple versions (' + Length(FVersions).ToString + ')';
 end;
 
 procedure TFramePackageItemList.ButtonInstallClick(Sender: TObject);
@@ -114,7 +118,6 @@ begin
   case CheckBoxSelected.IsChecked of
     True:
       begin
-        RectangleBG.Stroke.Color := ColorAnimationOver.StopValue;
         RectangleBG.Stroke.Kind := TBrushKind.Solid;
       end;
     False:
@@ -129,6 +132,7 @@ end;
 constructor TFramePackageItemList.Create(AOwner: TComponent);
 begin
   inherited;
+  RectangleBG.Stroke.Kind := TBrushKind.None;
   Name := '';
   FItem := nil;
 end;
@@ -209,7 +213,7 @@ begin
   LabelLicense.Text := Item.LibLicenseName;
   ButtonInstall.TagString := Item.LibUrl;
   IsInstalled := Installed;
-  ButtonInstall.StylesData['bg.Padding.Right'] := ButtonInstallOpt.Width + 5;
+  ButtonInstall.StylesData['arrow.OnClick'] := TValue.From<TNotifyEvent>(ButtonInstallOptClick);
   MenuItemDownload.Enabled := not Item.LibUrl.IsEmpty;
   MenuItemWebSite.Enabled := not Item.LibProjectUrl.IsEmpty;
   PathGutHub.Visible := Item.LibProjectUrl.ToLower.Contains('github.com') or Item.LibProjectUrl.ToLower.Contains('gitlab.com');
@@ -265,11 +269,8 @@ end;
 
 procedure TFramePackageItemList.RectangleBGClick(Sender: TObject);
 begin
-  var Frame := TFramePackageItemFull.Create(Self);
-  Frame.Parent := Application.MainForm;
-  Frame.Fill(FItem, FIsInstalled, FVersions);
-  Frame.RecalcSize;
-  Frame.OnAction := OnAction;
+  if Assigned(FOnItemClick) then
+    FOnItemClick(Self);
 end;
 
 procedure TFramePackageItemList.SetIsChecked(const Value: Boolean);
@@ -294,6 +295,11 @@ end;
 procedure TFramePackageItemList.SetOnChangeCheck(const Value: TNotifyEvent);
 begin
   FOnChangeCheck := Value;
+end;
+
+procedure TFramePackageItemList.SetOnItemClick(const Value: TNotifyEvent);
+begin
+  FOnItemClick := Value;
 end;
 
 end.
