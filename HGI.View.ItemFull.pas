@@ -34,7 +34,7 @@ type
     Path1: TPathLabel;
     Label3: TLabel;
     FlowLayoutPlatforms: TFlowLayout;
-    Label10: TLabel;
+    LabelLibId: TLabel;
     EditId: TEdit;
     ButtonDownload: TButton;
     Label9: TLabel;
@@ -48,10 +48,6 @@ type
     PanelMenuDiv: TPanel;
     AniIndicatorLic: TAniIndicator;
     ButtonPFWin: TButton;
-    ButtonPFLinux: TButton;
-    ButtonPFMacOS: TButton;
-    ButtonPFAndroid: TButton;
-    ButtonPFiOS: TButton;
     Layout1: TLayout;
     Layout3: TLayout;
     ButtonSwitchTab: TButton;
@@ -61,6 +57,14 @@ type
     ListBoxVersions: TListBox;
     ListBoxItem1: TListBoxItem;
     SearchBoxVers: TSearchBox;
+    ButtonPFWin64: TButton;
+    ButtonPFLinux: TButton;
+    ButtonPFMacOS: TButton;
+    ButtonPFAndroid: TButton;
+    ButtonPFiOS: TButton;
+    Layout4: TLayout;
+    LabelLibCategory: TLabel;
+    Panel1: TPanel;
     procedure FlowLayoutPlatformsResize(Sender: TObject);
     procedure ButtonWebSiteClick(Sender: TObject);
     procedure ButtonBuyClick(Sender: TObject);
@@ -158,6 +162,9 @@ begin
   VertScrollBoxText.AniCalculations.Animation := True;
   ButtonPFWin.StylesData['icon.Data.Data'] := DataModuleStore.LineStoragePlatforms.GetByName('win');
   ButtonPFWin.StylesData['icon.Visible'] := True;
+
+  ButtonPFWin64.StylesData['icon.Data.Data'] := DataModuleStore.LineStoragePlatforms.GetByName('win');
+  ButtonPFWin64.StylesData['icon.Visible'] := True;
 
   ButtonPFLinux.StylesData['icon.Data.Data'] := DataModuleStore.LineStoragePlatforms.GetByName('linux');
   ButtonPFLinux.StylesData['icon.Visible'] := True;
@@ -278,6 +285,10 @@ begin
   IsInstalled := Installed;
 
   EditId.Text := Item.Id;
+  if Length(Item.Categories) > 0 then
+    LabelLibCategory.Text := Item.Categories[0].Name
+  else
+    LabelLibCategory.Text := 'Default';
   EditLibUrl.Text := Item.LibUrl;
   LabelTitle.Text := Item.Name;
   LabelDesc.Text := Item.Description;
@@ -312,13 +323,14 @@ begin
   LabelTags.Text := Item.Tags;
   if LabelTags.Text.IsEmpty then
     LabelTags.Text := 'None';
-  LabelDate.Text := TGetIt.ParseDate(Item.Modified);
+  LabelDate.Text := Item.LangCode + ' ' +  TGetIt.ParseDate(Item.Modified);
 
   ButtonPFWin.Visible := False;
   ButtonPFLinux.Visible := False;
   ButtonPFMacOS.Visible := False;
   ButtonPFAndroid.Visible := False;
   ButtonPFiOS.Visible := False;
+  ButtonPFWin64.Visible := False;
   for var OS in Item.LibOSes do
   begin
     if OS.Id = '1' then
@@ -330,6 +342,21 @@ begin
     else if OS.Id = '4' then
       ButtonPFAndroid.Visible := True
     else if OS.Id = '5' then
+      ButtonPFLinux.Visible := True;
+  end;
+  for var OS in Item.LibPlatforms do
+  begin
+    if OS.Id = '1' then
+      ButtonPFWin.Visible := True
+    else if OS.Id = '4' then
+      ButtonPFWin64.Visible := True
+    else if OS.Id = '14' then
+      ButtonPFMacOS.Visible := True
+    else if OS.Id = '15' then
+      ButtonPFiOS.Visible := True
+    else if OS.Id = '16' then
+      ButtonPFAndroid.Visible := True
+    else if OS.Id = '17' then
       ButtonPFLinux.Visible := True;
   end;
 
@@ -376,6 +403,8 @@ begin
       ListItem.StylesData['action.TagString'] := Ver.Id;
       ListBoxVersions.AddObject(ListItem);
     end;
+    if ListBoxVersions.Count > 0 then
+      ListBoxVersions.ItemIndex := 0;
   finally
     ListBoxVersions.EndUpdate;
   end;

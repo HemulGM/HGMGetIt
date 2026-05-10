@@ -28,7 +28,6 @@ type
     PathMacOS: TPathLabel;
     LabelLicense: TLabel;
     ImagePers: TImage;
-    Line1: TLine;
     PopupMenuOpt: TPopupMenu;
     MenuItemDownload: TMenuItem;
     MenuItemWebSite: TMenuItem;
@@ -39,6 +38,7 @@ type
     CheckBoxSelected: TCheckBox;
     LabelVersions: TLabel;
     ButtonBG: TButton;
+    Panel1: TPanel;
     procedure RectangleBGClick(Sender: TObject);
     procedure ButtonInstallClick(Sender: TObject);
     procedure ButtonInstallOptClick(Sender: TObject);
@@ -95,7 +95,7 @@ end;
 procedure TFramePackageItemList.UpdateVersions;
 begin
   LabelVersions.Visible := Length(FVersions) > 0;
-  LabelVersions.Text := 'Multiple versions (' + Length(FVersions).ToString + ')';
+  LabelVersions.Text := 'Versions (' + Length(FVersions).ToString + ')';
 end;
 
 procedure TFramePackageItemList.ButtonInstallClick(Sender: TObject);
@@ -221,7 +221,7 @@ begin
   //5 all
   //2 cpp
   //6 ?
-  if (Item.LibCode = '1') then
+  if Item.LibCode = '1' then
   begin
     ImagePers.Bitmap.LoadFromResource('delphi');
     ImagePers.Hint := 'Delphi only';
@@ -252,6 +252,19 @@ begin
     else if OS.Id = '4' then
       PathAndroid.Visible := True
     else if OS.Id = '5' then
+      PathLinux.Visible := True;
+  end;
+  for var OS in Item.LibPlatforms do
+  begin
+    if (OS.Id = '1') or (OS.Id = '4') then
+      PathWindows.Visible := True
+    else if OS.Id = '14' then
+      PathMacOs.Visible := True
+    else if OS.Id = '15' then
+      PathIOS.Visible := True
+    else if OS.Id = '16' then
+      PathAndroid.Visible := True
+    else if OS.Id = '17' then
       PathLinux.Visible := True;
   end;
 

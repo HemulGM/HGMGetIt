@@ -377,7 +377,7 @@ object FramePackageItemFull: TFramePackageItemFull
       Size.Width = 466.000000000000000000
       Size.Height = 542.000000000000000000
       Size.PlatformDefault = False
-      TabIndex = 1
+      TabIndex = 0
       TabOrder = 3
       TabPosition = PlatformDefault
       OnChange = TabControlGeneralChange
@@ -390,7 +390,7 @@ object FramePackageItemFull: TFramePackageItemFull
         CustomIcon = <
           item
           end>
-        IsSelected = False
+        IsSelected = True
         Size.Width = 56.000000000000000000
         Size.Height = 26.000000000000000000
         Size.PlatformDefault = False
@@ -429,7 +429,7 @@ object FramePackageItemFull: TFramePackageItemFull
                 'The library provides access to the API of the OpenAI service, on' +
                 ' the basis of which ChatGPT works and, for example, the generati' +
                 'on of images from text using DALL-E.'
-              TabOrder = 8
+              TabOrder = 7
             end
             object Label1: TLabel
               Align = Top
@@ -442,7 +442,7 @@ object FramePackageItemFull: TFramePackageItemFull
               TextSettings.Font.Size = 20.000000000000000000
               TextSettings.WordWrap = False
               Text = 'Description'
-              TabOrder = 7
+              TabOrder = 6
             end
             object Label2: TLabel
               Align = Top
@@ -495,7 +495,7 @@ object FramePackageItemFull: TFramePackageItemFull
               Size.Width = 466.000000000000000000
               Size.Height = 91.000000000000000000
               Size.PlatformDefault = False
-              TabOrder = 9
+              TabOrder = 8
               Justify = Left
               JustifyLastLine = Left
               FlowDirection = LeftToRight
@@ -508,12 +508,22 @@ object FramePackageItemFull: TFramePackageItemFull
                 Size.Height = 34.000000000000000000
                 Size.PlatformDefault = False
                 StyleLookup = 'radiobuttonstyle_filter'
-                TabOrder = 14
+                TabOrder = 15
                 Text = 'Windows'
                 TextSettings.HorzAlign = Leading
               end
-              object ButtonPFLinux: TButton
+              object ButtonPFWin64: TButton
                 Position.X = 120.000000000000000000
+                Size.Width = 130.000000000000000000
+                Size.Height = 34.000000000000000000
+                Size.PlatformDefault = False
+                StyleLookup = 'radiobuttonstyle_filter'
+                TabOrder = 14
+                Text = 'Windows 64'
+                TextSettings.HorzAlign = Leading
+              end
+              object ButtonPFLinux: TButton
+                Position.X = 255.000000000000000000
                 Size.Width = 88.000000000000000000
                 Size.Height = 34.000000000000000000
                 Size.PlatformDefault = False
@@ -523,7 +533,7 @@ object FramePackageItemFull: TFramePackageItemFull
                 TextSettings.HorzAlign = Leading
               end
               object ButtonPFMacOS: TButton
-                Position.X = 213.000000000000000000
+                Position.X = 348.000000000000000000
                 Size.Width = 99.000000000000000000
                 Size.Height = 34.000000000000000000
                 Size.PlatformDefault = False
@@ -533,7 +543,7 @@ object FramePackageItemFull: TFramePackageItemFull
                 TextSettings.HorzAlign = Leading
               end
               object ButtonPFAndroid: TButton
-                Position.X = 317.000000000000000000
+                Position.Y = 39.000000000000000000
                 Size.Width = 109.000000000000000000
                 Size.Height = 34.000000000000000000
                 Size.PlatformDefault = False
@@ -543,6 +553,7 @@ object FramePackageItemFull: TFramePackageItemFull
                 TextSettings.HorzAlign = Leading
               end
               object ButtonPFiOS: TButton
+                Position.X = 114.000000000000000000
                 Position.Y = 39.000000000000000000
                 Size.Width = 71.000000000000000000
                 Size.Height = 34.000000000000000000
@@ -553,23 +564,11 @@ object FramePackageItemFull: TFramePackageItemFull
                 TextSettings.HorzAlign = Leading
               end
             end
-            object Label10: TLabel
-              Align = Top
-              AutoSize = True
-              StyledSettings = [Family, Style, FontColor]
-              Size.Width = 466.000000000000000000
-              Size.Height = 27.000000000000000000
-              Size.PlatformDefault = False
-              TextSettings.Font.Size = 20.000000000000000000
-              TextSettings.WordWrap = False
-              Text = 'Package name'
-              TabOrder = 6
-            end
             object EditId: TEdit
               Touch.InteractiveGestures = [LongTap, DoubleTap]
               Align = Top
-              StyleLookup = 'transparentedit'
-              TabOrder = 11
+              StyleLookup = 'editstyle_clear'
+              TabOrder = 10
               Cursor = crArrow
               ReadOnly = True
               TextSettings.Font.Size = 14.000000000000000000
@@ -607,7 +606,7 @@ object FramePackageItemFull: TFramePackageItemFull
               Size.Height = 64.000000000000000000
               Size.PlatformDefault = False
               StyleLookup = 'memostyle_clear'
-              TabOrder = 10
+              TabOrder = 9
               Viewport.Width = 466.000000000000000000
               Viewport.Height = 64.000000000000000000
             end
@@ -638,6 +637,52 @@ object FramePackageItemFull: TFramePackageItemFull
               Text = 'Lib1, Lib2, Lib3'
               TabOrder = 3
             end
+            object Layout4: TLayout
+              Align = Top
+              Size.Width = 466.000000000000000000
+              Size.Height = 27.000000000000000000
+              Size.PlatformDefault = False
+              TabOrder = 11
+              object LabelLibId: TLabel
+                Align = Left
+                AutoSize = True
+                StyledSettings = [Family, Style, FontColor]
+                Size.Width = 95.000000000000000000
+                Size.Height = 27.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Size = 20.000000000000000000
+                TextSettings.WordWrap = False
+                Text = 'Package Id'
+                TabOrder = 7
+              end
+              object LabelLibCategory: TLabel
+                Align = Client
+                StyledSettings = [Family, Style, FontColor]
+                Opacity = 0.500000000000000000
+                Size.Width = 354.000000000000000000
+                Size.Height = 27.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Size = 20.000000000000000000
+                TextSettings.HorzAlign = Trailing
+                TextSettings.WordWrap = False
+                Text = 'Category'
+                TabOrder = 6
+              end
+              object Panel1: TPanel
+                Align = Left
+                Margins.Left = 8.000000000000000000
+                Margins.Top = 10.000000000000000000
+                Margins.Right = 8.000000000000000000
+                Margins.Bottom = 6.000000000000000000
+                Position.X = 103.000000000000000000
+                Position.Y = 10.000000000000000000
+                Size.Width = 1.000000000000000000
+                Size.Height = 11.000000000000000000
+                Size.PlatformDefault = False
+                StyleLookup = 'panelstyle_divider'
+                TabOrder = 8
+              end
+            end
           end
           object PanelMenuDiv: TPanel
             Align = Top
@@ -658,7 +703,7 @@ object FramePackageItemFull: TFramePackageItemFull
         CustomIcon = <
           item
           end>
-        IsSelected = True
+        IsSelected = False
         Size.Width = 65.000000000000000000
         Size.Height = 26.000000000000000000
         Size.PlatformDefault = False
@@ -673,6 +718,7 @@ object FramePackageItemFull: TFramePackageItemFull
           Size.Height = 516.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
+          ScrollAnimation = True
           DisableFocusEffect = True
           ItemHeight = 48.000000000000000000
           DefaultItemStyles.ItemStyle = 'listboxitembottomdetail_version'

@@ -651,10 +651,8 @@ object FramePackageItem: TFramePackageItem
         Size.Height = 16.000000000000000000
         Size.PlatformDefault = False
       end
-      object Line1: TLine
+      object Panel1: TPanel
         Align = Left
-        HitTest = False
-        LineType = Left
         Margins.Left = 1.000000000000000000
         Margins.Right = 3.000000000000000000
         Position.X = 21.000000000000000000
@@ -662,7 +660,8 @@ object FramePackageItem: TFramePackageItem
         Size.Width = 1.000000000000000000
         Size.Height = 16.000000000000000000
         Size.PlatformDefault = False
-        Stroke.Color = x28FFFFFF
+        StyleLookup = 'panelstyle_divider'
+        TabOrder = 8
       end
     end
     object ColorAnimation1: TColorAnimation

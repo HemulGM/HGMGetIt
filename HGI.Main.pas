@@ -1015,7 +1015,7 @@ begin
   RadioButtonDUnit.StylesData['path.Data.Data'] := DataModuleStore.LineStoragePath.GetByName('dunit');
   RadioButtonDUnit.TagString := '22';
   RadioButtonInterbase.StylesData['path.Data.Data'] := DataModuleStore.LineStoragePath.GetByName('interbase');
-  RadioButtonInterbase.TagString := '23; 42';
+  RadioButtonInterbase.TagString := '23; 42; 3280';
   RadioButtonHelp.StylesData['path.Data.Data'] := DataModuleStore.LineStoragePath.GetByName('help');
   RadioButtonHelp.TagString := '17';
   RadioButtonFonts.StylesData['path.Data.Data'] := DataModuleStore.LineStoragePath.GetByName('fonts');
